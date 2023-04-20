@@ -4,3 +4,4 @@
 *.out
 *.pdf
 *_latexmk
+*.toc
