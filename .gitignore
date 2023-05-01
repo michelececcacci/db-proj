@@ -5,3 +5,4 @@
 *.pdf
 *_latexmk
 *.toc
+*.gz

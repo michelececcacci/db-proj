@@ -3,8 +3,8 @@
 \usepackage{float}
 \usepackage{hyperref}
 
-
 \begin{document}
+\tableofcontents
 
 \title{relazione}
 
@@ -36,18 +36,41 @@ Gli utenti possono chattare con altri utenti. Le \textbf{chat} si compongono di 
 Ogni utente può creare un \textbf{gruppo}. Un gruppo è una aggregazione di uno o più utenti. Ogni gruppo ha uno o più utenti amministratori.
 Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli utenti membri.
 \section{Definizioni}
-Utente: un iscritto al nostro social network. Sinonimi: iscritto \newline
-Post: un testo scritto da un utente 
-Autore di un post: l'utente che ha scritto il post
-Commento: un post che fa riferimento ad un altro post (detto post padre)
-Like: è una segnalazione di gradimento ad un post
-Dislkie: l'opposto di un like
-Reputazione di un utente: la differenza tra like e dislike complessivi dei post scritti dall'utente
-Messaggio: un testo scritto da un utente con destinatario un gruppo
-Chat: una sequenza di messaggi
-Gruppo: un insieme di utenti 
-Locazione: un luogo geografico da cui l'utente ha scritto un post
-Amministratore di un gruppo: un utente che può aggiungere e rimuovere utenti dal gruppo
+\begin{itemize}
+    \item Utente: un iscritto al nostro social network. Sinonimi: iscritto 
+    \item Post: un testo scritto da un utente 
+    \item Autore di un post: l'utente che ha scritto il post
+    \item Commento: un post che fa riferimento ad un altro post (detto post padre)
+    \item Like: è una segnalazione di gradimento ad un post
+    \item Dislike: l'opposto di un like
+    \item Reputazione di un utente: la differenza tra like e dislike complessivi dei post scritti dall'utente
+    \item Messaggio: un testo scritto da un utente con destinatario un gruppo
+    \item Chat: una sequenza di messaggi
+    \item Gruppo: un insieme di utenti 
+    \item Locazione: un luogo geografico da cui l'utente ha scritto un post
+    \item Amministratore di un gruppo: un utente che può aggiungere e rimuovere utenti dal gruppo
+\end{itemize}
+
+
+\subsection{Operazioni utente}
+\begin{itemize}
+    \item Creare un nuovo utente
+    \item Cambiare password utente
+    \item Seguire utente
+    \item Mandare un messaggio
+    \item Postare e commentare
+    \item Like/dislike
+    \item Creare un gruppo
+    \item Aggiungere utente al gruppo
+    \item Vedere tutti i post in ordine cronologico (feed)
+    \item Vedere utenti che hanno messo like a un post
+    \item Leggere messaggi di una chat
+    \item Login utente
+    \item Aggiungere location a tabella location
+    \item Vedere profilo utente (location, reputazione, post \ldots)
+    \item Dare diritti amministratore ad un utente in un gruppo
+\end{itemize}
+
 \chapter{Progettazione Concettuale}
 \section{Schema scheletro}
 \section{Raffinamenti proposti}
