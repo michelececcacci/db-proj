@@ -72,8 +72,17 @@ Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli ut
 \end{itemize}
 
 \chapter{Progettazione Concettuale}
-\section{Schema scheletro}
-\section{Raffinamenti proposti}
+\section{Utenti}
+L'entità utente ha come unico identificatore lo lo username. Per permettere agli utenti di seguire altri utenti abbiamo creato una relazione ad anello.
+\section{Gruppi e sistema di messaggistica}
+Poichè non esiste nessuna differenza tra un gruppo ed una chat abbiamo deciso di modellizzare questi due concetti con un'unica entità chiamata \texttt{CHAT}. La chat è una sequenza (ordinata) di messaggi. Ogni messaggio ha uno ed un solo utente mittente. Per modellizzare la meccanica di lettura dei messaggi in una chat da parte di ciascun utente abbiamo deciso di aggiungere alla relazione \texttt{MEMBRO} un attributo \texttt{TimestampUltimaLettura} che viene dovrà venire aggiornato ogni volta che l'utente accede alla chat. Lo schema E/R non esprime il vincolo secondo cui solo gli utenti membri di una chat possono inviare messaggi su quella chat. Faremo rispettare questo vincolo a livello di SQL.
+\section{Regione}
+Una regione può far parte di una ed una sola regione più grande, mentre una regione può contenere delle regioni più piccole. Esprimiamo questi vincoli con una relazione ad anello. Si viene perciò a formare un albero (o una foresta di alberi) che esprimono le gerarchie delle regioni geografiche. Lasciamo però inespresso il vincolo secondo cui non si debbano formare dei cicli all'interno di questa foresta, vincolo che abbiamo intenzione di imporre a livello applicativo. 
+\section{Password}
+Ogni utente ha uno storico di password che ci permette di impedire all'utente di riutilizzare password passate. Questo vincolo è espresso imponendo come identificatore della entità \texttt{STORICO\_PASSWORD} la tupla \texttt{(Password, UTENTE)}. Imponiamo inoltre il vincolo secondo cui un utente non può avere contemporaneamente due password creando l'identificatore \texttt{(Password, DataInserimento)}.
+\section{Contenuto (post e commenti)}
+Abbiamo modellizzato post e commenti in una gerarchia parziale ed esclusiva dove i post veri e propri (cioè quelli pubblicati \textbf{non} in risposta a qualche altro contenuto) sono istanze della classe padre \texttt{CONTENUTO}, mentre i commenti (cioè quei contenuti in risposta ad altri contenuti) sono rappresentati dall'entità figlia \texttt{COMMENTO}. Questa entità è legata a \texttt{CONTENUTO} dalla relazione \texttt{RISPOSTA}, che indica a quale contenuto il commento fa rifermento.
+Per modellizzare la possibilità da parte degli utenti di mettere like e dislike ai contenuti abbiamo creato la relazione \texttt{REAZIONE} il cui attributo \texttt{LikeDislike} indica se la reazione è un like o un dislike. L'attributo \texttt{Timestamp} indica il momento temporale in cui l'utente ha espresso la sua reazione riguardo al contenuto. 
 \section{Schema concettuale finale}
 \chapter{Progettazione logica}
 \section{Stima del volume dei dati}
