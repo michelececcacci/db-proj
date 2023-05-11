@@ -86,6 +86,26 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
 \section{Schema concettuale finale}
 \chapter{Progettazione logica}
 \section{Stima del volume dei dati}
+
+\begin{itemize}
+  \item UTENTE, E, 1000
+  \item SCELTA, R, 5000
+  \item STORICO\_PASSWORD, E, 5000
+  \item SEGUIRE, R, 10000
+  \item MEMBRO, E, 20000
+  \item IMPERSONAZIONE, R, 20000
+  \item APPARTENENZA, R, 20000
+  \item CHAT, E, 2000 
+  \item AGGIUNTO, R, 20000 
+  \item MESSAGGIO, E, 300000
+  \item MITTENTE, R, 300000
+  \item CITAZIONE, R, 10000
+  \item ELIMINAZIONE, R, 5000
+  \item DOMICILIO, R, 100
+  \item REGIONE, E, 150.000.000
+  \item PARTE\_DI, R, 150.000.000
+
+\end{itemize}
 \section{Descrizione delle operazioni principali e stima della loro frequenza}
 \section{Schemi di navigazione e tabelle degli accessi}
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
