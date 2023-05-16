@@ -107,6 +107,47 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
 
 \end{itemize}
 \section{Descrizione delle operazioni principali e stima della loro frequenza}
+\begin{itemize}
+  \item Creare un nuovo utente, 10 / g
+  \item {
+    Per ogni utente
+    \begin{itemize}
+      \item Cambiare password 1 / 60 g
+      \item Login utente all'interno del social network 10 / g
+      \item Seguire un utente 2 / g
+      \item Creare una nuova chat 1 / 20 g
+      \item Postare e commentare 10 / g
+      \item Reagire con Like/dislike a post e commenti 80 / g
+      \item Scorrere i post pubblicati dagli utenti seguiti (feed) 40 / g
+      \item Vedere utenti che hanno messo like a un post 1 / g
+      \item Vedere profilo utente (nome, cognome, data di nascita, location, reputazione, post) 5 / g
+    \end{itemize} 
+  }
+  \item {
+      Per ogni membro di una chat
+      \begin{itemize}
+        \item Scrivere un messaggio nella chat 50 / g
+        \item Uscire volontariamente dalla chat 1 / 100 g
+        \item Elencare i membri della chat 1 / g
+        \item Leggere i messaggi della chat 90 / g
+      \end{itemize}
+    }
+  \item {
+      Per ogni utente amminstratore di una chat 
+      \begin{itemize}
+        \item Aggiungere utenti al gruppo 1 / g
+        \item Dare diritti amministratore ad un utente in un gruppo 1 / 4 g
+        \item Cacciare un utente da un gruppo 1 / 10 g
+      \end{itemize}
+    }
+  \item {
+      Operazioni riservate agli amministratori di sistema
+      \begin{itemize}
+        \item Aggiungere location a tabella location 1 / 100 g
+      \end{itemize} 
+    }
+ 
+\end{itemize}
 \section{Schemi di navigazione e tabelle degli accessi}
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
 \section{Analisi delle ridondanze}
