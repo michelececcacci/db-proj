@@ -8,10 +8,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      # - db:/var/lib/postgresql/data
-      - ./generate.ddl:/docker-entrypoint-initdb.d/generate.ddl
+      - ./generate.ddl:/docker-entrypoint-initdb.d/generate.sql
     ports:
       - 55432:5432
+      - 8000:8000
+    stdin_open: true
+    tty: true
 
   go_application:
     image: go_application
