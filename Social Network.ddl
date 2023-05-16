@@ -32,14 +32,14 @@ create table CONTENUTO (
      Username varchar(20) not null,
      Testo varchar(1000) not null,
      IdContenuto numeric(1) not null,
-     TimestampPubblicazione date not null,
+     TimestampPubblicazione timestamp not null,
      IdRegione numeric(1),
      A_Username varchar(20),
      A_IdContenuto numeric(1),
      constraint ID_CONTENUTO primary key (Username, IdContenuto));
 
 create table MEMBRO (
-     DataEntrata date not null,
+     DataEntrata timestamp not null,
      IdMembro numeric(1) not null,
      Username varchar(20) not null,
      IdChat numeric(1) not null,
@@ -50,7 +50,7 @@ create table MEMBRO (
 create table MESSAGGIO (
      IdMessaggio numeric(1) not null,
      Testo varchar(1000) not null,
-     TimestampInvio date not null,
+     TimestampInvio timestamp not null,
      IdMembro numeric(1) not null,
      Citazione numeric(1),
      Username varchar(20),
@@ -75,26 +75,26 @@ create table REGIONE (
 create table SEGUIRE (
      SEG_Username varchar(20) not null,
      Username varchar(20) not null,
-     DataInizio date not null,
-     DataFine date,
+     DataInizio timestamp not null,
+     DataFine timestamp,
      constraint ID_SEGUIRE primary key (SEG_Username, Username, DataInizio));
 
 create table STORICO_ACCESSO (
      Username varchar(20) not null,
-     TimestampLogin date not null,
-     TimestampLogout date not null,
+     TimestampLogin timestamp not null,
+     TimestampLogout timestamp not null,
      constraint ID_STORICO_ACCESSO primary key (Username, TimestampLogin));
 
 create table STORICO_PASSWORD (
      Username varchar(20) not null,
-     DataInserimento date not null,
+     DataInserimento timestamp not null,
      Password varchar(20) not null,
      constraint SID_STORICO_PASSWORD unique (Username, DataInserimento),
      constraint ID_STORICO_PASSWORD primary key (Username, Password));
 
 create table USCITA (
      IdMembro numeric(1) not null,
-     DataUscita date not null,
+     DataUscita timestamp not null,
      Motivazione varchar(500),
      RES_IdMembro numeric(1),
      constraint FKUSCITA_ID primary key (IdMembro));
