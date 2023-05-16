@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  application:
+    image: application
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password
