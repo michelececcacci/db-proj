@@ -1,20 +1,19 @@
 version: '3.9'
 
 services:
-  application:
-    image: application
-    networks: []
-
   db:
-    image: postgres:15
+    image: postgres
     restart: always
     environment:
-      POSTGRES_DB: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      -
-
+      # - db:/var/lib/postgresql/data
+      - ./generate.ddl:/docker-entrypoint-initdb.d/generate.ddl
     ports:
       - 55432:5432
+
+  go_application:
+    image: go_application
     networks: []
+
