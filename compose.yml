@@ -3,9 +3,18 @@ version: '3.9'
 services:
   application:
     image: application
+    networks: []
 
   db:
     image: postgres:15
     restart: always
     environment:
-      - POSTGRES_PASSWORD=password
+      POSTGRES_DB: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      -
+
+    ports:
+      - 55432:5432
+    networks: []
