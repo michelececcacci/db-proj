@@ -17,7 +17,7 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return m, nil
+	return m.loginView.Update(msg)
 }
 
 func (m model) View() string {

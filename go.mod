@@ -6,6 +6,7 @@ require (
 	github.com/charmbracelet/bubbles v0.15.0
 	github.com/charmbracelet/bubbletea v0.23.2
 	github.com/lib/pq v1.10.9
+	golang.org/x/exp v0.0.0-20230515195305-f3d0a9c9a5cc
 )
 
 require (
