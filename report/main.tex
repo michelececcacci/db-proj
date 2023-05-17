@@ -91,7 +91,9 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
   \item UTENTE, E, 1000
   \item SCELTA, R, 5000
   \item STORICO\_PASSWORD, E, 5000
-  \item SEGUIRE, R, 10000
+  \item SEGUIRE, R, 100.000
+  \item SEGUE, E, 100.000
+  \item SEGUIRE E, 100.000
   \item MEMBRO, E, 20000
   \item IMPERSONAZIONE, R, 20000
   \item APPARTENENZA, R, 20000
@@ -151,6 +153,17 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
  
 \end{itemize}
 \section{Schemi di navigazione e tabelle degli accessi}
+\subsection{Creare un nuovo utente}
+\paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga. 
+\paragraph{Frequenza} 10 / g 
+\paragraph{Schema di navigazione} 
+\paragraph{Tavola degli accessi}
+\subsection{Cambiare password}
+\paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga. 
+\paragraph{Frequenza} 1 / 60 g 
+\paragraph{Schema di navigazione} 
+\paragraph{Tavola degli accessi (senza ridondanze)}
+
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
 \section{Analisi delle ridondanze}
 \section{Traduzione di entità e associazioni in relazioni}
