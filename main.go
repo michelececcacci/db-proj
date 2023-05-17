@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/queries"
 )
 
 type model struct {
@@ -26,9 +30,12 @@ func (m model) View() string {
 
 
 func main() {
-	p := tea.NewProgram(initialModel())
-	_, err := p.Run()
-	if err != nil {
-		panic(err)
-	}
+	q := queries.Queries{}
+	r, _ := q.Something(context.Background())
+	fmt.Println(r)
+	// p := tea.NewProgram(initialModel())
+	// _, err := p.Run()
+	// if err != nil {
+	// 	panic(err)
+	// }
 }

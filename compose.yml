@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./generate.ddl:/docker-entrypoint-initdb.d/generate.sql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     ports:
       - 55432:5432
       - 8000:8000
