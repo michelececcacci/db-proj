@@ -14,7 +14,7 @@ type loginView struct {
 	cursorMode cursor.Mode
 }
 
-func (l *loginView) View() string {
+func (l loginView) View() string {
 	var b strings.Builder
 	for _, input := range l.inputs {
 		b.WriteString(input.View())
@@ -22,17 +22,24 @@ func (l *loginView) View() string {
 	return b.String()
 }
 
-func (l *loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return nil, nil
+func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "esc":
+			return l, tea.Quit
+		}
+	}
+	return l, nil
 }
 
-func (l *loginView) Init() tea.Model {
+func (l loginView) Init() tea.Cmd {
 	return nil
 }
 
 func newLoginView() loginView {
 	inputs := make([]textinput.Model, 2)
-	inputs[0] = newInput("username", 20) 
+	inputs[0] = newInput("username", 20)
 	inputs[1] = newInput("password", 20)
 	m := loginView{
 		inputs: inputs,
@@ -42,7 +49,7 @@ func newLoginView() loginView {
 
 func newInput(placeholder string, maxLenght int) textinput.Model {
 	t := textinput.New()
-	t.Placeholder = placeholder 
+	t.Placeholder = placeholder
 	t.CharLimit = maxLenght
 	return t
 }

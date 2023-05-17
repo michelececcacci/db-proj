@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"log"
 
+	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
 	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/view"
 )
 
 func run() error {
@@ -15,22 +17,20 @@ func run() error {
 		return err
 	}
 	qq := queries.New(db)
-	r, err := qq.Something(context.Background())
+	_, err = qq.Something(context.Background())
 	if err != nil {
 		return err
 	}
-	log.Println(r)
-	// p := tea.NewProgram(initialModel())
-	// _, err := p.Run()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	p := tea.NewProgram(view.InitialModel())
+	_, err = p.Run()
+	if err != nil {
+		panic(err)
+	}
 	return nil
 }
 
 func main() {
-	log.Println("hi")
-	// if err :=run(); err != nil {
-	// 	log.Fatal(err)
-	// }
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
 }

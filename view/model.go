@@ -5,11 +5,11 @@ import (
 )
 
 type model struct {
-	loginViewState *loginView
+	loginView tea.Model
 }
 
-func initialModel() model {
-	return model{}
+func InitialModel() model {
+	return model{loginView: newLoginView()}
 }
 
 func (m model) Init() tea.Cmd {
@@ -21,5 +21,5 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return m.loginViewState.View()
+	return m.loginView.View()
 }
