@@ -1,2 +1,4 @@
--- name: Something :one
+-- name: TestQuery :one
 SELECT * FROM CHAT;
+
+-- name: 
