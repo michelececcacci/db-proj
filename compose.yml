@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: postgres
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -13,6 +13,9 @@ services:
       - 55432:5432
 
   go_application:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: go_application
     ports:
       - 5050:5050
