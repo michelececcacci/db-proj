@@ -1,7 +1,6 @@
 package view
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -10,12 +9,10 @@ import (
 	"github.com/michelececcacci/db-proj/util"
 )
 
+// Treated as constant
 var (
 	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	
-	focusedButton = focusedStyle.Copy().Render("[ Submit ]")
-	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
 )
 
 type loginView struct {
@@ -25,6 +22,7 @@ type loginView struct {
 
 func (l loginView) View() string {
 	var b strings.Builder
+	b.WriteString("Press Enter to submit\n")
 	for _, input := range l.inputs {
 		b.WriteString(input.View())
 		b.WriteString("\n")
@@ -39,13 +37,14 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return l, tea.Quit
-		case tea.KeyDown:
+		case tea.KeyDown, tea.KeyTab:
 			l.currentElement = util.Min(len(l.inputs)-1, l.currentElement+1)
-		case tea.KeyUp:
+		case tea.KeyUp, tea.KeyShiftTab:
 			l.currentElement = util.Max(0, l.currentElement-1)
+		default:
+			l.inputs[l.currentElement], cmd = l.inputs[l.currentElement].Update(msg)
 		}
-		l.inputs[l.currentElement], cmd = l.inputs[l.currentElement].Update(msg)
-		for i := range(l.inputs) {
+		for i := range l.inputs {
 			if i == l.currentElement {
 				focusButton(&l.inputs[i])
 			} else {
@@ -78,7 +77,7 @@ func newInput(placeholder string, maxLenght int) textinput.Model {
 	return t
 }
 
-func focusButton(t * textinput.Model) {
+func focusButton(t *textinput.Model) {
 	t.Focus()
 	t.PromptStyle = focusedStyle
 	t.TextStyle = focusedStyle
