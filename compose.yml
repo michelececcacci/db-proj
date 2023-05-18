@@ -11,11 +11,10 @@ services:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     ports:
       - 55432:5432
-      - 8000:8000
-    stdin_open: true
-    tty: true
 
   go_application:
     image: go_application
-    networks: []
-
+    ports:
+      - 5050:5050
+    stdin_open: true
+    tty: true

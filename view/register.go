@@ -23,9 +23,12 @@ func (r registerView) Init() tea.Cmd {
 
 func newRegisterView() registerView {
 	inputs := []textinput.Model{
-		newInput("username", 20),
-		newInput("passord", 20),
+		newInput("Username", 20),
+		newInput("Password", 20),
+		newInput("Name", 20),
+		newInput("Surname", 20),
 		newInput("Location", 20),
+		newInput("Birthdate", 10),
 	}
 	return registerView{inputs: newMultipleInputsView(inputs)}
 }
