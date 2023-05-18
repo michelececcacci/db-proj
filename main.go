@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,8 +12,16 @@ import (
 	"github.com/michelececcacci/db-proj/view"
 )
 
+const (
+	dbname="db"
+	user="postgres"
+	password="postgres"
+	host="db"
+)
+
 func run() error {
-	db, err := sql.Open("postgres", "user=postgres dbname=logica sslmode=verify-full")
+	s := fmt.Sprintf("dbname=%s user=%s password=%s host=%s sslmode=disable",dbname, user, password, host)
+	db, err := sql.Open("postgres", s)
 	if err != nil {
 		return err
 	}

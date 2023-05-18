@@ -18,6 +18,17 @@ services:
       dockerfile: Dockerfile
     image: go_application
     ports:
-      - 5050:5050
+      - 5051:5050
     stdin_open: true
     tty: true
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5050:5050
