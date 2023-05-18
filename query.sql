@@ -1,4 +1,5 @@
 -- name: TestQuery :one
 SELECT * FROM CHAT;
 
--- name: 
+-- name: InsertUser :exec
+INSERT INTO UTENTE (username) VALUES ($1);

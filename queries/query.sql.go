@@ -9,12 +9,21 @@ import (
 	"context"
 )
 
-const something = `-- name: Something :one
+const insertUser = `-- name: InsertUser :exec
+INSERT INTO UTENTE (username) VALUES ($1)
+`
+
+func (q *Queries) InsertUser(ctx context.Context, username string) error {
+	_, err := q.db.ExecContext(ctx, insertUser, username)
+	return err
+}
+
+const testQuery = `-- name: TestQuery :one
 SELECT nome, descrizione, idchat FROM CHAT
 `
 
-func (q *Queries) Something(ctx context.Context) (Chat, error) {
-	row := q.db.QueryRowContext(ctx, something)
+func (q *Queries) TestQuery(ctx context.Context) (Chat, error) {
+	row := q.db.QueryRowContext(ctx, testQuery)
 	var i Chat
 	err := row.Scan(&i.Nome, &i.Descrizione, &i.Idchat)
 	return i, err

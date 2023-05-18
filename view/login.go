@@ -1,90 +1,29 @@
 package view
 
 import (
-	"strings"
-
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-	"github.com/michelececcacci/db-proj/util"
-)
-
-// Treated as constant
-var (
-	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 )
 
 type loginView struct {
-	currentElement int
-	inputs         []textinput.Model
-}
-
-func (l loginView) View() string {
-	var b strings.Builder
-	b.WriteString("Press Enter to submit\n")
-	for _, input := range l.inputs {
-		b.WriteString(input.View())
-		b.WriteString("\n")
-	}
-	return b.String()
+	inputsView tea.Model
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmd tea.Cmd
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
-			return l, tea.Quit
-		case tea.KeyDown, tea.KeyTab:
-			l.currentElement = util.Min(len(l.inputs)-1, l.currentElement+1)
-		case tea.KeyUp, tea.KeyShiftTab:
-			l.currentElement = util.Max(0, l.currentElement-1)
-		default:
-			l.inputs[l.currentElement], cmd = l.inputs[l.currentElement].Update(msg)
-		}
-		for i := range l.inputs {
-			if i == l.currentElement {
-				focusButton(&l.inputs[i])
-			} else {
-				blurButton(&l.inputs[i])
-			}
-		}
-	}
-	return l, cmd
-}
-
-func (l loginView) Init() tea.Cmd {
-	return textinput.Blink
+	return l.inputsView.Update(msg)
 }
 
 func newLoginView() loginView {
 	inputs := make([]textinput.Model, 2)
 	inputs[0] = newInput("username", 20)
 	inputs[1] = newInput("password", 20)
-	focusButton(&inputs[0])
-	m := loginView{
-		inputs: inputs,
-	}
-	return m
+	return loginView{inputsView: newMultipleInputsView(inputs)}
 }
 
-func newInput(placeholder string, maxLenght int) textinput.Model {
-	t := textinput.New()
-	t.Placeholder = placeholder
-	t.CharLimit = maxLenght
-	return t
+func (l loginView) Init() tea.Cmd {
+	return l.inputsView.Init()
 }
 
-func focusButton(t *textinput.Model) {
-	t.Focus()
-	t.PromptStyle = focusedStyle
-	t.TextStyle = focusedStyle
-}
-
-func blurButton(t *textinput.Model) {
-	t.Blur()
-	t.PromptStyle = blurredStyle
-	t.TextStyle = blurredStyle
+func (l loginView) View() string {
+	return l.inputsView.View()
 }
