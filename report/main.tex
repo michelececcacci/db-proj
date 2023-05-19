@@ -158,19 +158,99 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
         \item Aggiungere location a tabella location 1 / 100 g
       \end{itemize} 
     }
- 
 \end{itemize}
+ 
 \section{Schemi di navigazione e tabelle degli accessi}
+
 \subsection{Creare un nuovo utente}
-\paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga. 
+\paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga e assegnargli una password 
 \paragraph{Frequenza} 10 / g 
-\paragraph{Schema di navigazione} 
 \paragraph{Tavola degli accessi}
+
 \subsection{Cambiare password}
-\paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga. 
+\paragraph{Descrizione} Aggiungere alla tabella dello storico password una nuova riga. 
 \paragraph{Frequenza} 1 / 60 g 
-\paragraph{Schema di navigazione} 
-\paragraph{Tavola degli accessi (senza ridondanze)}
+\paragraph{Tavola degli accessi}
+
+\subsection{Autenticazione dell'utente all'interno del social network tramite username e password}
+\paragraph{Descrizione} Si controlla se esiste istanza di STORICO\_PASSWORD contentente l'username e la password inserite
+\paragraph{Frequenza} 10 / g
+
+\subsection{Seguire un utente} 
+\paragraph{Descrizione} Si aggiunge una istanza alla tabella SEGUIRE avente come chiave la tupla (utente seguace, utente seguito)
+\paragraph{Frequenza} 2 / g
+
+\subsection{Smettere di seguire un utente}
+\paragraph{Descrizione} Si accede all'istanza di SEGUIRE identificata dalla tupla (utente seguace, utente seguito) e si aggiunge assegna al campo DataFine la data attuale.
+\paragraph{Frequenza} 1 / 10 g
+
+\subsection{Creare una nuova chat}
+\paragraph{Descrizione} Viene creato una nuova istanza di CHAT e un primo membro amminstratore della chat.
+\paragraph{Frequenza} 1 / 20 g
+
+\subsection{Postare e commentare}
+\paragraph{Descrizione}
+\paragraph{Frequenza} 10 / g
+
+\subsection{Reagire con like/dislike a post e commenti}
+\paragraph{Descrizione} Si aggiunge una istanza alla tabella reazione con identificatore la tupla (utente, contenuto) e nel campo LikeDislike +1 se è un like, -1 se è un dislike.
+\paragraph{Frequenza} 80 / g
+
+\subsection{Leggere un post}
+\paragraph{Descrizione} Si mostrano il contentuto, l'ora di pubblicazione, l'autore, i commenti, il numero di like netto (cioè la somma algebrica dei like e dislike), se presente il luogo di pubblicazione.
+\paragraph{Frequenza} 100 / g
+
+\subsection{Scorrere il post pubblicati dagli utenti seguiti (feed)}
+\paragraph{Descrizione} Questa operazione mostra in ordine cronologico i titoli, il numero di like netto e l'autore dei post pubblicati dagli utenti seguiti.
+\paragraph{Frequenza} 40 / g
+
+\subsection{Vedere quali utenti hanno reagito ad un contenuto}
+\paragraph{Descrizione} Si scorre la tabella REAZIONE e si estraggono tutte quelle in cui appare il contentuto cercato. 
+\paragraph{Frequenza} 1 / g
+
+\subsection{Vedere il profilo di un utente}
+\paragraph{Descrizione} Si mostrano nome , cognome, data di nascita, location e la sua reputazione.
+\paragraph{Frequenza} 5 / g
+
+\subsection{Vedere i contenuti pubblicati da un utente}
+\paragraph{Descrizione} Si mostrano tutti i contenuti che hanno come autore l'utente considerato
+\paragraph{Frequanza} 1 / g
+
+\subsection{Scrivere un messaggio nella chat}
+\paragraph{Descrizione} Si aggiunge una istanza nella tabella MESSAGGIO con una referenza esterna al membro autore.
+\paragraph{Frequenza} 50 / g 
+
+\subsection{Uscire volontariamente dalla chat}
+\paragraph{Descrizione} Nell'istanza del membro che sta uscendo si aggiunge una referenza ad una nuova istanza USCITA di tipo VOLONTARIA.
+\paragraph{Frequenza} 1 / 100 g 
+
+\subsection{Elencare i membri attuali della chat}
+\paragraph{Descrizione} Vengono elencati gli username, ruolo e data di entrata degli utenti membri della chat.
+\paragraph{Frequenza} 1 / g
+
+\subsection{Leggere i messaggi della chat}
+\paragraph{Descrizione} Ordinati dal più recente al più vecchio vengono mostrati il contenuto dei messaggi, il mittente, un eventuale messaggio citato e un eventuale contenuto in riferimento. Verranno ignorati i messaggi eliminati.
+\paragraph{Frequenza} 90 / g
+
+\subsection{Aggiungere utenti al gruppo}
+\paragraph{Descrizione} Viene creata una nuova istanza nella tabella MEMBRO che fa riferimento all'utente aggiunto, alla chat in cui è stato inserito, la data di entrata e il membro amministratore che lo ha aggiunto.
+\paragraph{Frequenza} 1 / g
+
+\subsection{Dare diritti amministratore ad un utente in un gruppo}
+\paragraph{Descrizione} L'operazione viene svolta come una uscita volontaria da parte del membro candidato a diventare amministratore e il suo reinserimento come membro amministratore.
+\paragraph{Frequenza} 1 / 4 g
+
+\subsection{Cacciare un utente da un gruppo}
+\paragraph{Descrizione} Similmente a come avviene l'uscita volontaria, l'istanza del membro cacciato referenzierà una istanza della tabella USCITA del tipo ESILIO.
+\paragraph{Frequenza} 1 / 10 g
+
+\subsection{Eliminare un messaggio dalla chat}
+\paragraph{Descrizione} Verrà creata una istanza della relazione ELIMINAZIONE identificata dalla tupla (messaggio eliminato, amministratore responsabile della eliminazione).
+\paragraph{Frequenza} 5 / g
+
+\subsection{Aggiungere regione a tabella REGIONE}
+\paragraph{Descrizione} Viene creata una nuova istanza di REGIONE la quale conterrà la denominazione della regione e eventualmente la regione superiore.
+\paragraph{Frequenza} 1 / 100 g
 
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
 \section{Analisi delle ridondanze}
