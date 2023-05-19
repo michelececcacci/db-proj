@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	dbname="db"
+	dbname="postgres"
 	user="postgres"
 	password="postgres"
 	host="db"
