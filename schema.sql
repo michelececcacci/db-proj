@@ -12,7 +12,7 @@
 -- Database Section
 -- ________________ 
 
-create database db;
+--create database db; -- postgres has already created a database for us called "postgres"
 
 
 -- Tables Section
