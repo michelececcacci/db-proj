@@ -12,7 +12,7 @@
 -- Database Section
 -- ________________ 
 
-create database Logica;
+create database db;
 
 
 -- Tables Section

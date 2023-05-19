@@ -1,4 +1,10 @@
 FROM golang:1.18
-COPY main.go src
-RUN cd src && go mod init michelececcacci/db-proj && go mod tidy && go build . 
-ENTRYPOINT [ "./src/db-proj" ]
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY *.go ./
+COPY view ./view
+COPY util ./util
+COPY queries ./queries
+RUN go build .
+CMD ["./db-proj"]

@@ -21,6 +21,8 @@ services:
       - 5051:5050
     stdin_open: true
     tty: true
+    depends_on:
+      - db
 
   pgadmin:
     container_name: pgadmin
@@ -32,3 +34,5 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - 5050:5050
+    depends_on:
+      - db
