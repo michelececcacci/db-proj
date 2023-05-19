@@ -113,6 +113,7 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
   \item PARTE\_DI, R, 150.000.000
 
 \end{itemize}
+
 \section{Descrizione delle operazioni principali e stima della loro frequenza}
 \begin{itemize}
   \item Creare un nuovo utente, 10 / g
@@ -120,16 +121,17 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
     Per ogni utente
     \begin{itemize}
       \item Cambiare password 1 / 60 g
-      \item Login utente all'interno del social network 10 / g
+      \item Autenticazione dell'utente all'interno del social network tramite username e password 10 / g
       \item Seguire un utente 2 / g
+      \item Smettere di seguire un utente 1 / 10 g
       \item Creare una nuova chat 1 / 20 g
       \item Postare e commentare 10 / g
       \item Reagire con Like/dislike a post e commenti 80 / g
+      \item Leggere un post (il contentuto, l'ora di pubblicazione, l'autore, i commenti, il numero di like, se presente il luogo di pubblicazione)
       \item Scorrere i post pubblicati dagli utenti seguiti (feed) 40 / g
       \item Vedere utenti che hanno messo like a un post 1 / g
-      \item Vedere profilo utente (nome, cognome, data di nascita, location) 5 / g
+      \item Vedere profilo utente (nome, cognome, data di nascita, location) e la sua reputazione 5 / g
       \item Vedere i post pubblicati da un utente
-      \item Vedere la reputazione di un utente
     \end{itemize} 
   }
   \item {
@@ -147,6 +149,7 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
         \item Aggiungere utenti al gruppo 1 / g
         \item Dare diritti amministratore ad un utente in un gruppo 1 / 4 g
         \item Cacciare un utente da un gruppo 1 / 10 g
+        \item Eliminare un messaggio dalla chat
       \end{itemize}
     }
   \item {
