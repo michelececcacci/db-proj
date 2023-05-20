@@ -3,8 +3,8 @@
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 20 2021              
--- * Generation date: Tue May 16 18:26:38 2023 
--- * LUN file: /home/michele/uni/db/db-proj/Social Network.lun 
+-- * Generation date: Sat May 20 17:17:32 2023 
+-- * LUN file: /home/luca/db-proj/Social Network.lun 
 -- * Schema: Logica/1-1 
 -- ********************************************* 
 
@@ -12,7 +12,6 @@
 -- Database Section
 -- ________________ 
 
---create database db; -- postgres has already created a database for us called "postgres"
 
 
 -- Tables Section
@@ -29,17 +28,18 @@ create table CHAT (
      constraint ID_CHAT_ID primary key (IdChat));
 
 create table CONTENUTO (
-     Username varchar(20) not null,
+     Autore varchar(20) not null,
      Testo varchar(1000) not null,
      IdContenuto numeric(1) not null,
-     TimestampPubblicazione timestamp not null,
+     TimestampPubblicazione date not null,
+     Titolo varchar(30),
      IdRegione numeric(1),
-     A_Username varchar(20),
-     A_IdContenuto numeric(1),
-     constraint ID_CONTENUTO primary key (Username, IdContenuto));
+     UsernamePadre varchar(20),
+     IdContenutoPadre numeric(1),
+     constraint ID_CONTENUTO primary key (Autore, IdContenuto));
 
 create table MEMBRO (
-     DataEntrata timestamp not null,
+     DataEntrata date not null,
      IdMembro numeric(1) not null,
      Username varchar(20) not null,
      IdChat numeric(1) not null,
@@ -50,21 +50,21 @@ create table MEMBRO (
 create table MESSAGGIO (
      IdMessaggio numeric(1) not null,
      Testo varchar(1000) not null,
-     TimestampInvio timestamp not null,
-     IdMembro numeric(1) not null,
+     TimestampInvio date not null,
+     Mittente numeric(1) not null,
      Citazione numeric(1),
-     Username varchar(20),
+     AutoreContenuto varchar(20),
      IdContenuto numeric(1),
      AmministratoreEliminatore numeric(1),
      constraint ID_MESSAGGIO primary key (IdMessaggio));
 
 create table REAZIONE (
-     R_C_Username varchar(20) not null,
-     R_C_IdContenuto numeric(1) not null,
+     AutoreContenuto varchar(20) not null,
+     IdContenuto numeric(1) not null,
      Username varchar(20) not null,
      LikeDislike numeric(1) not null,
      Timestamp char(1) not null,
-     constraint ID_REAZIONE primary key (Username, R_C_Username, R_C_IdContenuto));
+     constraint ID_REAZIONE primary key (Username, AutoreContenuto, IdContenuto));
 
 create table REGIONE (
      IdRegione numeric(1) not null,
@@ -73,38 +73,38 @@ create table REGIONE (
      constraint ID_REGIONE primary key (IdRegione));
 
 create table SEGUIRE (
-     SEG_Username varchar(20) not null,
-     Username varchar(20) not null,
-     DataInizio timestamp not null,
-     DataFine timestamp,
-     constraint ID_SEGUIRE primary key (SEG_Username, Username, DataInizio));
+     UsernameSeguace varchar(20) not null,
+     UsernameSeguito varchar(20) not null,
+     DataInizio date not null,
+     DataFine date,
+     constraint ID_SEGUIRE primary key (UsernameSeguace, UsernameSeguito, DataInizio));
 
 create table STORICO_ACCESSO (
      Username varchar(20) not null,
-     TimestampLogin timestamp not null,
-     TimestampLogout timestamp not null,
+     TimestampLogin date not null,
+     TimestampLogout date not null,
      constraint ID_STORICO_ACCESSO primary key (Username, TimestampLogin));
 
 create table STORICO_PASSWORD (
      Username varchar(20) not null,
-     DataInserimento timestamp not null,
+     DataInserimento date not null,
      Password varchar(20) not null,
      constraint SID_STORICO_PASSWORD unique (Username, DataInserimento),
      constraint ID_STORICO_PASSWORD primary key (Username, Password));
 
 create table USCITA (
      IdMembro numeric(1) not null,
-     DataUscita timestamp not null,
+     DataUscita date not null,
      Motivazione varchar(500),
-     RES_IdMembro numeric(1),
+     IdMembroResponsabile numeric(1),
      constraint FKUSCITA_ID primary key (IdMembro));
 
 create table UTENTE (
      Username varchar(20) not null,
-     Gen_DataDiNascita date not null,
-     Gen_Nome varchar(20) not null,
-     Gen_Cognome varchar(20) not null,
-     IdRegione numeric(1),
+     DataDiNascita date not null,
+     Nome varchar(20) not null,
+     Cognome varchar(20) not null,
+     Domicilio numeric(1),
      constraint ID_UTENTE_ID primary key (Username));
 
 
@@ -121,7 +121,7 @@ alter table AMMINISTRATORE add constraint FKAMMINISTRATORE_FK
 --                  where MEMBRO.IdChat = IdChat)); 
 
 alter table CONTENUTO add constraint FKPUBBLICAZIONE
-     foreign key (Username)
+     foreign key (Autore)
      references UTENTE;
 
 alter table CONTENUTO add constraint FKLUOGO_PUBBLICAZIONE_FK
@@ -129,12 +129,12 @@ alter table CONTENUTO add constraint FKLUOGO_PUBBLICAZIONE_FK
      references REGIONE;
 
 alter table CONTENUTO add constraint FKRISPOSTA_FK
-     foreign key (A_Username, A_IdContenuto)
+     foreign key (UsernamePadre, IdContenutoPadre)
      references CONTENUTO;
 
 alter table CONTENUTO add constraint FKRISPOSTA_CHK
-     check((A_Username is not null and A_IdContenuto is not null)
-           or (A_Username is null and A_IdContenuto is null)); 
+     check((UsernamePadre is not null and IdContenutoPadre is not null)
+           or (UsernamePadre is null and IdContenutoPadre is null)); 
 
 alter table MEMBRO add constraint FKIMPERSONAZIONE_FK
      foreign key (Username)
@@ -149,7 +149,7 @@ alter table MEMBRO add constraint FKAGGIUNTO_FK
      references AMMINISTRATORE;
 
 alter table MESSAGGIO add constraint FKMITTENTE_FK
-     foreign key (IdMembro)
+     foreign key (Mittente)
      references MEMBRO;
 
 alter table MESSAGGIO add constraint FKCITAZIONE_FK
@@ -157,12 +157,12 @@ alter table MESSAGGIO add constraint FKCITAZIONE_FK
      references MESSAGGIO;
 
 alter table MESSAGGIO add constraint FKRIFERIMENTO_FK
-     foreign key (Username, IdContenuto)
+     foreign key (AutoreContenuto, IdContenuto)
      references CONTENUTO;
 
 alter table MESSAGGIO add constraint FKRIFERIMENTO_CHK
-     check((Username is not null and IdContenuto is not null)
-           or (Username is null and IdContenuto is null)); 
+     check((AutoreContenuto is not null and IdContenuto is not null)
+           or (AutoreContenuto is null and IdContenuto is null)); 
 
 alter table MESSAGGIO add constraint FKELIMINAZIONE_FK
      foreign key (AmministratoreEliminatore)
@@ -173,7 +173,7 @@ alter table REAZIONE add constraint FKREA_UTE
      references UTENTE;
 
 alter table REAZIONE add constraint FKREA_CON_FK
-     foreign key (R_C_Username, R_C_IdContenuto)
+     foreign key (AutoreContenuto, IdContenuto)
      references CONTENUTO;
 
 alter table REGIONE add constraint FKPARTE_DI_FK
@@ -181,11 +181,11 @@ alter table REGIONE add constraint FKPARTE_DI_FK
      references REGIONE;
 
 alter table SEGUIRE add constraint FKSEGUITO_FK
-     foreign key (Username)
+     foreign key (UsernameSeguito)
      references UTENTE;
 
-alter table SEGUIRE add constraint FKSEGUE
-     foreign key (SEG_Username)
+alter table SEGUIRE add constraint FKSEGUE_FK
+     foreign key (UsernameSeguace)
      references UTENTE;
 
 alter table STORICO_ACCESSO add constraint FKACCESSO
@@ -201,7 +201,7 @@ alter table USCITA add constraint FKUSCITA_FK
      references MEMBRO;
 
 alter table USCITA add constraint FKRESPONSABILE_FK
-     foreign key (RES_IdMembro)
+     foreign key (IdMembroResponsabile)
      references AMMINISTRATORE;
 
 --Not implemented
@@ -210,7 +210,7 @@ alter table USCITA add constraint FKRESPONSABILE_FK
 --                  where STORICO_PASSWORD.Username = Username)); 
 
 alter table UTENTE add constraint FKDOMICILIO_FK
-     foreign key (IdRegione)
+     foreign key (Domicilio)
      references REGIONE;
 
 
@@ -221,7 +221,7 @@ create index FKLUOGO_PUBBLICAZIONE_IND
      on CONTENUTO (IdRegione);
 
 create index FKRISPOSTA_IND
-     on CONTENUTO (A_Username, A_IdContenuto);
+     on CONTENUTO (UsernamePadre, IdContenutoPadre);
 
 create index FKIMPERSONAZIONE_IND
      on MEMBRO (Username);
@@ -230,29 +230,32 @@ create index FKAGGIUNTO_IND
      on MEMBRO (Amministratore);
 
 create index FKMITTENTE_IND
-     on MESSAGGIO (IdMembro);
+     on MESSAGGIO (Mittente);
 
 create index FKCITAZIONE_IND
      on MESSAGGIO (Citazione);
 
 create index FKRIFERIMENTO_IND
-     on MESSAGGIO (Username, IdContenuto);
+     on MESSAGGIO (AutoreContenuto, IdContenuto);
 
 create index FKELIMINAZIONE_IND
      on MESSAGGIO (AmministratoreEliminatore);
 
 create index FKREA_CON_IND
-     on REAZIONE (R_C_Username, R_C_IdContenuto);
+     on REAZIONE (AutoreContenuto, IdContenuto);
 
 create index FKPARTE_DI_IND
      on REGIONE (Superregione);
 
 create index FKSEGUITO_IND
-     on SEGUIRE (Username);
+     on SEGUIRE (UsernameSeguito);
+
+create index FKSEGUE_IND
+     on SEGUIRE (UsernameSeguace);
 
 create index FKRESPONSABILE_IND
-     on USCITA (RES_IdMembro);
+     on USCITA (IdMembroResponsabile);
 
 create index FKDOMICILIO_IND
-     on UTENTE (IdRegione);
+     on UTENTE (Domicilio);
 
