@@ -15,16 +15,16 @@ var (
 	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 )
 
-type multipleInputsView struct {
+type MultipleInputsView struct {
 	currentElement int
 	inputs         []textinput.Model // TODO this might get changed to a pointer
 }
 
-func (iv multipleInputsView) Init() tea.Cmd {
+func (iv MultipleInputsView) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (iv multipleInputsView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (iv MultipleInputsView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -49,7 +49,7 @@ func (iv multipleInputsView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return iv, cmd
 }
 
-func newInput(placeholder string, maxLenght int) textinput.Model {
+func NewInput(placeholder string, maxLenght int) textinput.Model {
 	t := textinput.New()
 	t.Placeholder = placeholder
 	t.CharLimit = maxLenght
@@ -68,7 +68,7 @@ func blurButton(t *textinput.Model) {
 	t.TextStyle = blurredStyle
 }
 
-func (iv multipleInputsView) View() string {
+func (iv MultipleInputsView) View() string {
 	var b strings.Builder
 	b.WriteString("Press Enter to submit\n")
 	for _, input := range iv.inputs {
@@ -78,13 +78,17 @@ func (iv multipleInputsView) View() string {
 	return b.String()
 }
 
-func newMultipleInputsView(fields []textinput.Model) multipleInputsView {
+func NewMultipleInputsView(fields []textinput.Model) MultipleInputsView {
 	if len(fields) == 0 {
 		panic("Inputs view fields array can't be empty")
 	}
-	iv := multipleInputsView{}
+	iv := MultipleInputsView{}
 	iv.inputs = fields
 	iv.currentElement = 0 // rendundant but surely more explicit
 	focusButton(&iv.inputs[0])
 	return iv
+}
+
+func (iv MultipleInputsView) GetInputValueByIndex(i int) string {
+	return iv.inputs[i].Value()
 }
