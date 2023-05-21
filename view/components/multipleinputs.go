@@ -88,7 +88,3 @@ func NewMultipleInputsView(fields []textinput.Model) MultipleInputsView {
 	focusButton(&iv.inputs[0])
 	return iv
 }
-
-func (iv MultipleInputsView) GetInputValueByIndex(i int) string {
-	return iv.inputs[i].Value()
-}
