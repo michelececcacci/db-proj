@@ -101,9 +101,9 @@ create table USCITA (
 
 create table UTENTE (
      Username varchar(20) not null,
-     DataDiNascita date not null,
-     Nome varchar(20) not null,
-     Cognome varchar(20) not null,
+     DataDiNascita date,
+     Nome varchar(20),
+     Cognome varchar(20),
      Domicilio numeric(1),
      constraint ID_UTENTE_ID primary key (Username));
 

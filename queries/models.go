@@ -20,13 +20,14 @@ type Chat struct {
 }
 
 type Contenuto struct {
-	Username               string
+	Autore                 string
 	Testo                  string
 	Idcontenuto            string
 	Timestamppubblicazione time.Time
+	Titolo                 sql.NullString
 	Idregione              sql.NullString
-	AUsername              sql.NullString
-	AIdcontenuto           sql.NullString
+	Usernamepadre          sql.NullString
+	Idcontenutopadre       sql.NullString
 }
 
 type Membro struct {
@@ -41,19 +42,19 @@ type Messaggio struct {
 	Idmessaggio               string
 	Testo                     string
 	Timestampinvio            time.Time
-	Idmembro                  string
+	Mittente                  string
 	Citazione                 sql.NullString
-	Username                  sql.NullString
+	Autorecontenuto           sql.NullString
 	Idcontenuto               sql.NullString
 	Amministratoreeliminatore sql.NullString
 }
 
 type Reazione struct {
-	RCUsername    string
-	RCIdcontenuto string
-	Username      string
-	Likedislike   string
-	Timestamp     string
+	Autorecontenuto string
+	Idcontenuto     string
+	Username        string
+	Likedislike     string
+	Timestamp       string
 }
 
 type Regione struct {
@@ -63,10 +64,10 @@ type Regione struct {
 }
 
 type Seguire struct {
-	SegUsername string
-	Username    string
-	Datainizio  time.Time
-	Datafine    sql.NullTime
+	Usernameseguace string
+	Usernameseguito string
+	Datainizio      time.Time
+	Datafine        sql.NullTime
 }
 
 type StoricoAccesso struct {
@@ -82,16 +83,16 @@ type StoricoPassword struct {
 }
 
 type Uscitum struct {
-	Idmembro    string
-	Datauscita  time.Time
-	Motivazione sql.NullString
-	ResIdmembro sql.NullString
+	Idmembro             string
+	Datauscita           time.Time
+	Motivazione          sql.NullString
+	Idmembroresponsabile sql.NullString
 }
 
 type Utente struct {
-	Username         string
-	GenDatadinascita time.Time
-	GenNome          string
-	GenCognome       string
-	Idregione        sql.NullString
+	Username      string
+	Datadinascita sql.NullTime
+	Nome          sql.NullString
+	Cognome       sql.NullString
+	Domicilio     sql.NullString
 }

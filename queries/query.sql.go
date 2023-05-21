@@ -7,14 +7,30 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 )
 
 const insertUser = `-- name: InsertUser :exec
-INSERT INTO UTENTE (username) VALUES ($1)
+INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio) 
+VALUES             ($1,       $2,            $3,   $4,      $5)
 `
 
-func (q *Queries) InsertUser(ctx context.Context, username string) error {
-	_, err := q.db.ExecContext(ctx, insertUser, username)
+type InsertUserParams struct {
+	Username      string
+	Datadinascita sql.NullTime
+	Nome          sql.NullString
+	Cognome       sql.NullString
+	Domicilio     sql.NullString
+}
+
+func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
+	_, err := q.db.ExecContext(ctx, insertUser,
+		arg.Username,
+		arg.Datadinascita,
+		arg.Nome,
+		arg.Cognome,
+		arg.Domicilio,
+	)
 	return err
 }
 

@@ -14,6 +14,13 @@ func (r registerView) View() string {
 }
 
 func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.Type {
+		case tea.KeyEnter:
+			// queries.InsertUserParams(ctx, )
+		}
+	}
 	return r.inputs.Update(msg)
 }
 
@@ -30,5 +37,7 @@ func newRegisterView() registerView {
 		newInput("Location", 20),
 		newInput("Birthdate", 10),
 	}
-	return registerView{inputs: newMultipleInputsView(inputs)}
+	return registerView{
+		inputs: newMultipleInputsView(inputs),
+	}
 }

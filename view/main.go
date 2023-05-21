@@ -5,23 +5,34 @@ package view
 // according to the state changes.
 
 import (
+	"context"
+
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/queries"
 )
 
+type viewOption func(*mainView)
+
 type mainView struct {
+	ctx          context.Context
+	sqlcQueries  *queries.Queries // this needs to be renamed
 	loginView    tea.Model
 	profileView  tea.Model
 	registerView tea.Model
 	feedView     tea.Model
 }
 
-func InitialModel() mainView {
-	return mainView{
+func NewMainView(options ...viewOption) mainView {
+	m := mainView{
 		loginView:    newLoginView(),
 		profileView:  newProfileView(),
 		registerView: newRegisterView(),
 		feedView:     NewFeedView(),
 	}
+	for _, opt := range options {
+		opt(&m)
+	}
+	return m
 }
 
 func (m mainView) Init() tea.Cmd {
@@ -40,4 +51,16 @@ func (m mainView) View() string {
 	// return m.profileView.View()
 	// return m.registerView.View()
 	return m.feedView.View()
+}
+
+func WithContext(ctx context.Context) viewOption {
+	return func(m *mainView) {
+		m.ctx = ctx
+	}
+}
+
+func WithQueries(q *queries.Queries) viewOption {
+	return func(m *mainView) {
+		m.sqlcQueries = q
+	}
 }
