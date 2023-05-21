@@ -1,10 +1,12 @@
 package view
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/util"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -34,6 +36,8 @@ type profileView struct {
 	followers list.Model
 	following list.Model
 	current   int
+	ctx       *context.Context
+	q         *queries.Queries
 }
 
 func (p profileView) View() string {
@@ -58,7 +62,7 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case tea.WindowSizeMsg:
 	}
-	p.followers, cmd = p.followers.Update(msg)
+	p.followers, _ = p.followers.Update(msg)
 	p.following, cmd = p.following.Update(msg)
 	return p, cmd
 }
@@ -67,7 +71,7 @@ func (p profileView) Init() tea.Cmd {
 	return nil
 }
 
-func newProfileView() profileView {
+func newProfileView(ctx *context.Context, q *queries.Queries) profileView {
 	following := []list.Item{user{username: "user_1"}}
 	followers := []list.Item{user{username: "user_2"}}
 	return profileView{
@@ -75,5 +79,7 @@ func newProfileView() profileView {
 		location:  "test_location",
 		followers: list.New(followers, list.NewDefaultDelegate(), 0, 0),
 		following: list.New(following, list.NewDefaultDelegate(), 0, 0),
+		ctx:       ctx,
+		q:         q,
 	}
 }

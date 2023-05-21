@@ -1,12 +1,17 @@
 package view
 
 import (
+	"context"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/queries"
 )
 
 type registerView struct {
 	inputs multipleInputsView
+	ctx    *context.Context
+	q      *queries.Queries
 }
 
 func (r registerView) View() string {
@@ -28,7 +33,7 @@ func (r registerView) Init() tea.Cmd {
 	return nil
 }
 
-func newRegisterView() registerView {
+func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 	inputs := []textinput.Model{
 		newInput("Username", 20),
 		newInput("Password", 20),
@@ -39,5 +44,7 @@ func newRegisterView() registerView {
 	}
 	return registerView{
 		inputs: newMultipleInputsView(inputs),
+		ctx:    ctx,
+		q:      q,
 	}
 }

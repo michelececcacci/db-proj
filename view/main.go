@@ -15,7 +15,7 @@ type viewOption func(*mainView)
 
 type mainView struct {
 	ctx          context.Context
-	sqlcQueries  *queries.Queries // this needs to be renamed
+	q            *queries.Queries // this needs to be renamed
 	loginView    tea.Model
 	profileView  tea.Model
 	registerView tea.Model
@@ -23,15 +23,14 @@ type mainView struct {
 }
 
 func NewMainView(options ...viewOption) mainView {
-	m := mainView{
-		loginView:    newLoginView(),
-		profileView:  newProfileView(),
-		registerView: newRegisterView(),
-		feedView:     NewFeedView(),
-	}
+	m := mainView{}
 	for _, opt := range options {
 		opt(&m)
 	}
+	m.loginView = newLoginView(&m.ctx, m.q)
+	m.profileView = newProfileView(&m.ctx, m.q)
+	m.registerView = newRegisterView(&m.ctx, m.q)
+	m.feedView = NewFeedView(&m.ctx, m.q)
 	return m
 }
 
@@ -53,14 +52,16 @@ func (m mainView) View() string {
 	return m.feedView.View()
 }
 
+// ctx is needed to query the database
 func WithContext(ctx context.Context) viewOption {
 	return func(m *mainView) {
 		m.ctx = ctx
 	}
 }
 
+// q is needed to query the database
 func WithQueries(q *queries.Queries) viewOption {
 	return func(m *mainView) {
-		m.sqlcQueries = q
+		m.q = q
 	}
 }

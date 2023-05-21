@@ -1,9 +1,12 @@
 package view
 
 import (
+	"context"
+
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/michelececcacci/db-proj/queries"
 )
 
 var baseStyle = lipgloss.NewStyle().
@@ -12,6 +15,8 @@ var baseStyle = lipgloss.NewStyle().
 
 type feedView struct {
 	table table.Model
+	q     *queries.Queries
+	ctx   *context.Context
 }
 
 func (f feedView) Init() tea.Cmd { return nil }
@@ -41,7 +46,7 @@ func (f feedView) View() string {
 	return baseStyle.Render(f.table.View()) + "\n"
 }
 
-func NewFeedView() feedView {
+func NewFeedView(ctx *context.Context, q *queries.Queries) feedView {
 	columns := []table.Column{{Title: "Title", Width: 10}, {Title: "User", Width: 10}}
 	rows := []table.Row{
 		{"Hi", "u1"},
@@ -64,6 +69,10 @@ func NewFeedView() feedView {
 		Background(lipgloss.Color("57")).
 		Bold(false)
 	t.SetStyles(defaultStyles)
-	f := feedView{table: t}
+	f := feedView{
+		table: t,
+		ctx:   ctx,
+		q:     q,
+	}
 	return f
 }

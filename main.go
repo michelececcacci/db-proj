@@ -32,7 +32,7 @@ func run() error {
 		return err
 	}
 	qq := queries.New(db)
-	err= testDbConnection(qq, context.Background())
+	err = testDbConnection(qq, context.Background())
 	if err != nil {
 		return err
 	}
