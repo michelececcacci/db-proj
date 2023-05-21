@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
-	components "github.com/michelececcacci/db-proj/view/components"
+	"github.com/michelececcacci/db-proj/view/components"
 )
 
 type loginView struct {

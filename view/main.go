@@ -15,7 +15,7 @@ type viewOption func(*mainView)
 
 type mainView struct {
 	ctx          context.Context
-	q            *queries.Queries // this needs to be renamed
+	q            *queries.Queries
 	loginView    tea.Model
 	profileView  tea.Model
 	registerView tea.Model
@@ -41,15 +41,15 @@ func (m mainView) Init() tea.Cmd {
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// return m.loginView.Update(msg)
 	// return m.profileView.Update(msg)
-	// return m.registerView.Update(msg)
-	return m.feedView.Update(msg)
+	return m.registerView.Update(msg)
+	// return m.feedView.Update(msg)
 }
 
 func (m mainView) View() string {
 	// return m.loginView.View()
 	// return m.profileView.View()
-	// return m.registerView.View()
-	return m.feedView.View()
+	return m.registerView.View()
+	// return m.feedView.View()
 }
 
 // ctx is needed to query the database

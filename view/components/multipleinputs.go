@@ -1,4 +1,4 @@
-package view
+package components
 
 import (
 	"strings"

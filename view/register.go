@@ -2,22 +2,32 @@ package view
 
 import (
 	"context"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/util"
-	components "github.com/michelececcacci/db-proj/view/components"
+	"github.com/michelececcacci/db-proj/view/components"
 )
 
 type registerView struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
+	errorOccurred bool
 }
 
 func (r registerView) View() string {
-	return r.inputsView.View()
+	sb := strings.Builder{}
+	sb.WriteString(r.inputsView.View())
+	if r.errorOccurred {
+		sb.WriteString("Error occurred on insertion.\n")
+	} else {
+		sb.WriteString("No errors so far!\n")
+	}
+	r.errorOccurred = false
+	return sb.String()
 }
 
 func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -27,7 +37,9 @@ func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			err := r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
 			if err != nil {
-				// TODO handle errors
+				r.errorOccurred = true	
+			} else {
+				r.errorOccurred = false
 			}
 		}
 	}
