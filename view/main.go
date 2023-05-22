@@ -22,7 +22,7 @@ type mainView struct {
 	profileView  tea.Model
 	registerView tea.Model
 	feedView     tea.Model
-	help tea.Model
+	help         tea.Model
 }
 
 func NewMainView(options ...viewOption) mainView {
@@ -44,7 +44,7 @@ func (m mainView) Init() tea.Cmd {
 
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
-	m.help , _ = m.help.Update(msg) // always updated
+	m.help, _ = m.help.Update(msg) // always updated
 	// return m.loginView.Update(msg)
 	// return m.profileView.Update(msg)
 	m.registerView, cmd = m.registerView.Update(msg)

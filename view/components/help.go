@@ -127,4 +127,3 @@ func (m helpComponent) View() string {
 
 	return "\n" + status + strings.Repeat("\n", height) + helpView
 }
-

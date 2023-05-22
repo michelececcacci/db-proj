@@ -2,19 +2,21 @@ package view
 
 import (
 	"context"
+	"database/sql"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/util"
 	"github.com/michelececcacci/db-proj/view/components"
 )
 
 type registerView struct {
-	inputsView    tea.Model
-	ctx           *context.Context
-	q             *queries.Queries
-	message string
+	inputsView components.MultipleInputsView
+	ctx        *context.Context
+	q          *queries.Queries
+	message    string
 }
 
 func (r registerView) View() string {
@@ -25,7 +27,6 @@ func (r registerView) View() string {
 }
 
 func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -38,7 +39,11 @@ func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	}
-	r.inputsView, cmd = r.inputsView.Update(msg)
+	// setting inputsView.Inputs to private forces us to
+	// a lot of code duplication. (we would have to basically re-implment everytime we want to use it)
+	m, cmd := r.inputsView.Update(msg)
+	iv := m.(components.MultipleInputsView)
+	r.inputsView = iv
 	return r, cmd
 }
 
@@ -48,12 +53,18 @@ func (r registerView) Init() tea.Cmd {
 
 func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 	r.inputsView.Update(nil)
-	// name := util.ValidNullString(r.inputsView.GetInputValueByIndex(2))
-	// surname := util.ValidNullString(r.inputsView.GetInputValueByIndex(3))
+	t, err := util.ParseTime(r.inputsView.Inputs[5].Value())
+	valid := (err == nil)
+	// password := util.ValidNullString(r.inputsView.Inputs[1].Value())
 	return queries.InsertUserParams{
-		Username:  "afsf",
-		// Nome:     name,
-		// Cognome:  surname,
+		Username: r.inputsView.Inputs[0].Value(),
+		Nome:     util.ValidNullString(r.inputsView.Inputs[2].Value()),
+		Cognome:  util.ValidNullString(r.inputsView.Inputs[3].Value()),
+		Domicilio: util.ValidNullString(r.inputsView.Inputs[4].Value()),
+		Datadinascita: sql.NullTime{
+			Valid: valid,
+			Time: t,
+		}, 
 	}
 }
 
@@ -67,9 +78,9 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 		components.NewInput("Birthdate", 10),
 	}
 	return registerView{
-		inputsView:    components.NewMultipleInputsView(inputs),
-		ctx:           ctx,
-		q:             q,
-		message: "",
+		inputsView: components.NewMultipleInputsView(inputs),
+		ctx:        ctx,
+		q:          q,
+		message:    "",
 	}
 }

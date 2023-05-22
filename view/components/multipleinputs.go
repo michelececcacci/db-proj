@@ -17,7 +17,7 @@ var (
 
 type MultipleInputsView struct {
 	currentElement int
-	inputs         []textinput.Model // TODO this might get changed to a pointer
+	Inputs         []textinput.Model
 }
 
 func (iv MultipleInputsView) Init() tea.Cmd {
@@ -32,17 +32,17 @@ func (iv MultipleInputsView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return iv, tea.Quit
 		case tea.KeyDown, tea.KeyTab:
-			iv.currentElement = util.Min(len(iv.inputs)-1, iv.currentElement+1)
+			iv.currentElement = util.Min(len(iv.Inputs)-1, iv.currentElement+1)
 		case tea.KeyUp, tea.KeyShiftTab:
 			iv.currentElement = util.Max(0, iv.currentElement-1)
 		default:
-			iv.inputs[iv.currentElement], cmd = iv.inputs[iv.currentElement].Update(msg)
+			iv.Inputs[iv.currentElement], cmd = iv.Inputs[iv.currentElement].Update(msg)
 		}
-		for idx := range iv.inputs {
+		for idx := range iv.Inputs {
 			if idx == iv.currentElement {
-				focusButton(&iv.inputs[idx])
+				focusButton(&iv.Inputs[idx])
 			} else {
-				blurButton(&iv.inputs[idx])
+				blurButton(&iv.Inputs[idx])
 			}
 		}
 	}
@@ -71,7 +71,7 @@ func blurButton(t *textinput.Model) {
 func (iv MultipleInputsView) View() string {
 	var b strings.Builder
 	b.WriteString("Press Enter to submit\n")
-	for _, input := range iv.inputs {
+	for _, input := range iv.Inputs {
 		b.WriteString(input.View())
 		b.WriteString("\n")
 	}
@@ -83,8 +83,8 @@ func NewMultipleInputsView(fields []textinput.Model) MultipleInputsView {
 		panic("Inputs view fields array can't be empty")
 	}
 	iv := MultipleInputsView{}
-	iv.inputs = fields
+	iv.Inputs = fields
 	iv.currentElement = 0 // rendundant but surely more explicit
-	focusButton(&iv.inputs[0])
+	focusButton(&iv.Inputs[0])
 	return iv
 }
