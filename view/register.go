@@ -10,30 +10,18 @@ import (
 	"github.com/michelececcacci/db-proj/view/components"
 )
 
-type multipleInputsView interface {
-	View() string
-	Update(tea.Msg) (tea.Model, tea.Cmd)
-	GetInputValueByIndex() string
-	Init() tea.Cmd
-}
-
 type registerView struct {
 	inputsView    tea.Model
 	ctx           *context.Context
 	q             *queries.Queries
-	errorOccurred bool
+	message string
 }
 
 func (r registerView) View() string {
 	sb := strings.Builder{}
 	sb.WriteString(r.inputsView.View())
-	if r.errorOccurred {
-		sb.WriteString("Error occurred on insertion.\n")
-	} else {
-		sb.WriteString("No errors so far!\n")
-	}
-	s := sb.String()
-	return s
+	sb.WriteString(r.message)
+	return sb.String()
 }
 
 func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -44,9 +32,9 @@ func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			err := r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
 			if err != nil {
-				r.errorOccurred = true
+				r.message = err.Error()
 			} else {
-				r.errorOccurred = false
+				r.message = "Submission successful\n"
 			}
 		}
 	}
@@ -63,7 +51,7 @@ func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 	// name := util.ValidNullString(r.inputsView.GetInputValueByIndex(2))
 	// surname := util.ValidNullString(r.inputsView.GetInputValueByIndex(3))
 	return queries.InsertUserParams{
-		// Username: r.inputsView.GetInputValueByIndex(0),
+		Username:  "afsf",
 		// Nome:     name,
 		// Cognome:  surname,
 	}
@@ -82,6 +70,6 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 		inputsView:    components.NewMultipleInputsView(inputs),
 		ctx:           ctx,
 		q:             q,
-		errorOccurred: false,
+		message: "",
 	}
 }

@@ -6,9 +6,11 @@ package view
 
 import (
 	"context"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/view/components"
 )
 
 type viewOption func(*mainView)
@@ -20,6 +22,7 @@ type mainView struct {
 	profileView  tea.Model
 	registerView tea.Model
 	feedView     tea.Model
+	help tea.Model
 }
 
 func NewMainView(options ...viewOption) mainView {
@@ -31,6 +34,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.profileView = newProfileView(&m.ctx, m.q)
 	m.registerView = newRegisterView(&m.ctx, m.q)
 	m.feedView = NewFeedView(&m.ctx, m.q)
+	m.help = components.NewHelpComponent()
 	return m
 }
 
@@ -39,17 +43,23 @@ func (m mainView) Init() tea.Cmd {
 }
 
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	m.help , _ = m.help.Update(msg) // always updated
 	// return m.loginView.Update(msg)
 	// return m.profileView.Update(msg)
-	return m.registerView.Update(msg)
+	m.registerView, cmd = m.registerView.Update(msg)
 	// return m.feedView.Update(msg)
+	return m, cmd
 }
 
 func (m mainView) View() string {
+	var sb = strings.Builder{}
 	// return m.loginView.View()
 	// return m.profileView.View()
-	return m.registerView.View()
+	sb.WriteString(m.registerView.View())
 	// return m.feedView.View()
+	sb.WriteString(m.help.View())
+	return sb.String()
 }
 
 // ctx is needed to query the database
