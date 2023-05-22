@@ -8,11 +8,28 @@ package queries
 import (
 	"context"
 	"database/sql"
+	"time"
 )
+
+const insertPassword = `-- name: InsertPassword :exec
+INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
+    VALUES ($1, $2, $3)
+`
+
+type InsertPasswordParams struct {
+	Username        string
+	Password        string
+	Datainserimento time.Time
+}
+
+func (q *Queries) InsertPassword(ctx context.Context, arg InsertPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, insertPassword, arg.Username, arg.Password, arg.Datainserimento)
+	return err
+}
 
 const insertUser = `-- name: InsertUser :exec
 INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio) 
-VALUES             ($1,       $2,            $3,   $4,      $5)
+    VALUES             ($1,    $2,        $3,   $4,      $5)
 `
 
 type InsertUserParams struct {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -34,13 +35,16 @@ func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			err := r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
 			if err != nil {
 				r.message = err.Error()
+				break
 			} else {
 				r.message = "Submission successful\n"
 			}
+			err = r.q.InsertPassword(*r.ctx, r.getCurrentPasswordParams())
+			if err != nil {
+				r.message = err.Error()
+			}
 		}
 	}
-	// setting inputsView.Inputs to private forces us to
-	// a lot of code duplication. (we would have to basically re-implment everytime we want to use it)
 	m, cmd := r.inputsView.Update(msg)
 	iv := m.(components.MultipleInputsView)
 	r.inputsView = iv
@@ -55,12 +59,11 @@ func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 	r.inputsView.Update(nil)
 	t, err := util.ParseTime(r.inputsView.Inputs[5].Value())
 	valid := (err == nil)
-	// password := util.ValidNullString(r.inputsView.Inputs[1].Value())
 	return queries.InsertUserParams{
 		Username: r.inputsView.Inputs[0].Value(),
 		Nome:     util.ValidNullString(r.inputsView.Inputs[2].Value()),
 		Cognome:  util.ValidNullString(r.inputsView.Inputs[3].Value()),
-		Domicilio: util.ValidNullString(r.inputsView.Inputs[4].Value()),
+		Domicilio: sql.NullString{Valid: false},
 		Datadinascita: sql.NullTime{
 			Valid: valid,
 			Time: t,
@@ -83,4 +86,13 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 		q:          q,
 		message:    "",
 	}
+}
+
+func (r registerView) getCurrentPasswordParams() queries.InsertPasswordParams {
+	return queries.InsertPasswordParams{
+		Username: r.inputsView.Inputs[0].Value(),
+		Password: r.inputsView.Inputs[1].Value(),
+		Datainserimento: time.Now().UTC(),
+	}
+		
 }
