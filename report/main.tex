@@ -23,32 +23,33 @@ Gli utenti inoltre possono seguire altri utenti.
 Gli utenti possono chattare con altri utenti. Le chat si compongono di messaggi inviati da utenti. Ogni messaggio ha un suo autore, un timestamp di invio e, dopo essere stato letto, un timestamp di lettura.
 Ogni utente può creare un gruppo. Un gruppo è una aggregazione di uno o più utenti. Ogni gruppo ha uno o più utenti amministratori.
 Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli utenti membri.
+
 \section{Definizione delle specifiche in linguaggio naturale ed estrazione dei concetti principali}
 Vogliamo sviluppare un social network puramente testuale.
-Gli \textbf{utenti} possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce le sue generalità, opzionalmente la propria locazione, una email e decide un nome utente univoco e una password.
+Gli \textbf{utenti} possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce un username identificativo e opzionalmente le sue generalità(nome, cognome, data di nascita, proprio domicilio). Inoltre decide una password che utilzzerà per autenticarsi al social network.
 L'utente può cambiare la sua password ma non può riutilizzare una password precedente.
-Ogni utente può pubblicare dei \textbf{post}. Un post consiste in un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore (cioè l'utente che ha scritto il post).
-Ogni utente può \textbf{commentare} i post e rispondere ad altri commenti.
-L'utente può correggere post e commenti.
-Ogni utente può mettere \textbf{like} e dislike a post e commenti.
-Gli utenti inoltre possono \textbf{seguire} altri utenti.
-Gli utenti possono chattare con altri utenti. Le \textbf{chat} si compongono di messaggi inviati da utenti. Ogni \textbf{messaggio} ha un suo autore, un timestamp di invio e, dopo essere stato letto, un timestamp di lettura.
-Ogni utente può creare un \textbf{gruppo}. Un gruppo è una aggregazione di uno o più utenti. Ogni gruppo ha uno o più utenti amministratori. Gli\textbf{amministratori} possono far entrare nuovi membri nelle chat di cui sono amministratori. Gli amministratori hanno diritto di cacciare degli utenti dalla chat, eventualmente comunicando una motivazione. Gli utenti possono uscire volontariamente dalle chat a cui appartengono, scrivendo eventualmente una motivazione della loro uscita.
-Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli utenti membri.
+Ogni utente può pubblicare dei \textbf{post}. Un post consiste in un titlo, un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore (cioè l'utente che ha scritto il post). I post possono essere commentati dagli utenti.
+Ogni utente può mettere \textbf{like} e dislike a post e commenti. Ricevendo reazioni ai propri post e commenti gli utenti si costruiscono una reputazione, ciè un indice frutto della somma algebrica tra like e dislike.
+Gli utenti inoltre possono \textbf{seguire} altri utenti e smettere di seguirli. Sarà possibile avere uno storico di queste operazioni. 
+Il social fornirà ad ogni utente un feed, cioè una sequeza di post pubblicati dagli utenti da lui seguiti.
+Gli utenti possono chattare con altri utenti. Le \textbf{chat} si compongono di messaggi inviati dai membri di quella chat. Ogni \textbf{messaggio} ha un suo autore, un timestamp di invio, un testo ed può citare un post o commento. Ogni messaggio inoltre può essere in risposta ad un altro messaggio di quella chat. 
+Ogni utente può creare una \textbf{chat}. Ogni chat ha uno o più membri amministratori. Gli\textbf{amministratori} possono far entrare nuovi membri nelle chat di cui sono amministratori. Gli amministratori hanno diritto di cacciare degli utenti dalla chat, eventualmente comunicando una motivazione. Gli utenti possono uscire volontariamente dalle chat a cui appartengono. Gli utenti che escono volontariamente dalla chat possono lasciare una motivazione del loro gesto. 
+Infine gli amministratori possono eliminare dei messaggi della chat, mentre gli utenti non amministratori non hanno questa facoltà.
 \section{Definizioni}
 \begin{itemize}
-    \item Utente: un iscritto al nostro social network. Sinonimi: iscritto 
+    \item Utente: un iscritto al nostro social network.  
     \item Post: un testo scritto da un utente 
     \item Autore di un post: l'utente che ha scritto il post
     \item Commento: un post che fa riferimento ad un altro post (detto post padre)
     \item Like: è una segnalazione di gradimento ad un post
     \item Dislike: l'opposto di un like
     \item Reputazione di un utente: la differenza tra like e dislike complessivi dei post scritti dall'utente
-    \item Messaggio: un testo scritto da un utente con destinatario un gruppo
+    \item Messaggio: un testo scritto da un utente con destinatario una chat 
     \item Chat: una sequenza di messaggi
-    \item Gruppo: un insieme di utenti 
-    \item Locazione: un luogo geografico da cui l'utente ha scritto un post
-    \item Amministratore di un gruppo: un utente che può aggiungere e rimuovere utenti dal gruppo
+    \item Membro di una chat: un utente che fa parte della chat  
+    \item Regione: un luogo geografico
+    \item Amministratore di una chat: un utente che può aggiungere e rimuovere utenti dalla chat
+    \item Creatore di una chat: l'utente che ha creato la chat, in altre parole il primo membro di una chat (nonchè il primo amministratore)
 \end{itemize}
 
 
@@ -73,16 +74,27 @@ Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli ut
 
 \chapter{Progettazione Concettuale}
 \section{Utenti}
-L'entità utente ha come unico identificatore lo lo username. Per permettere agli utenti di seguire altri utenti abbiamo creato una relazione ad anello.
-\section{Gruppi e sistema di messaggistica}
-Poichè non esiste nessuna differenza tra un gruppo ed una chat abbiamo deciso di modellizzare questi due concetti con un'unica entità chiamata \texttt{CHAT}. La chat è una sequenza (ordinata) di messaggi. Ogni messaggio ha uno ed un solo utente mittente. Per modellizzare la meccanica di lettura dei messaggi in una chat da parte di ciascun utente abbiamo deciso di aggiungere alla relazione \texttt{MEMBRO} un attributo \texttt{TimestampUltimaLettura} che viene dovrà venire aggiornato ogni volta che l'utente accede alla chat. Lo schema E/R non esprime il vincolo secondo cui solo gli utenti membri di una chat possono inviare messaggi su quella chat. Faremo rispettare questo vincolo a livello di SQL.
+L'entità utente ha come unico identificatore lo username. Per permettere agli utenti di seguire altri utenti abbiamo creato una associazione ad anello SEGUIRE. Però per permettere la creazione di uno storico dei seguiti abbiamo reificato questa associazione.
+\subsection{Login e logout}
+Ogni qual volta l'utente entra nel social network viene creata una istanza di STORICO\_ACCESSO. Non riusciamo ad esprimere il vincolo secondo cui il timestamp di logout deve essere successivo a quello quello di login. 
+Vogliamo invece permettere accessi in intervalli sovrapposti da parte di uno stesso utente. 
+
+\section{Chat e membri della chat}
+Quando un utente entra a fare parte di una chat viene creata una istanza di MEMBRO, identificata dalla tripla (utente, chat, data di entrata). Rimane inespresso il vincolo secondo cui un utente non far parte contemporaneamente della stessa chat. Quando un membro esce dalla chat la sua istanza non viene eliminata ma semplicemente viene creata una istanza di USCITA, la quale verrà referenziata dal membro uscito.
+Modelliamo i membri amministratori come sottotipi di membri. Ogni membro ha un membro amministratore che lo ha aggiunto alla chat tranne il creatore della chat. Non riusciamo ad esprimere tramite E/R il vincolo secondo cui gli amministratori possono aggiungere utenti alle chat di cui amministratori.
+\subsection{Uscita dalla chat}
+L'uscita volontaria dalla chat è rapresentata dal sottotipo di USCITA chiamato VOLONTARIA. Quando invece un amministratore caccia un membro allora si crea una istanza di tipo ESILIO, la quale referenzia l'amministratore responsabile della cacciata.
+
 \section{Regione}
 Una regione può far parte di una ed una sola regione più grande, mentre una regione può contenere delle regioni più piccole. Esprimiamo questi vincoli con una relazione ad anello. Si viene perciò a formare un albero (o una foresta di alberi) che esprimono le gerarchie delle regioni geografiche. Lasciamo però inespresso il vincolo secondo cui non si debbano formare dei cicli all'interno di questa foresta, vincolo che abbiamo intenzione di imporre a livello applicativo. 
+
 \section{Password}
 Ogni utente ha uno storico di password che ci permette di impedire all'utente di riutilizzare password passate. Questo vincolo è espresso imponendo come identificatore della entità \texttt{STORICO\_PASSWORD} la tupla \texttt{(Password, UTENTE)}. Imponiamo inoltre il vincolo secondo cui un utente non può avere contemporaneamente due password creando l'identificatore \texttt{(Password, DataInserimento)}.
+
 \section{Contenuto (post e commenti)}
-Abbiamo modellizzato post e commenti in una gerarchia parziale ed esclusiva dove i post veri e propri (cioè quelli pubblicati \textbf{non} in risposta a qualche altro contenuto) sono istanze della classe padre \texttt{CONTENUTO}, mentre i commenti (cioè quei contenuti in risposta ad altri contenuti) sono rappresentati dall'entità figlia \texttt{COMMENTO}. Questa entità è legata a \texttt{CONTENUTO} dalla relazione \texttt{RISPOSTA}, che indica a quale contenuto il commento fa rifermento.
+Abbiamo modellizzato post e commenti in una gerarchia totale ed esclusiva dove i post veri e propri (cioè quelli pubblicati \textbf{non} in risposta a qualche altro contenuto) sono istanze della sottoclasse \texttt{POST}, mentre i commenti (cioè quei contenuti in risposta ad altri contenuti) sono rappresentati dall'entità figlia \texttt{COMMENTO}. Questa entità è legata a \texttt{CONTENUTO} dalla relazione \texttt{RISPOSTA}, che indica a quale contenuto il commento fa rifermento.
 Per modellizzare la possibilità da parte degli utenti di mettere like e dislike ai contenuti abbiamo creato la relazione \texttt{REAZIONE} il cui attributo \texttt{LikeDislike} indica se la reazione è un like o un dislike. L'attributo \texttt{Timestamp} indica il momento temporale in cui l'utente ha espresso la sua reazione riguardo al contenuto. 
+
 \section{Schema concettuale finale}
 \chapter{Progettazione logica}
 \section{Stima del volume dei dati}
