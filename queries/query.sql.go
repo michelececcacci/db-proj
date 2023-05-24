@@ -11,6 +11,60 @@ import (
 	"time"
 )
 
+const getFollowers = `-- name: GetFollowers :many
+SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1
+`
+
+func (q *Queries) GetFollowers(ctx context.Context, usernameseguito string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getFollowers, usernameseguito)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var usernameseguace string
+		if err := rows.Scan(&usernameseguace); err != nil {
+			return nil, err
+		}
+		items = append(items, usernameseguace)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFollwing = `-- name: GetFollwing :many
+SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1
+`
+
+func (q *Queries) GetFollwing(ctx context.Context, usernameseguace string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getFollwing, usernameseguace)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var usernameseguito string
+		if err := rows.Scan(&usernameseguito); err != nil {
+			return nil, err
+		}
+		items = append(items, usernameseguito)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertPassword = `-- name: InsertPassword :exec
 INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3)

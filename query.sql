@@ -8,3 +8,9 @@ INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio)
 -- name: InsertPassword :exec
 INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3);
+
+-- name: GetFollowers :many
+SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1;
+
+-- name: GetFollwing :many
+SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1;
