@@ -45,9 +45,10 @@ func (m mainView) Init() tea.Cmd {
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	m.help, _ = m.help.Update(msg) // always updated
+	m.loginView, cmd = m.loginView.Update(msg)
 	// return m.loginView.Update(msg)
 	// return m.profileView.Update(msg)
-	m.registerView, cmd = m.registerView.Update(msg)
+	// m.registerView, cmd = m.registerView.Update(msg)
 	// return m.feedView.Update(msg)
 	return m, cmd
 }
@@ -56,7 +57,8 @@ func (m mainView) View() string {
 	var sb = strings.Builder{}
 	// return m.loginView.View()
 	// return m.profileView.View()
-	sb.WriteString(m.registerView.View())
+	sb.WriteString(m.loginView.View())
+	// sb.WriteString(m.registerView.View())
 	// return m.feedView.View()
 	sb.WriteString(m.help.View())
 	return sb.String()
