@@ -11,6 +11,27 @@ import (
 	"time"
 )
 
+const authenticate = `-- name: Authenticate :one
+SELECT COUNT(SUBQUERY.DataInserimento)
+FROM (
+   SELECT MIN(SP.DataInserimento) AS DataInserimento
+   FROM STORICO_PASSWORD SP 
+   WHERE SP.Username = $1 AND SP.Password = $2
+) AS SUBQUERY
+`
+
+type AuthenticateParams struct {
+	Username string
+	Password string
+}
+
+func (q *Queries) Authenticate(ctx context.Context, arg AuthenticateParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, authenticate, arg.Username, arg.Password)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const insertPassword = `-- name: InsertPassword :exec
 INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3)
