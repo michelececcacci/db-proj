@@ -58,16 +58,15 @@ func (r registerView) Init() tea.Cmd {
 func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 	r.inputsView.Update(nil)
 	t, err := util.ParseTime(r.inputsView.Inputs[5].Value())
-	valid := (err == nil)
 	return queries.InsertUserParams{
-		Username: r.inputsView.Inputs[0].Value(),
-		Nome:     util.ValidNullString(r.inputsView.Inputs[2].Value()),
-		Cognome:  util.ValidNullString(r.inputsView.Inputs[3].Value()),
+		Username:  r.inputsView.Inputs[0].Value(),
+		Nome:      util.ValidNullString(r.inputsView.Inputs[2].Value()),
+		Cognome:   util.ValidNullString(r.inputsView.Inputs[3].Value()),
 		Domicilio: sql.NullString{Valid: false},
 		Datadinascita: sql.NullTime{
-			Valid: valid,
-			Time: t,
-		}, 
+			Valid: err == nil,
+			Time:  t,
+		},
 	}
 }
 
@@ -78,7 +77,7 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 		components.NewInput("Name", 20),
 		components.NewInput("Surname", 20),
 		components.NewInput("Location", 20),
-		components.NewInput("Birthdate", 10),
+		components.NewInput("Birthdate", 20),
 	}
 	return registerView{
 		inputsView: components.NewMultipleInputsView(inputs),
@@ -90,9 +89,8 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 
 func (r registerView) getCurrentPasswordParams() queries.InsertPasswordParams {
 	return queries.InsertPasswordParams{
-		Username: r.inputsView.Inputs[0].Value(),
-		Password: r.inputsView.Inputs[1].Value(),
+		Username:        r.inputsView.Inputs[0].Value(),
+		Password:        r.inputsView.Inputs[1].Value(),
 		Datainserimento: time.Now().UTC(),
 	}
-		
 }
