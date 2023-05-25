@@ -12,7 +12,7 @@ import (
 )
 
 const getFollowers = `-- name: GetFollowers :many
-SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1
+SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS NULL
 `
 
 func (q *Queries) GetFollowers(ctx context.Context, usernameseguito string) ([]string, error) {
@@ -38,12 +38,12 @@ func (q *Queries) GetFollowers(ctx context.Context, usernameseguito string) ([]s
 	return items, nil
 }
 
-const getFollwing = `-- name: GetFollwing :many
-SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1
+const getFollowing = `-- name: GetFollowing :many
+SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1 AND DataFine IS NULL
 `
 
-func (q *Queries) GetFollwing(ctx context.Context, usernameseguace string) ([]string, error) {
-	rows, err := q.db.QueryContext(ctx, getFollwing, usernameseguace)
+func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getFollowing, usernameseguace)
 	if err != nil {
 		return nil, err
 	}

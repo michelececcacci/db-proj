@@ -10,7 +10,7 @@ INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3);
 
 -- name: GetFollowers :many
-SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1;
+SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS NULL;
 
--- name: GetFollwing :many
-SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1;
+-- name: GetFollowing :many
+SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1 AND DataFine IS NULL;
