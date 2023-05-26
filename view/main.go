@@ -31,7 +31,7 @@ func NewMainView(options ...viewOption) mainView {
 		opt(&m)
 	}
 	m.loginView = newLoginView(&m.ctx, m.q)
-	m.profileView = newProfileView(&m.ctx, m.q, "") // TODO put some actual values here
+	m.profileView = newProfileView(&m.ctx, m.q, "user1")
 	m.registerView = newRegisterView(&m.ctx, m.q)
 	m.feedView = NewFeedView(&m.ctx, m.q)
 	m.help = components.NewHelpComponent()
@@ -46,7 +46,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	m.help, _ = m.help.Update(msg) // always updated
 	// return m.loginView.Update(msg)
-	m.profileView, _ =  m.profileView.Update(msg)
+	m.profileView, _ = m.profileView.Update(msg)
 	// m.registerView, cmd = m.registerView.Update(msg)
 	m.feedView, cmd = m.feedView.Update(msg)
 	return m, cmd

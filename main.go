@@ -20,7 +20,6 @@ const (
 	port     = "55432"
 )
 
-
 func run() error {
 	s := fmt.Sprintf("dbname=%s user=%s password=%s host=%s port=%s sslmode=disable", dbname, user, password, host, port)
 	db, err := sql.Open("postgres", s)

@@ -6,9 +6,15 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/michelececcacci/db-proj/queries"
-	"github.com/michelececcacci/db-proj/util"
 
 	tea "github.com/charmbracelet/bubbletea"
+)
+
+type state int
+
+const (
+	followingState = iota
+	followersState 
 )
 
 type user struct {
@@ -37,12 +43,17 @@ type profileView struct {
 	current   int
 	ctx       *context.Context
 	q         *queries.Queries
+	state 
 }
 
 func (p profileView) View() string {
 	var sb strings.Builder
-	sb.WriteString(p.followers.View() + "\n")
-	sb.WriteString(p.following.View() + "\n")
+	sb.WriteString("Username: " + p.username + "\n")
+	if p.state == followersState {
+		sb.WriteString(p.followers.View() + "\n")
+	} else if p.state == followingState {
+		sb.WriteString(p.following.View() + "\n")
+	}
 	return sb.String()
 }
 
@@ -53,16 +64,30 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return p, tea.Quit
-		case tea.KeyUp, tea.KeyTab:
-			p.current = util.Max(0, p.current-1)
-		case tea.KeyDown, tea.KeyShiftTab:
-			p.current = util.Min(1, p.current+1)
-
+		case tea.KeyLeft, tea.KeyRight:
+			if p.state == followingState {
+				p.state = followersState
+			} else if p.state == followersState{
+				p.state = followingState
+			}
+		case tea.KeyEnter:
+			var selected list.Item
+			if p.state == followersState {
+				selected = p.followers.SelectedItem()
+			} else if p.state == followingState {
+				selected = p.following.SelectedItem()
+			}
+			if selected != nil {
+				return newProfileView(p.ctx, p.q, selected.FilterValue()), nil
+			}
 		}
 	case tea.WindowSizeMsg:
 	}
-	p.followers, cmd = p.followers.Update(msg)
-	p.following, cmd = p.following.Update(msg)
+	if p.state == followersState {
+		p.followers, cmd = p.followers.Update(msg)
+	} else if p.state == followingState {
+		p.following, cmd = p.following.Update(msg)
+	}
 	return p, cmd
 }
 
@@ -71,21 +96,25 @@ func (p profileView) Init() tea.Cmd {
 }
 
 func newProfileView(ctx *context.Context, q *queries.Queries, username string) profileView {
-	following , _:= q.GetFollowing(*ctx, username)
+	following, _ := q.GetFollowing(*ctx, username)
 	followers, _ := q.GetFollowers(*ctx, username)
-	return profileView{
-		username:  "test_username",
+	p := profileView{
+		username:  username,
 		location:  "test_location",
-		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 10, 10),
-		following: list.New(toUser(following), list.NewDefaultDelegate(), 10, 10),
+		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 20, 10),
+		following: list.New(toUser(following), list.NewDefaultDelegate(), 20, 10),
 		ctx:       ctx,
 		q:         q,
+		state: followersState,
 	}
+	p.followers.Title = "Followers"
+	p.following.Title = "Following"
+	return p
 }
 
 func toUser(usernames []string) []list.Item {
 	var u []list.Item
-	for _,s  := range usernames {
+	for _, s := range usernames {
 		u = append(u, user{username: s})
 	}
 	return u
