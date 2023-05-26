@@ -23,6 +23,7 @@ services:
     tty: true
     depends_on:
       - db
+    restart: on-failure:10
 
   pgadmin:
     container_name: pgadmin
