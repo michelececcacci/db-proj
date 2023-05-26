@@ -45,6 +45,7 @@ func (m mainView) Init() tea.Cmd {
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	m.help, _ = m.help.Update(msg) // always updated
+	m.loginView, cmd = m.loginView.Update(msg)
 	// return m.loginView.Update(msg)
 	m.profileView, _ = m.profileView.Update(msg)
 	// m.registerView, cmd = m.registerView.Update(msg)
