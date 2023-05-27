@@ -16,3 +16,6 @@ db-proj
 # vendor/
 #
 report/
+
+# Stuff for making make working decently
+.makefile/
