@@ -264,18 +264,30 @@ insert into UTENTE (Username, Nome, DataDiNascita, Cognome) values
 ('user1', 'John', '2002-07-09', 'Green'),
 ('user2', 'John', '1999-07-09', 'Red'),
 ('user3', 'Carl', '2000-07-09', 'Johnson'),
-('user4', 'John', '2000-07-09', 'Smith')
+('user4', 'John', '2000-07-09', 'Smith'),
+('user5', 'Carl', NULL, 'Smith')
 ;
 
 insert into SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine) values
 ('user1', 'user2', '2002-07-09', NULL),
 ('user2', 'user1', '2005-07-09', NULL),
 ('user3', 'user1', '2005-07-09', NULL),
-('user4', 'user1', '2005-07-09', NULL);
+('user4', 'user1', '2005-07-09', NULL),
+('user5', 'user1', '2020-10-10', NULL)
+;
 
 
 insert into STORICO_PASSWORD (Username, Password, DataInserimento) values 
 ('user1', 'password1', '2002-07-09'),
 ('user1', 'password2', '2002-07-10'),
 ('user1', 'password3', '2002-07-11'),
-('user3', 'pw', '2002-07-14');
+('user3', 'pw', '2002-07-14'),
+('user5', 'password5', '2003-05-04')
+;
+
+insert into REGIONE (IdRegione, Nome, Superregione) values 
+     (1, 'New York', 2),
+     (2, 'United States', NULL),
+     (3, 'Seattle', NULL),
+     (4, 'Washington', NULL)
+;
