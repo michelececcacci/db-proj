@@ -33,7 +33,7 @@ create table CONTENUTO (
      IdContenuto numeric(1) not null,
      TimestampPubblicazione date not null,
      Titolo varchar(30),
-     IdRegione numeric(1),
+     IdRegione integer, 
      UsernamePadre varchar(20),
      IdContenutoPadre numeric(1),
      constraint ID_CONTENUTO primary key (Autore, IdContenuto));
@@ -67,17 +67,20 @@ create table REAZIONE (
      constraint ID_REAZIONE primary key (Username, AutoreContenuto, IdContenuto));
 
 create table REGIONE (
-     IdRegione numeric(1) not null,
+     IdRegione serial not null,
      Nome varchar(50) not null,
-     Superregione numeric(1),
+     Superregione integer,
      constraint ID_REGIONE primary key (IdRegione));
+
+ALTER sequence REGIONE_IdRegione_seq MINVALUE 0 RESTART WITH 0;
 
 create table SEGUIRE (
      UsernameSeguace varchar(20) not null,
      UsernameSeguito varchar(20) not null,
      DataInizio date not null,
      DataFine date,
-     constraint ID_SEGUIRE primary key (UsernameSeguace, UsernameSeguito, DataInizio));
+     constraint ID_SEGUIRE primary key (UsernameSeguace, UsernameSeguito, DataInizio),
+     CHECK (DataInizio < DataFine));
 
 create table STORICO_ACCESSO (
      Username varchar(20) not null,
@@ -104,7 +107,7 @@ create table UTENTE (
      DataDiNascita date,
      Nome varchar(20),
      Cognome varchar(20),
-     Domicilio numeric(1),
+     Domicilio integer,
      constraint ID_UTENTE_ID primary key (Username));
 
 
