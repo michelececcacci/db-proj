@@ -80,8 +80,9 @@ create table SEGUIRE (
      DataInizio date not null,
      DataFine date,
      constraint ID_SEGUIRE primary key (UsernameSeguace, UsernameSeguito, DataInizio),
-     CHECK (DataInizio < DataFine));
-
+     constraint DataInizioMinDataFine CHECK (DataInizio < DataFine),
+     constraint SeguireNonSeStessi CHECK (UsernameSeguace <> UsernameSeguito));
+      
 create table STORICO_ACCESSO (
      Username varchar(20) not null,
      TimestampLogin date not null,
