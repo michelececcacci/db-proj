@@ -48,11 +48,11 @@ create table MEMBRO (
      constraint SID_MEMBRO unique (IdChat, Username, DataEntrata));
 
 create table MESSAGGIO (
-     IdMessaggio numeric(1) not null,
+     IdMessaggio serial not null,
      Testo varchar(1000) not null,
      TimestampInvio date not null,
      Mittente numeric(1) not null,
-     Citazione numeric(1),
+     Citazione integer,
      AutoreContenuto varchar(20),
      IdContenuto numeric(1),
      AmministratoreEliminatore numeric(1),
