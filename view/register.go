@@ -32,10 +32,10 @@ func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			if len(r.inputsView.Inputs[1].Value()) == 0 { 
+			if len(r.inputsView.Inputs[1].Value()) == 0 {
 				r.message = "Can't submit, empty password\n"
 				break
-			} 
+			}
 			err := r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
 			if err != nil {
 				r.message = err.Error()

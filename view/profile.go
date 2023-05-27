@@ -14,7 +14,7 @@ type state int
 
 const (
 	followingState = iota
-	followersState 
+	followersState
 )
 
 type user struct {
@@ -43,7 +43,7 @@ type profileView struct {
 	current   int
 	ctx       *context.Context
 	q         *queries.Queries
-	state 
+	state
 }
 
 func (p profileView) View() string {
@@ -67,7 +67,7 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyLeft, tea.KeyRight:
 			if p.state == followingState {
 				p.state = followersState
-			} else if p.state == followersState{
+			} else if p.state == followersState {
 				p.state = followingState
 			}
 		case tea.KeyEnter:
@@ -105,7 +105,7 @@ func newProfileView(ctx *context.Context, q *queries.Queries, username string) p
 		following: list.New(toUser(following), list.NewDefaultDelegate(), 20, 10),
 		ctx:       ctx,
 		q:         q,
-		state: followersState,
+		state:     followersState,
 	}
 	p.followers.Title = "Followers"
 	p.following.Title = "Following"

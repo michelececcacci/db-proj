@@ -87,7 +87,7 @@ create table STORICO_ACCESSO (
 
 create table STORICO_PASSWORD (
      Username varchar(20) not null,
-     DataInserimento date not null,
+     DataInserimento timestamp not null,
      Password varchar(20) not null,
      constraint SID_STORICO_PASSWORD unique (Username, DataInserimento),
      constraint ID_STORICO_PASSWORD primary key (Username, Password));
@@ -273,8 +273,9 @@ insert into SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine) val
 ('user3', 'user1', '2005-07-09', NULL),
 ('user4', 'user1', '2005-07-09', NULL);
 
-     -- UsernameSeguace varchar(20) not null,
-     -- UsernameSeguito varchar(20) not null,
-     -- DataInizio date not null,
-     -- DataFine date,
-     -- constraint ID_SEGUIRE primary key (UsernameSeguace, UsernameSeguito, DataInizio));
+
+insert into STORICO_PASSWORD (Username, Password, DataInserimento) values 
+('user1', 'password1', '2002-07-09'),
+('user1', 'password2', '2002-07-10'),
+('user1', 'password3', '2002-07-11'),
+('user3', 'pw', '2002-07-14');

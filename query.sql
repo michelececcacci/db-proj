@@ -14,6 +14,7 @@ SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS N
 
 -- name: GetFollowing :many
 SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1 AND DataFine IS NULL;
+
 -- name: Authenticate :one
 SELECT COUNT(SUBQUERY.DataInserimento)
 FROM (
@@ -22,3 +23,6 @@ FROM (
    WHERE SP.Username = $1 AND SP.Password = $2
 ) AS SUBQUERY;
 
+
+-- name: GetPastPasswords :many
+SELECT Password FROM  STORICO_PASSWORD WHERE username = $1;

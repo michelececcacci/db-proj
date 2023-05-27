@@ -86,6 +86,33 @@ func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]s
 	return items, nil
 }
 
+const getPastPasswords = `-- name: GetPastPasswords :many
+SELECT Password FROM  STORICO_PASSWORD WHERE username = $1
+`
+
+func (q *Queries) GetPastPasswords(ctx context.Context, username string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getPastPasswords, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var password string
+		if err := rows.Scan(&password); err != nil {
+			return nil, err
+		}
+		items = append(items, password)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertPassword = `-- name: InsertPassword :exec
 INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3)
