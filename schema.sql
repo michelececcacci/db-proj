@@ -282,3 +282,27 @@ insert into STORICO_PASSWORD (Username, Password, DataInserimento) values
 ('user1', 'password2', '2002-07-10'),
 ('user1', 'password3', '2002-07-11'),
 ('user3', 'pw', '2002-07-14');
+
+insert into REGIONE (Nome, Superregione) values
+('Mondo', NULL),
+('Europa', 0),
+('Italia', 1),
+('Marche', 2),
+('Provincia di Ancona', 3),
+('Senigallia', 4),
+('Provincia di Pesaro-Urbino', 3),
+('Fano', 6),
+('Emilia-Romangna', 2),
+('Provincia di Forlì-Cesena', 8),
+('Cesena', 9),
+('Francia', 1),
+('Asia', 0),
+('Cina', 12),
+('America', 0),
+('Nord America', 14),
+('USA', 15),
+('Stato di New York', 15),
+('New York City', 17),
+('Buffalo', 17),
+('Brooklyn', 18);
+
