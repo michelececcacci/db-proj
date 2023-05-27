@@ -14,7 +14,12 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/containerd/console v1.0.3 // indirect
+	github.com/corpix/uarand v0.0.0-20170723150923-031be390f409 // indirect
+	github.com/gobuffalo/envy v1.6.5 // indirect
+	github.com/icrowley/fake v0.0.0-20221112152111-d7b7e2276db2 // indirect
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
+	github.com/markbates/inflect v1.0.4 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
