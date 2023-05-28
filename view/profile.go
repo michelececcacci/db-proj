@@ -2,9 +2,10 @@ package view
 
 import (
 	"context"
-	"strings"
+	"fmt"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/michelececcacci/db-proj/queries"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,6 +16,10 @@ type state int
 const (
 	followingState = iota
 	followersState
+)
+
+var (
+	docStyle = lipgloss.NewStyle().Margin(1,2)
 )
 
 type user struct {
@@ -47,14 +52,10 @@ type profileView struct {
 }
 
 func (p profileView) View() string {
-	var sb strings.Builder
-	sb.WriteString("Username: " + p.username + "\n")
 	if p.state == followersState {
-		sb.WriteString(p.followers.View() + "\n")
-	} else if p.state == followingState {
-		sb.WriteString(p.following.View() + "\n")
-	}
-	return sb.String()
+		return docStyle.Render(p.followers.View())
+	} 
+	return docStyle.Render(p.following.View())
 }
 
 func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -101,14 +102,14 @@ func newProfileView(ctx *context.Context, q *queries.Queries, username string) p
 	p := profileView{
 		username:  username,
 		location:  "test_location",
-		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 20, 10),
-		following: list.New(toUser(following), list.NewDefaultDelegate(), 20, 10),
+		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
+		following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
 		ctx:       ctx,
 		q:         q,
 		state:     followersState,
 	}
-	p.followers.Title = "Followers"
-	p.following.Title = "Following"
+	p.followers.Title = fmt.Sprintf("Followed by %s", p.username)
+	p.following.Title = fmt.Sprintf("Following %s", p.username)
 	return p
 }
 
