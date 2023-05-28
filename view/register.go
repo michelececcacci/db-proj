@@ -68,7 +68,7 @@ func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 		Username:  r.inputsView.Inputs[0].Value(),
 		Nome:      util.ValidNullString(r.inputsView.Inputs[2].Value()),
 		Cognome:   util.ValidNullString(r.inputsView.Inputs[3].Value()),
-		Domicilio: sql.NullString{Valid: false},
+		Domicilio: sql.NullInt32{Valid: false},
 		Datadinascita: sql.NullTime{
 			Valid: err == nil,
 			Time:  t,
