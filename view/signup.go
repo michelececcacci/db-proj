@@ -3,6 +3,7 @@ package view
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"strings"
 	"time"
 
@@ -13,55 +14,54 @@ import (
 	"github.com/michelececcacci/db-proj/view/components"
 )
 
-type registerView struct {
+type signUp struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
-	message    string
+	errorView tea.Model
 }
 
-func (r registerView) View() string {
+func (s signUp) View() string {
 	sb := strings.Builder{}
-	sb.WriteString(r.inputsView.View())
-	sb.WriteString(r.message)
+	sb.WriteString(s.inputsView.View())
+	sb.WriteString(s.errorView.View())
 	return sb.String()
 }
 
-func (r registerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (r signUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var message string
+	var err error
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
 			if len(r.inputsView.Inputs[1].Value()) == 0 {
-				r.message = "Can't submit, empty password\n"
+				err =  errors.New("Empty password")
 				break
 			}
-			err := r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
+			err = r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
 			if err != nil {
-				r.message = err.Error()
 				break
-			} else {
-				r.message = "Submission successful\n"
 			}
 			err = r.q.InsertPassword(*r.ctx, r.getCurrentPasswordParams())
 			if err != nil {
-				r.message = err.Error()
+				break
 			}
-		default:
-			r.message = "" // we don't want to persist messages as it could be confusing
+			message = "Submission successful"
 		}
 	}
 	m, cmd := r.inputsView.Update(msg)
 	iv := m.(components.MultipleInputsView)
 	r.inputsView = iv
+	r.errorView, _ = r.errorView.Update(util.OptionalError{Err: err, Message: message})
 	return r, cmd
 }
 
-func (r registerView) Init() tea.Cmd {
+func (r signUp) Init() tea.Cmd {
 	return nil
 }
 
-func (r registerView) getCurrentUserParams() queries.InsertUserParams {
+func (r signUp) getCurrentUserParams() queries.InsertUserParams {
 	r.inputsView.Update(nil)
 	t, err := util.ParseTime(r.inputsView.Inputs[5].Value())
 	return queries.InsertUserParams{
@@ -76,7 +76,7 @@ func (r registerView) getCurrentUserParams() queries.InsertUserParams {
 	}
 }
 
-func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
+func newRegisterView(ctx *context.Context, q *queries.Queries) signUp {
 	inputs := []textinput.Model{
 		components.NewInput("Username", 20),
 		components.NewInput("Password", 20),
@@ -85,15 +85,15 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) registerView {
 		components.NewInput("Location", 20),
 		components.NewInput("Birthdate", 20),
 	}
-	return registerView{
+	return signUp{
 		inputsView: components.NewMultipleInputsView(inputs),
 		ctx:        ctx,
 		q:          q,
-		message:    "",
+		errorView: components.NewErrorView(),
 	}
 }
 
-func (r registerView) getCurrentPasswordParams() queries.InsertPasswordParams {
+func (r signUp) getCurrentPasswordParams() queries.InsertPasswordParams {
 	return queries.InsertPasswordParams{
 		Username:        r.inputsView.Inputs[0].Value(),
 		Password:        r.inputsView.Inputs[1].Value(),
