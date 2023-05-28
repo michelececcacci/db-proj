@@ -18,7 +18,7 @@ type signUp struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
-	errorView tea.Model
+	errorView  tea.Model
 }
 
 func (s signUp) View() string {
@@ -35,18 +35,7 @@ func (r signUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			if len(r.inputsView.Inputs[1].Value()) == 0 {
-				err =  errors.New("Empty password")
-				break
-			}
-			err = r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
-			if err != nil {
-				break
-			}
-			err = r.q.InsertPassword(*r.ctx, r.getCurrentPasswordParams())
-			if err != nil {
-				break
-			}
+			err = r.submitMessage()
 			message = "Submission successful"
 		}
 	}
@@ -89,7 +78,7 @@ func newRegisterView(ctx *context.Context, q *queries.Queries) signUp {
 		inputsView: components.NewMultipleInputsView(inputs),
 		ctx:        ctx,
 		q:          q,
-		errorView: components.NewErrorView(),
+		errorView:  components.NewErrorView(),
 	}
 }
 
@@ -99,4 +88,20 @@ func (r signUp) getCurrentPasswordParams() queries.InsertPasswordParams {
 		Password:        r.inputsView.Inputs[1].Value(),
 		Datainserimento: time.Now().UTC(),
 	}
+}
+
+func (r signUp) submitMessage() error {
+	var err error
+	if len(r.inputsView.Inputs[1].Value()) == 0 {
+		err = errors.New("Empty password")
+		if err != nil {
+			return err
+		}
+	}
+	err = r.q.InsertUser(*r.ctx, r.getCurrentUserParams())
+	if err != nil {
+		return err
+	}
+	err = r.q.InsertPassword(*r.ctx, r.getCurrentPasswordParams())
+	return err
 }

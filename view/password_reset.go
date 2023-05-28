@@ -14,10 +14,10 @@ import (
 )
 
 type passwordResetView struct {
-	input    textinput.Model
-	username string
-	ctx      *context.Context
-	q        *queries.Queries
+	input     textinput.Model
+	username  string
+	ctx       *context.Context
+	q         *queries.Queries
 	errorView tea.Model
 }
 
@@ -33,12 +33,12 @@ func (p passwordResetView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			message = "Submission successful"
 		case "ctrl+c":
 			return p, tea.Quit
-		default: 
+		default:
 			message = ""
 		}
 	}
 	p.input, cmd = p.input.Update(msg)
-	p.errorView , _ =  p.errorView.Update(util.OptionalError{Err: err, Message: message})
+	p.errorView, _ = p.errorView.Update(util.OptionalError{Err: err, Message: message})
 	return p, cmd
 }
 
@@ -55,13 +55,13 @@ func (p passwordResetView) Init() tea.Cmd {
 }
 
 func newPasswordResetView(ctx *context.Context, q *queries.Queries, username string) passwordResetView {
-	i :=   textinput.New()
+	i := textinput.New()
 	i.Focus()
 	return passwordResetView{
-		username: username,
-		input:  i,
-		ctx:      ctx,
-		q:        q,
+		username:  username,
+		input:     i,
+		ctx:       ctx,
+		q:         q,
 		errorView: components.NewErrorView(),
 	}
 }

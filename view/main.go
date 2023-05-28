@@ -20,7 +20,7 @@ type mainView struct {
 	q                 *queries.Queries
 	loginView         tea.Model
 	profileView       tea.Model
-	signUpView      tea.Model
+	signUpView        tea.Model
 	feedView          tea.Model
 	help              tea.Model
 	passwordResetView tea.Model
