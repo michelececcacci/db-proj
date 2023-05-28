@@ -39,7 +39,7 @@ func NewErrorView() errorView {
 
 func (e errorView) View() string {
 	if e.err != nil {
-		return errorStyle.Render(e.err.Error())
+		return errorStyle.Render(e.err.Error() + "\n")
 	}
-	return e.message
+	return e.message + "\n"
 }

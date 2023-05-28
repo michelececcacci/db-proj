@@ -11,6 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view/components"
+	"github.com/michelececcacci/db-proj/view/signup"
 )
 
 type viewOption func(*mainView)
@@ -33,7 +34,7 @@ func NewMainView(options ...viewOption) mainView {
 	}
 	m.loginView = newLoginView(&m.ctx, m.q)
 	m.profileView = newProfileView(&m.ctx, m.q, "user1")
-	m.signUpView = newRegisterView(&m.ctx, m.q)
+	m.signUpView = signup.New(&m.ctx, m.q)
 	m.feedView = NewFeedView(&m.ctx, m.q)
 	m.help = components.NewHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE

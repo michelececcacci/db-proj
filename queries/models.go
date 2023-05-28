@@ -25,7 +25,7 @@ type Contenuto struct {
 	Idcontenuto            string
 	Timestamppubblicazione time.Time
 	Titolo                 sql.NullString
-	Idregione              sql.NullString
+	Idregione              sql.NullInt32
 	Usernamepadre          sql.NullString
 	Idcontenutopadre       sql.NullString
 }
@@ -39,11 +39,11 @@ type Membro struct {
 }
 
 type Messaggio struct {
-	Idmessaggio               string
+	Idmessaggio               int32
 	Testo                     string
 	Timestampinvio            time.Time
 	Mittente                  string
-	Citazione                 sql.NullString
+	Citazione                 sql.NullInt32
 	Autorecontenuto           sql.NullString
 	Idcontenuto               sql.NullString
 	Amministratoreeliminatore sql.NullString
@@ -58,9 +58,9 @@ type Reazione struct {
 }
 
 type Regione struct {
-	Idregione    string
+	Idregione    int32
 	Nome         string
-	Superregione sql.NullString
+	Superregione sql.NullInt32
 }
 
 type Seguire struct {
@@ -94,5 +94,5 @@ type Utente struct {
 	Datadinascita sql.NullTime
 	Nome          sql.NullString
 	Cognome       sql.NullString
-	Domicilio     sql.NullString
+	Domicilio     sql.NullInt32
 }

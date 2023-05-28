@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	docStyle = lipgloss.NewStyle().Margin(1,2)
+	docStyle = lipgloss.NewStyle().Margin(1, 2)
 )
 
 type user struct {
@@ -54,7 +54,7 @@ type profileView struct {
 func (p profileView) View() string {
 	if p.state == followersState {
 		return docStyle.Render(p.followers.View())
-	} 
+	}
 	return docStyle.Render(p.following.View())
 }
 
@@ -101,7 +101,7 @@ func newProfileView(ctx *context.Context, q *queries.Queries, username string) p
 	followers, _ := q.GetFollowers(*ctx, username)
 	p := profileView{
 		username:  username,
-		location:  "test_location",
+		location:  "test_location", // TODO CHANGE
 		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
 		following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
 		ctx:       ctx,

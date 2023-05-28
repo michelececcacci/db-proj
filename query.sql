@@ -26,3 +26,6 @@ FROM (
 
 -- name: GetPastPasswords :many
 SELECT Password FROM  STORICO_PASSWORD WHERE username = $1;
+
+-- name: GetLocations :many
+SELECT * FROM Regione;
