@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
+	"github.com/michelececcacci/db-proj/faker"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view"
 )
@@ -39,7 +39,8 @@ func run() error {
 }
 
 func main() {
-	if err := run(); err != nil {
-		log.Fatal(err)
-	}
+	// if err := run(); err != nil {
+	// 	log.Fatal(err)
+	// }
+	faker.Run()
 }
