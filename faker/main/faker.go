@@ -34,7 +34,7 @@ func run() error {
   populateFollowers(model, 500)
   populateChats(model, 50)
   populateMembers(model, 20, true)
-  populateMembers(model, 70, false)
+  populateMembers(model, 7000, false)
   return nil
 }
 
@@ -44,16 +44,17 @@ func main() {
 	}
 }
 
+func fakeDate() time.Time {
+  return time.Date(fake.Year(2021, 2022), time.Month(fake.MonthNum()), fake.Day(), 0, 0, 0, 0, time.UTC)
+}
+
 func populateUsers(m model.Model, n int) {
   for i := 0; i < n; {
     u := queries.InsertUserParams{
       Username: fake.UserName(),
       Nome: sql.NullString{String: fake.FirstName(), Valid: true},
       Cognome: sql.NullString{String: fake.LastName(), Valid: true},
-      Datadinascita: sql.NullTime{
-        Valid: true,
-        Time: fakeDate(),
-      },
+      Datadinascita: sql.NullTime{Time: fakeDate(), Valid: true},
     }
     fmt.Println(u)
     m.InsertUser(u)
@@ -62,10 +63,12 @@ func populateUsers(m model.Model, n int) {
 }
 
 func populateFollowers(m model.Model, n int) {
-  for i := 0; i < n; {
+	followings, _ := m.GetAllPossibleFollowings()
+	k := 0
+	i := 0
+  for ; i < n && k < len(followings); k++ {
     dataInizio := fakeDate()
-    seguace, _ := m.GetRandomUser()
-    seguito, _ := m.GetRandomUser()
+		seguace, seguito := followings[k].U1.String, followings[k].U2.String
     f := queries.InsertFollowerParams{
       Usernameseguace: seguace, 
       Usernameseguito: seguito,
@@ -80,6 +83,9 @@ func populateFollowers(m model.Model, n int) {
       fmt.Println(err)
     }
   }
+	if i < n {
+		fmt.Println("We couldn't create all followings")
+	}
 }
 
 func populateChats(m model.Model, n int) {
@@ -95,16 +101,12 @@ func populateChats(m model.Model, n int) {
 }
 
 func populateMembers(m model.Model, n int, asAdmin bool) {
-  for i := 0; i < n; {
-    chat, err := m.GetRandomChat()
-    if err != nil {
-      fmt.Println("Members1", err)
-    }
-    u, err :=  m.GetRandomUser()
-    if err != nil {
-      fmt.Println("Members2", err)
-    }
-    admin, _ := m.GetRandomAdminInChat(chat)
+	members, _ := m.GetAllPossibleMembers()
+	i := 0
+	k := 0
+	for ; i < n && k < len(members); k++ {
+		u, chat := members[k].Username.String, members[k].Idchat.Int32
+    admin, err := m.GetRandomAdminInChat(chat)
     if err != nil {
       fmt.Println("Members3", err, admin)
     }
@@ -116,11 +118,12 @@ func populateMembers(m model.Model, n int, asAdmin bool) {
     if err == nil {
       i++
     } else {
-      fmt.Println("Members4", err)
+			// fmt.Println("Members4", err)
     }
   }
+	if k == len(members) && i < n {
+		fmt.Println("We couldn't create all members")
+	}
 }
 
-func fakeDate() time.Time {
-  return time.Date(fake.Year(2021, 2022), time.Month(fake.MonthNum()), fake.Day(), 0, 0, 0, 0, time.UTC)
-}
+
