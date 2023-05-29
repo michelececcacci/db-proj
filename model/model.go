@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"time"
 
@@ -71,9 +72,14 @@ func (m *Model) IsValidAdmin(admin int32, idChat int32) (bool, error) {
 
 // create a new member who is not admin
 func (m *Model) InsertNotAdminMember(username string, idChat int32, inserterAdmin int32) (int32, error) {
-	isValidAdmin, err := m.IsValidAdmin(inserterAdmin, idChat)
-	if isValidAdmin && err == nil {
-		return m.q.InsertMember(m.ctx, queries.InsertMemberParams{
+	count, err := m.q.CheckIfUserStillInChat(m.ctx, queries.CheckIfUserStillInChatParams{Username: username, Idchat: idChat})
+	if err != nil {
+		return 0, err
+	}
+	if count != 0 {
+		return 0, errors.New(fmt.Sprintf("The user %s is still member of chat %d", username, idChat))
+	}
+	member := queries.InsertMemberParams{
 			Dataentrata: time.Now(),
 			Username:    username,
 			Idchat:      idChat,
@@ -81,7 +87,10 @@ func (m *Model) InsertNotAdminMember(username string, idChat int32, inserterAdmi
 				Int32: inserterAdmin,
 				Valid: true,
 			},
-		})
+		}
+	isValidAdmin, err := m.IsValidAdmin(inserterAdmin, idChat)
+	if isValidAdmin && err == nil {
+		return m.q.InsertMember(m.ctx, member)
 	} else {
 		return 0, errors.New("The inserter admin is not an admin of the chat")
 	}

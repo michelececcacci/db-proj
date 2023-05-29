@@ -64,6 +64,15 @@ SELECT Password FROM  STORICO_PASSWORD WHERE username = $1;
 
 -- name: GetLocations :many
 SELECT * FROM Regione;
+
+
+-- name: CheckIfUserStillInChat :one
+SELECT COUNT(*)
+FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
+WHERE M.USERNAME = $1
+	AND M.IDCHAT = $2
+	AND U.IDMEMBRO IS NULL;
+
 -- random accesses
 
 -- name: GetRandomUser :one
