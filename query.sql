@@ -105,3 +105,13 @@ SELECT a.IdMembro
   WHERE m.IdChat = $1
   ORDER BY random()
   LIMIT 1;
+
+-- name: GetAllPossibleMembers :many 
+SELECT u.username AS username, c.IdChat AS idchat
+FROM UTENTE u FULL OUTER JOIN CHAT c ON (True)
+ORDER BY random();
+
+-- name: GetAllPossibleFollowings :many 
+SELECT u1.username AS U1, u2.username AS U2
+FROM UTENTE u1 FULL OUTER JOIN UTENTE u2 ON (True)
+ORDER BY random();
