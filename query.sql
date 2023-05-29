@@ -29,3 +29,20 @@ SELECT Password FROM  STORICO_PASSWORD WHERE username = $1;
 
 -- name: GetLocations :many
 SELECT * FROM Regione;
+
+-- name: GetLocationRec :many
+WITH recursive getSuperregions(idregione, superregione)
+AS(
+	(
+		select idregione, superregione
+		from regione
+	) union all (
+		select g.idregione, a.superregione
+		from regione g, getSuperregions a
+		where g.superregione = a.idregione
+	)
+)
+
+select nome
+from getSuperregions g join regione r on (g.superregione = r.idregione)
+where g.idregione = $1;
