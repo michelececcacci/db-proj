@@ -4,9 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 
-	//	"fmt"
 	"time"
 
 	"github.com/michelececcacci/db-proj/queries"
@@ -85,14 +83,13 @@ func (m *Model) InsertNotAdminMember(username string, idChat int32, inserterAdmi
 			},
 		})
 	} else {
-		return 0, errors.Join(errors.New("The inserter admin is not an admin of the chat"), err)
+		return 0, errors.New("The inserter admin is not an admin of the chat")
 	}
 }
 
 // create an admin
 func (m *Model) InsertAdminMember(username string, idChat int32, inserterAdmin int32) (int32, error) {
 	memberId, err := m.InsertNotAdminMember(username, idChat, inserterAdmin)
-	fmt.Println("admin1", memberId, err)
   if err != nil {
 		return memberId, err
 	}
