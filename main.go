@@ -16,8 +16,8 @@ const (
 	dbname   = "postgres"
 	user     = "postgres"
 	password = "postgres"
-	host     = "localhost"
-	port     = "55432"
+	host     = "db"
+	port     = "5432"
 )
 
 func run() error {

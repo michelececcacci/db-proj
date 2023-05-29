@@ -18,13 +18,13 @@
 -- _____________ 
 
 create table AMMINISTRATORE (
-     IdMembro numeric(1) not null,
+     IdMembro integer not null,
      constraint FKAMMINISTRATORE_ID primary key (IdMembro));
 
 create table CHAT (
      Nome varchar(100) not null,
      Descrizione varchar(5000) not null,
-     IdChat numeric(1) not null,
+     IdChat serial not null,
      constraint ID_CHAT_ID primary key (IdChat));
 
 create table CONTENUTO (
@@ -40,10 +40,10 @@ create table CONTENUTO (
 
 create table MEMBRO (
      DataEntrata date not null,
-     IdMembro numeric(1) not null,
+     IdMembro serial not null,
      Username varchar(20) not null,
-     IdChat numeric(1) not null,
-     Amministratore numeric(1),
+     IdChat integer not null,
+     Amministratore integer,
      constraint ID_MEMBRO primary key (IdMembro),
      constraint SID_MEMBRO unique (IdChat, Username, DataEntrata));
 
@@ -51,11 +51,11 @@ create table MESSAGGIO (
      IdMessaggio serial not null,
      Testo varchar(1000) not null,
      TimestampInvio date not null,
-     Mittente numeric(1) not null,
+     Mittente integer not null,
      Citazione integer,
      AutoreContenuto varchar(20),
      IdContenuto numeric(1),
-     AmministratoreEliminatore numeric(1),
+     AmministratoreEliminatore integer,
      constraint ID_MESSAGGIO primary key (IdMessaggio));
 
 create table REAZIONE (
@@ -97,10 +97,10 @@ create table STORICO_PASSWORD (
      constraint ID_STORICO_PASSWORD primary key (Username, Password));
 
 create table USCITA (
-     IdMembro numeric(1) not null,
+     IdMembro integer not null,
      DataUscita date not null,
      Motivazione varchar(500),
-     IdMembroResponsabile numeric(1),
+     IdMembroResponsabile integer,
      constraint FKUSCITA_ID primary key (IdMembro));
 
 create table UTENTE (

@@ -10,13 +10,13 @@ import (
 )
 
 type Amministratore struct {
-	Idmembro string
+	Idmembro int32
 }
 
 type Chat struct {
 	Nome        string
 	Descrizione string
-	Idchat      string
+	Idchat      int32
 }
 
 type Contenuto struct {
@@ -32,21 +32,21 @@ type Contenuto struct {
 
 type Membro struct {
 	Dataentrata    time.Time
-	Idmembro       string
+	Idmembro       int32
 	Username       string
-	Idchat         string
-	Amministratore sql.NullString
+	Idchat         int32
+	Amministratore sql.NullInt32
 }
 
 type Messaggio struct {
 	Idmessaggio               int32
 	Testo                     string
 	Timestampinvio            time.Time
-	Mittente                  string
+	Mittente                  int32
 	Citazione                 sql.NullInt32
 	Autorecontenuto           sql.NullString
 	Idcontenuto               sql.NullString
-	Amministratoreeliminatore sql.NullString
+	Amministratoreeliminatore sql.NullInt32
 }
 
 type Reazione struct {
@@ -83,10 +83,10 @@ type StoricoPassword struct {
 }
 
 type Uscitum struct {
-	Idmembro             string
+	Idmembro             int32
 	Datauscita           time.Time
 	Motivazione          sql.NullString
-	Idmembroresponsabile sql.NullString
+	Idmembroresponsabile sql.NullInt32
 }
 
 type Utente struct {
