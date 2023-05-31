@@ -87,39 +87,36 @@ func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]s
 }
 
 const getLocationRec = `-- name: GetLocationRec :many
-WITH RECURSIVE x AS (
-  SELECT IdRegione, Nome, Superregione
-  FROM REGIONE 
-  WHERE Superregione = NULL
-  UNION
-    SELECT 
-      r.IdRegione, 
-      r.Superregione,
-      r.Nome
-    FROM REGIONE r 
-    INNER JOIN x x1 ON r.Superregione = x1.IdRegione
-) SELECT idregione, nome, superregione FROM x
+WITH recursive getSuperregions(idregione, superregione)
+AS(
+	(
+		select idregione, superregione
+		from regione
+	) union all (
+		select g.idregione, a.superregione
+		from regione g, getSuperregions a
+		where g.superregione = a.idregione
+	)
+)
+
+select nome
+from getSuperregions g join regione r on (g.superregione = r.idregione)
+where g.idregione = $1
 `
 
-type GetLocationRecRow struct {
-	Idregione    int32
-	Nome         string
-	Superregione sql.NullInt32
-}
-
-func (q *Queries) GetLocationRec(ctx context.Context) ([]GetLocationRecRow, error) {
-	rows, err := q.db.QueryContext(ctx, getLocationRec)
+func (q *Queries) GetLocationRec(ctx context.Context, idregione int32) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getLocationRec, idregione)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetLocationRecRow
+	var items []string
 	for rows.Next() {
-		var i GetLocationRecRow
-		if err := rows.Scan(&i.Idregione, &i.Nome, &i.Superregione); err != nil {
+		var nome string
+		if err := rows.Scan(&nome); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, nome)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
