@@ -86,6 +86,47 @@ func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]s
 	return items, nil
 }
 
+const getLocationRec = `-- name: GetLocationRec :many
+WITH recursive getSuperregions(idregione, superregione)
+AS(
+	(
+		select idregione, superregione
+		from regione
+	) union all (
+		select g.idregione, a.superregione
+		from regione g, getSuperregions a
+		where g.superregione = a.idregione
+	)
+)
+
+select nome
+from getSuperregions g join regione r on (g.superregione = r.idregione)
+where g.idregione = $1
+`
+
+func (q *Queries) GetLocationRec(ctx context.Context, idregione int32) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getLocationRec, idregione)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var nome string
+		if err := rows.Scan(&nome); err != nil {
+			return nil, err
+		}
+		items = append(items, nome)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getLocations = `-- name: GetLocations :many
 SELECT idregione, nome, superregione FROM Regione
 `

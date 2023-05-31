@@ -1,7 +1,9 @@
 package signup
 
 import (
+	"context"
 	"database/sql"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/michelececcacci/db-proj/queries"
@@ -11,6 +13,7 @@ type location struct {
 	id     int32
 	name   string
 	parent sql.NullInt32
+	description string
 }
 
 func (l location) Title() string {
@@ -22,16 +25,18 @@ func (l location) FilterValue() string {
 }
 
 func (l location) Description() string {
-	return ""
+	return l.description
 }
 
-func toLocations(r []queries.Regione) []list.Item {
+func toLocations(r []queries.Regione, q *queries.Queries, ctx *context.Context) []list.Item {
 	var l []list.Item
 	for _, region := range r {
+		parents, _ := q.GetLocationRec(*ctx, region.Idregione)
 		l = append(l, location{
 			id:     region.Idregione,
 			parent: region.Superregione,
 			name:   region.Nome,
+			description: strings.Join(parents, ","),
 		})
 	}
 	return l

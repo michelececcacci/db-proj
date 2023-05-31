@@ -73,7 +73,7 @@ func (p passwordResetView) insertPassword() error {
 	}
 	for _, pwd := range pastpasswords {
 		if pwd == p.input.Value() {
-			return errors.New("Password already used")
+			return errors.New("password already used")
 		}
 	}
 	err = p.q.InsertPassword(*p.ctx, queries.InsertPasswordParams{

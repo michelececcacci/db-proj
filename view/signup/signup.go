@@ -117,7 +117,7 @@ func New(ctx *context.Context, q *queries.Queries) signUp {
 	if err != nil {
 		panic(err)
 	}
-	locations := toLocations(result)
+	locations := toLocations(result, q, ctx)
 	inputs := []textinput.Model{
 		components.NewInput("Username", 20),
 		components.NewInput("Password", 20),
@@ -130,7 +130,7 @@ func New(ctx *context.Context, q *queries.Queries) signUp {
 		ctx:        ctx,
 		q:          q,
 		errorView:  components.NewErrorView(),
-		locations:  list.New(locations, list.NewDefaultDelegate(), 25, 25), 
+		locations:  list.New(locations, list.NewDefaultDelegate(), 25, 25),
 		help: help{},
 	}
 	s.locations.Title = "Select location"

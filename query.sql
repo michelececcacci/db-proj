@@ -115,3 +115,19 @@ ORDER BY random();
 SELECT u1.username AS U1, u2.username AS U2
 FROM UTENTE u1 FULL OUTER JOIN UTENTE u2 ON (True)
 ORDER BY random();
+-- name: GetLocationRec :many
+WITH recursive getSuperregions(idregione, superregione)
+AS(
+	(
+		select idregione, superregione
+		from regione
+	) union all (
+		select g.idregione, a.superregione
+		from regione g, getSuperregions a
+		where g.superregione = a.idregione
+	)
+)
+
+select nome
+from getSuperregions g join regione r on (g.superregione = r.idregione)
+where g.idregione = $1;

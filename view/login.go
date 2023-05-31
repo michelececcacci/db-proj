@@ -2,11 +2,13 @@ package view
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/util"
 	"github.com/michelececcacci/db-proj/view/components"
 )
 
@@ -14,7 +16,7 @@ type loginView struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
-	message    string
+	errorView  tea.Model
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -24,13 +26,12 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			isPresent, err := l.q.Authenticate(*l.ctx, l.getCurrentAuthParams())
 			if err != nil {
-				l.message = err.Error()
-				break
+				l.errorView, _ = l.errorView.Update(util.OptionalError{Err: err})
 			} else {
 				if isPresent == 1 {
-					l.message = "You are authenticated\n"
+					l.errorView, _ = l.errorView.Update(util.OptionalError{Message: "You are authenticated"})
 				} else {
-					l.message = "Wrong username or password\n"
+					l.errorView, _ = l.errorView.Update(util.OptionalError{Err: errors.New("wrong username or password")})
 				}
 			}
 		}
@@ -50,6 +51,7 @@ func newLoginView(ctx *context.Context, q *queries.Queries) loginView {
 		inputsView: components.NewMultipleInputsView(inputs),
 		ctx:        ctx,
 		q:          q,
+		errorView: components.NewErrorView(),
 	}
 }
 
@@ -60,7 +62,7 @@ func (l loginView) Init() tea.Cmd {
 func (l loginView) View() string {
 	sb := strings.Builder{}
 	sb.WriteString(l.inputsView.View())
-	sb.WriteString(l.message)
+	sb.WriteString(l.errorView.View())
 	return sb.String()
 }
 
