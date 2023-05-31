@@ -48,10 +48,10 @@ func (m mainView) Init() tea.Cmd {
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// TODO we don't need to update everything, but this is pretty useful for testing
 	var cmd tea.Cmd
-	m.help, cmd = m.help.Update(msg) // always updated
-	// m.loginView, cmd = m.loginView.Update(msg)
+	// m.help, cmd = m.help.Update(msg) // always updated
+	m.loginView, cmd = m.loginView.Update(msg)
 	// m.profileView, _ = m.profileView.Update(msg)
-	m.signUpView, cmd = m.signUpView.Update(msg)
+	// m.signUpView, cmd = m.signUpView.Update(msg)
 	// m.feedView, cmd = m.feedView.Update(msg)
 	// m.passwordResetView, cmd = m.passwordResetView.Update(msg)
 	return m, cmd
@@ -60,8 +60,8 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m mainView) View() string {
 	var sb = strings.Builder{}
 	// sb.WriteString(m.profileView.View())
-	// sb.WriteString(m.loginView.View())
-	sb.WriteString(m.signUpView.View())
+	sb.WriteString(m.loginView.View())
+	// sb.WriteString(m.signUpView.View())
 	// sb.WriteString(m.passwordResetView.View())
 	// sb.WriteString(m.feedView.View())
 	sb.WriteString(m.help.View())
