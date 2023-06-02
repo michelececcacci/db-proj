@@ -11,8 +11,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view/components"
-	"github.com/michelececcacci/db-proj/view/signup"
 	login "github.com/michelececcacci/db-proj/view/login"
+	"github.com/michelececcacci/db-proj/view/signup"
 )
 
 type viewOption func(*mainView)
@@ -26,6 +26,8 @@ type mainView struct {
 	feedView          tea.Model
 	help              tea.Model
 	passwordResetView tea.Model
+	authUsername      string
+	authError         error
 }
 
 func NewMainView(options ...viewOption) mainView {
@@ -51,6 +53,8 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	// m.help, cmd = m.help.Update(msg) // always updated
 	m.loginView, cmd = m.loginView.Update(msg)
+	lv := m.loginView.(loginView)
+	m.authUsername, m.authError = lv.GetAuthenticatedUsername()
 	// m.profileView, _ = m.profileView.Update(msg)
 	// m.signUpView, cmd = m.signUpView.Update(msg)
 	// m.feedView, cmd = m.feedView.Update(msg)
@@ -81,4 +85,11 @@ func WithQueries(q *queries.Queries) viewOption {
 	return func(m *mainView) {
 		m.q = q
 	}
+}
+
+type loginView interface {
+	Init() tea.Cmd
+	Update(tea.Msg) (tea.Model, tea.Cmd)
+	View() string
+	GetAuthenticatedUsername() (string, error)
 }

@@ -16,7 +16,8 @@ type loginView struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
-	errorView tea.Model
+	errorView  tea.Model
+	username   *string
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -31,6 +32,8 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				if isPresent == 1 {
 					l.errorView, _ = l.errorView.Update(util.OptionalError{Message: "You are authenticated"})
+					s := l.getCurrentAuthParams().Username
+					l.username = &s
 				} else {
 					l.errorView, _ = l.errorView.Update(util.OptionalError{Err: errors.New("wrong username or password")})
 				}
@@ -52,7 +55,7 @@ func New(ctx *context.Context, q *queries.Queries) loginView {
 		inputsView: components.NewMultipleInputsView(inputs),
 		ctx:        ctx,
 		q:          q,
-		errorView: components.NewErrorView(),
+		errorView:  components.NewErrorView(),
 	}
 }
 
@@ -67,10 +70,16 @@ func (l loginView) View() string {
 	return sb.String()
 }
 
-func (r loginView) getCurrentAuthParams() queries.AuthenticateParams {
+func (l loginView) getCurrentAuthParams() queries.AuthenticateParams {
 	return queries.AuthenticateParams{
-		Username: r.inputsView.Inputs[0].Value(),
-		Password: r.inputsView.Inputs[1].Value(),
+		Username: l.inputsView.Inputs[0].Value(),
+		Password: l.inputsView.Inputs[1].Value(),
 	}
 }
 
+func (l loginView) GetAuthenticatedUsername() (string, error) {
+	if l.username == nil {
+		return "", nil
+	}
+	return *l.username, errors.New("not authenticated")
+}

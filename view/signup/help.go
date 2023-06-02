@@ -12,6 +12,6 @@ func (h help) Update(tea.Msg) (tea.Model, tea.Cmd) {
 	return h, nil
 }
 
-func (h help ) View() string {
+func (h help) View() string {
 	return "Press ctrl+l to select locations"
 }

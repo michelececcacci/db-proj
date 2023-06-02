@@ -23,8 +23,8 @@ type signUp struct {
 	errorView         tea.Model
 	locations         list.Model
 	selectingLocation bool
-	selectedLocation sql.NullInt32
-	help tea.Model
+	selectedLocation  sql.NullInt32
+	help              tea.Model
 }
 
 func (s signUp) View() string {
@@ -131,7 +131,7 @@ func New(ctx *context.Context, q *queries.Queries) signUp {
 		q:          q,
 		errorView:  components.NewErrorView(),
 		locations:  list.New(locations, list.NewDefaultDelegate(), 25, 25),
-		help: help{},
+		help:       help{},
 	}
 	s.locations.Title = "Select location"
 	return s
@@ -147,7 +147,7 @@ func (s signUp) getCurrentPasswordParams() queries.InsertPasswordParams {
 
 func (s signUp) submitMessage() error {
 	if len(s.inputsView.Inputs[1].Value()) == 0 {
-		return  errors.New("empty password")
+		return errors.New("empty password")
 	}
 	err := s.q.InsertUser(*s.ctx, s.getCurrentUserParams())
 	if err != nil {

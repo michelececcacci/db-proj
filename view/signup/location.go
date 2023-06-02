@@ -10,9 +10,9 @@ import (
 )
 
 type location struct {
-	id     int32
-	name   string
-	parent sql.NullInt32
+	id          int32
+	name        string
+	parent      sql.NullInt32
 	description string
 }
 
@@ -33,9 +33,9 @@ func toLocations(r []queries.Regione, q *queries.Queries, ctx *context.Context) 
 	for _, region := range r {
 		parents, _ := q.GetLocationRec(*ctx, region.Idregione)
 		l = append(l, location{
-			id:     region.Idregione,
-			parent: region.Superregione,
-			name:   region.Nome,
+			id:          region.Idregione,
+			parent:      region.Superregione,
+			name:        region.Nome,
 			description: strings.Join(parents, ","),
 		})
 	}
