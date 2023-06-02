@@ -16,7 +16,7 @@ type loginView struct {
 	inputsView components.MultipleInputsView
 	ctx        *context.Context
 	q          *queries.Queries
-	errorView  tea.Model
+	errorView tea.Model
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -27,6 +27,7 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			isPresent, err := l.q.Authenticate(*l.ctx, l.getCurrentAuthParams())
 			if err != nil {
 				l.errorView, _ = l.errorView.Update(util.OptionalError{Err: err})
+				break
 			} else {
 				if isPresent == 1 {
 					l.errorView, _ = l.errorView.Update(util.OptionalError{Message: "You are authenticated"})
@@ -42,7 +43,7 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return l, cmd
 }
 
-func newLoginView(ctx *context.Context, q *queries.Queries) loginView {
+func New(ctx *context.Context, q *queries.Queries) loginView {
 	inputs := []textinput.Model{
 		components.NewInput("username", 20),
 		components.NewInput("password", 20),
@@ -72,3 +73,4 @@ func (r loginView) getCurrentAuthParams() queries.AuthenticateParams {
 		Password: r.inputsView.Inputs[1].Value(),
 	}
 }
+

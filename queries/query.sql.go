@@ -32,6 +32,94 @@ func (q *Queries) Authenticate(ctx context.Context, arg AuthenticateParams) (int
 	return count, err
 }
 
+const checkIfUserStillInChat = `-- name: CheckIfUserStillInChat :one
+SELECT COUNT(*)
+FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
+WHERE M.USERNAME = $1
+	AND M.IDCHAT = $2
+	AND U.IDMEMBRO IS NULL
+`
+
+type CheckIfUserStillInChatParams struct {
+	Username string
+	Idchat   int32
+}
+
+func (q *Queries) CheckIfUserStillInChat(ctx context.Context, arg CheckIfUserStillInChatParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkIfUserStillInChat, arg.Username, arg.Idchat)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getAllPossibleFollowings = `-- name: GetAllPossibleFollowings :many
+SELECT u1.username AS U1, u2.username AS U2
+FROM UTENTE u1 FULL OUTER JOIN UTENTE u2 ON (True)
+ORDER BY random()
+`
+
+type GetAllPossibleFollowingsRow struct {
+	U1 sql.NullString
+	U2 sql.NullString
+}
+
+func (q *Queries) GetAllPossibleFollowings(ctx context.Context) ([]GetAllPossibleFollowingsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPossibleFollowings)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllPossibleFollowingsRow
+	for rows.Next() {
+		var i GetAllPossibleFollowingsRow
+		if err := rows.Scan(&i.U1, &i.U2); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllPossibleMembers = `-- name: GetAllPossibleMembers :many
+SELECT u.username AS username, c.IdChat AS idchat
+FROM UTENTE u FULL OUTER JOIN CHAT c ON (True)
+ORDER BY random()
+`
+
+type GetAllPossibleMembersRow struct {
+	Username sql.NullString
+	Idchat   sql.NullInt32
+}
+
+func (q *Queries) GetAllPossibleMembers(ctx context.Context) ([]GetAllPossibleMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPossibleMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllPossibleMembersRow
+	for rows.Next() {
+		var i GetAllPossibleMembersRow
+		if err := rows.Scan(&i.Username, &i.Idchat); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getFollowers = `-- name: GetFollowers :many
 SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS NULL
 `

@@ -12,6 +12,7 @@ import (
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view/components"
 	"github.com/michelececcacci/db-proj/view/signup"
+	login "github.com/michelececcacci/db-proj/view/login"
 )
 
 type viewOption func(*mainView)
@@ -32,7 +33,7 @@ func NewMainView(options ...viewOption) mainView {
 	for _, opt := range options {
 		opt(&m)
 	}
-	m.loginView = newLoginView(&m.ctx, m.q)
+	m.loginView = login.New(&m.ctx, m.q)
 	m.profileView = newProfileView(&m.ctx, m.q, "user1")
 	m.signUpView = signup.New(&m.ctx, m.q)
 	m.feedView = NewFeedView(&m.ctx, m.q)
