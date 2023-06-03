@@ -306,3 +306,8 @@ insert into REGIONE (Nome, Superregione) values
 ('New York City', 17),
 ('Buffalo', 17),
 ('Brooklyn', 18);
+
+insert into CONTENUTO (Autore, Testo, Titolo, IdContenuto, TimestampPubblicazione) values 
+('user1', 'hi everyone', 'hi', 1, '1999-01-08 04:05:06'),
+('user2', 'user2 post', 'something', 1, '1999-01-08 04:05:06'),
+('user2', 'user2 post 2', 'something 2', 2, '1999-01-08 04:05:07');
