@@ -37,7 +37,7 @@ var (
 
 type pager struct {
 	content  string
-	title string
+	title    string
 	ready    bool
 	viewport viewport.Model
 }

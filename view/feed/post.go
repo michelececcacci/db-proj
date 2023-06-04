@@ -11,7 +11,7 @@ import (
 type post struct {
 	Author    string
 	Content   string
-	PostTitle     string
+	PostTitle string
 	upvotes   int
 	timestamp time.Time
 }
@@ -36,10 +36,10 @@ func toPost(result []queries.GetFullFeedRow) []list.Item {
 			title = p.Titolo.String
 		}
 		posts = append(posts, post{
-			Author:  p.Autore,
-			PostTitle:   title,
-			Content: p.Testo,
-			upvotes: 0,
+			Author:    p.Autore,
+			PostTitle: title,
+			Content:   p.Testo,
+			upvotes:   0,
 		})
 	}
 	return posts

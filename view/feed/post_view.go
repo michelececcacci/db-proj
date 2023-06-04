@@ -12,11 +12,11 @@ type postView struct {
 func (p postView) Init() tea.Cmd { return nil }
 
 func (p postView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return p, nil
+	return p.viewport.Update(msg)
 }
 
 func (p postView) View() string {
-	return "Press ctrl+b to go back to the feed\n"
+	return p.viewport.View() + "Press ctrl+b to go back to the feed\n"
 }
 
 func newPostView(p post) postView {

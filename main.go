@@ -27,10 +27,13 @@ func run() error {
 		return err
 	}
 	qq := queries.New(db)
-	p := tea.NewProgram(view.NewMainView(
-		view.WithContext(context.Background()),
-		view.WithQueries(qq),
-	))
+	p := tea.NewProgram(
+		view.NewMainView(
+			view.WithContext(context.Background()),
+			view.WithQueries(qq)),
+		tea.WithAltScreen(),
+		tea.WithMouseCellMotion(),
+	)
 	_, err = p.Run()
 	if err != nil {
 		return err
