@@ -13,6 +13,7 @@ import (
 	"github.com/michelececcacci/db-proj/view/components"
 	login "github.com/michelececcacci/db-proj/view/login"
 	"github.com/michelececcacci/db-proj/view/signup"
+	feed "github.com/michelececcacci/db-proj/view/feed"
 )
 
 type viewOption func(*mainView)
@@ -36,9 +37,9 @@ func NewMainView(options ...viewOption) mainView {
 		opt(&m)
 	}
 	m.loginView = login.New(&m.ctx, m.q)
-	m.profileView = newProfileView(&m.ctx, m.q, "user1")
+	m.profileView = newProfileView(&m.ctx, m.q, "user1") // TODO CHANGE
 	m.signUpView = signup.New(&m.ctx, m.q)
-	m.feedView = NewFeedView(&m.ctx, m.q)
+	m.feedView = feed.New(&m.ctx, m.q, "user1") // TODO CHANGE
 	m.help = components.NewHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
 	return m

@@ -5,10 +5,9 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/list"
-	"github.com/charmbracelet/lipgloss"
-	"github.com/michelececcacci/db-proj/queries"
-
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/util"
 )
 
 type state int
@@ -16,10 +15,6 @@ type state int
 const (
 	followingState = iota
 	followersState
-)
-
-var (
-	docStyle = lipgloss.NewStyle().Margin(1, 2)
 )
 
 type user struct {
@@ -53,9 +48,9 @@ type profileView struct {
 
 func (p profileView) View() string {
 	if p.state == followersState {
-		return docStyle.Render(p.followers.View())
+		return util.ListStyle.Render(p.followers.View())
 	}
-	return docStyle.Render(p.following.View())
+	return util.ListStyle.Render(p.following.View())
 }
 
 func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

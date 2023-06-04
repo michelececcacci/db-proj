@@ -175,22 +175,12 @@ func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]s
 }
 
 const getFullFeed = `-- name: GetFullFeed :many
-SELECT autore, testo, idcontenuto, timestamppubblicazione, titolo, idregione, usernamepadre, idcontenutopadre, usernameseguace, usernameseguito, datainizio, datafine FROM CONTENUTO JOIN SEGUIRE ON SEGUIRE.usernameseguace = $1 WHERE SEGUIRE.DataFine = NULL
+SELECT titolo, autore FROM SEGUIRE JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL
 `
 
 type GetFullFeedRow struct {
-	Autore                 string
-	Testo                  string
-	Idcontenuto            string
-	Timestamppubblicazione time.Time
-	Titolo                 sql.NullString
-	Idregione              sql.NullInt32
-	Usernamepadre          sql.NullString
-	Idcontenutopadre       sql.NullString
-	Usernameseguace        string
-	Usernameseguito        string
-	Datainizio             time.Time
-	Datafine               sql.NullTime
+	Titolo sql.NullString
+	Autore string
 }
 
 func (q *Queries) GetFullFeed(ctx context.Context, usernameseguace string) ([]GetFullFeedRow, error) {
@@ -202,20 +192,7 @@ func (q *Queries) GetFullFeed(ctx context.Context, usernameseguace string) ([]Ge
 	var items []GetFullFeedRow
 	for rows.Next() {
 		var i GetFullFeedRow
-		if err := rows.Scan(
-			&i.Autore,
-			&i.Testo,
-			&i.Idcontenuto,
-			&i.Timestamppubblicazione,
-			&i.Titolo,
-			&i.Idregione,
-			&i.Usernamepadre,
-			&i.Idcontenutopadre,
-			&i.Usernameseguace,
-			&i.Usernameseguito,
-			&i.Datainizio,
-			&i.Datafine,
-		); err != nil {
+		if err := rows.Scan(&i.Titolo, &i.Autore); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
