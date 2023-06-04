@@ -32,16 +32,16 @@ func (m *Model) GetFollowing(usernameseguace string) ([]string, error) {
 }
 
 func (m *Model) InsertUser(arg queries.InsertUserParams) error {
-	return m.q.InsertUser(m.ctx, arg) 
-} 
+	return m.q.InsertUser(m.ctx, arg)
+}
 
 // create a new chat and create the first member of the chat
 func (m *Model) InsertChat(arg queries.InsertChatParams, creator string) error {
 	idChat, err := m.q.InsertChat(m.ctx, arg)
-  if err != nil {
-    return err
-  }
-  memberId, err := m.q.InsertMember(m.ctx, queries.InsertMemberParams{
+	if err != nil {
+		return err
+	}
+	memberId, err := m.q.InsertMember(m.ctx, queries.InsertMemberParams{
 		Dataentrata: time.Now(),
 		Username:    creator,
 		Idchat:      idChat,
@@ -50,7 +50,7 @@ func (m *Model) InsertChat(arg queries.InsertChatParams, creator string) error {
 			Valid: false,
 		},
 	})
-  return m.q.InsertAdmin(m.ctx, memberId)
+	return m.q.InsertAdmin(m.ctx, memberId)
 }
 
 func (m *Model) InsertFollower(arg queries.InsertFollowerParams) error {
@@ -80,14 +80,14 @@ func (m *Model) InsertNotAdminMember(username string, idChat int32, inserterAdmi
 		return 0, errors.New(fmt.Sprintf("The user %s is still member of chat %d", username, idChat))
 	}
 	member := queries.InsertMemberParams{
-			Dataentrata: time.Now(),
-			Username:    username,
-			Idchat:      idChat,
-			Amministratore: sql.NullInt32{
-				Int32: inserterAdmin,
-				Valid: true,
-			},
-		}
+		Dataentrata: time.Now(),
+		Username:    username,
+		Idchat:      idChat,
+		Amministratore: sql.NullInt32{
+			Int32: inserterAdmin,
+			Valid: true,
+		},
+	}
 	isValidAdmin, err := m.IsValidAdmin(inserterAdmin, idChat)
 	if isValidAdmin && err == nil {
 		return m.q.InsertMember(m.ctx, member)
@@ -99,7 +99,7 @@ func (m *Model) InsertNotAdminMember(username string, idChat int32, inserterAdmi
 // create an admin
 func (m *Model) InsertAdminMember(username string, idChat int32, inserterAdmin int32) (int32, error) {
 	memberId, err := m.InsertNotAdminMember(username, idChat, inserterAdmin)
-  if err != nil {
+	if err != nil {
 		return memberId, err
 	}
 	return memberId, m.q.InsertAdmin(m.ctx, memberId)

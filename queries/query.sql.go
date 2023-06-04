@@ -175,12 +175,16 @@ func (q *Queries) GetFollowing(ctx context.Context, usernameseguace string) ([]s
 }
 
 const getFullFeed = `-- name: GetFullFeed :many
-SELECT titolo, autore FROM SEGUIRE JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL
+SELECT titolo, autore, TimestampPubblicazione, Testo FROM SEGUIRE 
+JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  
+WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre IS NULL
 `
 
 type GetFullFeedRow struct {
-	Titolo sql.NullString
-	Autore string
+	Titolo                 sql.NullString
+	Autore                 string
+	Timestamppubblicazione time.Time
+	Testo                  string
 }
 
 func (q *Queries) GetFullFeed(ctx context.Context, usernameseguace string) ([]GetFullFeedRow, error) {
@@ -192,7 +196,12 @@ func (q *Queries) GetFullFeed(ctx context.Context, usernameseguace string) ([]Ge
 	var items []GetFullFeedRow
 	for rows.Next() {
 		var i GetFullFeedRow
-		if err := rows.Scan(&i.Titolo, &i.Autore); err != nil {
+		if err := rows.Scan(
+			&i.Titolo,
+			&i.Autore,
+			&i.Timestamppubblicazione,
+			&i.Testo,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -391,6 +400,47 @@ func (q *Queries) GetRandomUser(ctx context.Context) (string, error) {
 	var username string
 	err := row.Scan(&username)
 	return username, err
+}
+
+const getSpecificPost = `-- name: GetSpecificPost :many
+SELECT autore, testo, idcontenuto, timestamppubblicazione, titolo, idregione, usernamepadre, idcontenutopadre FROM CONTENUTO WHERE Autore = $1 AND IdContenuto = $2
+`
+
+type GetSpecificPostParams struct {
+	Autore      string
+	Idcontenuto string
+}
+
+func (q *Queries) GetSpecificPost(ctx context.Context, arg GetSpecificPostParams) ([]Contenuto, error) {
+	rows, err := q.db.QueryContext(ctx, getSpecificPost, arg.Autore, arg.Idcontenuto)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Contenuto
+	for rows.Next() {
+		var i Contenuto
+		if err := rows.Scan(
+			&i.Autore,
+			&i.Testo,
+			&i.Idcontenuto,
+			&i.Timestamppubblicazione,
+			&i.Titolo,
+			&i.Idregione,
+			&i.Usernamepadre,
+			&i.Idcontenutopadre,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const insertAdmin = `-- name: InsertAdmin :exec

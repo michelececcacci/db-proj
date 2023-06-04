@@ -2,9 +2,7 @@ package view
 
 import tea "github.com/charmbracelet/bubbletea"
 
-
 type authView struct {
-
 }
 
 func (a authView) Init() tea.Cmd {

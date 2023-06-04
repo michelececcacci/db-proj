@@ -11,9 +11,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view/components"
+	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
 	"github.com/michelececcacci/db-proj/view/signup"
-	feed "github.com/michelececcacci/db-proj/view/feed"
 )
 
 type viewOption func(*mainView)
@@ -52,7 +52,7 @@ func (m mainView) Init() tea.Cmd {
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// TODO we don't need to update everything, but this is pretty useful for testing
 	var cmd tea.Cmd
-	// m.help, cmd = m.help.Update(msg) // always updated
+	m.help, _ = m.help.Update(msg) // always updated
 	// m.loginView, cmd = m.loginView.Update(msg)
 	lv := m.loginView.(loginView)
 	m.authUsername, m.authError = lv.GetAuthenticatedUsername()

@@ -133,6 +133,10 @@ from getSuperregions g join regione r on (g.superregione = r.idregione)
 where g.idregione = $1;
 
 -- name: GetFullFeed :many
-SELECT titolo, autore, TimestampPubblicazione, testo data  FROM SEGUIRE 
+SELECT titolo, autore, TimestampPubblicazione, Testo FROM SEGUIRE 
 JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  
 WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre IS NULL;
+
+
+-- name: GetSpecificPost :many
+SELECT * FROM CONTENUTO WHERE Autore = $1 AND IdContenuto = $2;
