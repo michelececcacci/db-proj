@@ -33,15 +33,23 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return f, tea.Quit
+		case tea.KeyEnter:
+			if f.state == listState {
+				f.state = singlePostState
+				s := f.posts.SelectedItem()
+				post := s.(post)
+				f.postView = newPostView(post)
+			}
+		case tea.KeyCtrlB:
+			if f.state == singlePostState {
+				f.state = listState
+			}
 		}
 	}
-	f.posts, cmd = f.posts.Update(msg)
 	if f.state == listState {
-
+		f.posts, cmd = f.posts.Update(msg)
 	} else {
-		s := f.posts.SelectedItem()
-		post := s.(post)
-		f.postView = newPostView(post)
+		f.postView, cmd = f.postView.Update(msg)
 	}
 	return f, cmd
 }
@@ -50,7 +58,7 @@ func (f feedView) View() string {
 	if f.state == listState {
 		return util.ListStyle.Render(f.posts.View()) + "\n"
 	}
-	return "\n"
+	return f.postView.View()
 }
 
 func New(ctx *context.Context, q *queries.Queries, username string) feedView {

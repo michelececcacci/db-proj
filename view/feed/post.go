@@ -9,23 +9,23 @@ import (
 )
 
 type post struct {
-	author    string
-	content   string
-	title     string
+	Author    string
+	Content   string
+	PostTitle     string
 	upvotes   int
 	timestamp time.Time
 }
 
 func (p post) Title() string {
-	return p.title
+	return p.PostTitle
 }
 
 func (p post) FilterValue() string {
-	return p.title + p.author
+	return p.PostTitle + p.Author
 }
 
 func (p post) Description() string {
-	return fmt.Sprintf("Author: %s Title: %s", p.author, p.title)
+	return fmt.Sprintf("Author: %s Title: %s", p.Author, p.PostTitle)
 }
 
 func toPost(result []queries.GetFullFeedRow) []list.Item {
@@ -36,9 +36,9 @@ func toPost(result []queries.GetFullFeedRow) []list.Item {
 			title = p.Titolo.String
 		}
 		posts = append(posts, post{
-			author:  p.Autore,
-			title:   title,
-			content: p.Testo,
+			Author:  p.Autore,
+			PostTitle:   title,
+			Content: p.Testo,
 			upvotes: 0,
 		})
 	}
