@@ -37,8 +37,10 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if f.state == listState {
 				f.state = singlePostState
 				s := f.posts.SelectedItem()
-				post := s.(post)
-				f.postView = newPostView(post)
+				if s != nil {
+					post := s.(post)
+					f.postView = newPostView(post)
+				}
 			}
 		case tea.KeyCtrlB:
 			if f.state == singlePostState {
