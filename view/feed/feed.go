@@ -29,6 +29,9 @@ func (f feedView) Init() tea.Cmd { return nil }
 func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	// this message always needs to be passed down to the post view even when it's not focused
+	case tea.WindowSizeMsg:
+		f.postView, _ = f.postView.Update(msg)
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
