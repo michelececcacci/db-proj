@@ -58,7 +58,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.authUsername, m.authError = lv.GetAuthenticatedUsername()
 	// m.profileView, _ = m.profileView.Update(msg)
 	// m.signUpView, cmd = m.signUpView.Update(msg)
-	m.feedView, cmd = m.feedView.Update(msg)
+	m.feedView, cmd = m.feedView.Update(msg) // always updated because of screen change messages
 	// m.passwordResetView, cmd = m.passwordResetView.Update(msg)
 	return m, cmd
 }
@@ -70,7 +70,7 @@ func (m mainView) View() string {
 	// sb.WriteString(m.signUpView.View())
 	// sb.WriteString(m.passwordResetView.View())
 	sb.WriteString(m.feedView.View())
-	sb.WriteString(m.help.View())
+	// sb.WriteString(m.help.View())
 	return sb.String()
 }
 

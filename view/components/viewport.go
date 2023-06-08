@@ -25,7 +25,7 @@ var (
 	titleStyle = func() lipgloss.Style {
 		b := lipgloss.RoundedBorder()
 		b.Right = "├"
-		return lipgloss.NewStyle().BorderStyle(b).Padding(0, 1)
+		return lipgloss.NewStyle().BorderStyle(b).Padding(0, 0)
 	}()
 
 	infoStyle = func() lipgloss.Style {
@@ -123,7 +123,7 @@ func (m pager) footerView() string {
 func NewPager(title, content string) pager {
 	p := pager{
 		content: content,
+		title: title,
 	}
-	p.title = title
 	return p
 }

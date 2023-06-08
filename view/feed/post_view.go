@@ -18,7 +18,7 @@ func (p postView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p postView) View() string {
-	return p.viewport.View() + "\nPress ctrl+b to go back to the feed\n"
+	return p.viewport.View() // DO NOT ADD ANYTHING HERE
 }
 
 func newPostView(p post, size tea.Msg) postView {
