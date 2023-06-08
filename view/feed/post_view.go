@@ -12,16 +12,20 @@ type postView struct {
 func (p postView) Init() tea.Cmd { return nil }
 
 func (p postView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return p.viewport.Update(msg)
+	var cmd tea.Cmd
+	p.viewport, cmd = p.viewport.Update(msg)
+	return p, cmd
 }
 
 func (p postView) View() string {
-	return p.viewport.View() + "Press ctrl+b to go back to the feed\n"
+	return p.viewport.View() + "\nPress ctrl+b to go back to the feed\n"
 }
 
-func newPostView(p post) postView {
+func newPostView(p post, size tea.Msg) postView {
 	pv := postView{
 		viewport: components.NewPager(p.PostTitle, p.Content),
 	}
-	return pv
+	updated, _ := pv.Update(size)
+	postView := updated.(postView)
+	return postView
 }

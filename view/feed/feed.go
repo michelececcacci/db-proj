@@ -22,6 +22,7 @@ type feedView struct {
 	ctx      *context.Context
 	state    state
 	postView tea.Model
+	lastWindowSize tea.Msg // needed to init the viewport
 }
 
 func (f feedView) Init() tea.Cmd { return nil }
@@ -31,6 +32,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	// this message always needs to be passed down to the post view even when it's not focused
 	case tea.WindowSizeMsg:
+		f.lastWindowSize = msg
 		f.postView, _ = f.postView.Update(msg)
 	case tea.KeyMsg:
 		switch msg.Type {
@@ -42,7 +44,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				s := f.posts.SelectedItem()
 				if s != nil {
 					post := s.(post)
-					f.postView = newPostView(post)
+					f.postView = newPostView(post, f.lastWindowSize)
 				}
 			}
 		case tea.KeyCtrlB:
@@ -73,7 +75,7 @@ func New(ctx *context.Context, q *queries.Queries, username string) feedView {
 		q:        q,
 		posts:    list.New(toPost(rawPosts), list.NewDefaultDelegate(), 40, 25),
 		state:    listState,
-		postView: newPostView(post{}),
+		postView: newPostView(post{}, nil),
 	}
 	return f
 }
