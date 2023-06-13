@@ -13,6 +13,7 @@ require (
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
+	github.com/brianvoe/gofakeit/v6 v6.22.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/corpix/uarand v0.0.0-20170723150923-031be390f409 // indirect
 	github.com/gobuffalo/envy v1.6.5 // indirect
