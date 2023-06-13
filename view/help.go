@@ -14,6 +14,8 @@ import (
 type keyMap struct {
 	Login  key.Binding
 	Signup key.Binding
+	Profile key.Binding
+	Feed key.Binding
 	Help   key.Binding
 	Quit   key.Binding
 }
@@ -29,6 +31,7 @@ func (k keyMap) ShortHelp() []key.Binding {
 func (k keyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Login, k.Signup}, // first column
+		{k.Profile, k.Feed}, // first column
 		{k.Help, k.Quit},    // second column
 	}
 }
@@ -49,6 +52,14 @@ var keys = keyMap{
 	Quit: key.NewBinding(
 		key.WithKeys("q", "esc", "ctrl+c"),
 		key.WithHelp("q", "quit"),
+	),
+	Feed: key.NewBinding(
+			key.WithKeys("ctrl+f"),
+		key.WithHelp("ctrl+f", "feed"),
+	),
+	Profile: key.NewBinding(
+		key.WithKeys("ctrl+p"),
+		key.WithHelp("ctrl+p", "profile"),
 	),
 }
 

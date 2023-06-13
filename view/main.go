@@ -66,6 +66,17 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.feedView, cmd = m.feedView.Update(msg) // always updated because of screen change messages
+	case tea.KeyMsg:
+		switch msg.Type {
+		case tea.KeyCtrlL:
+			m.state = loginState
+		case tea.KeyCtrlS:
+			m.state = signupState
+		case tea.KeyCtrlP:
+			m.state = profileState
+		case tea.KeyCtrlF:
+			m.state = feedState
+		}
 	}
 	m.help, _ = m.help.Update(msg) // always updated
 	switch m.state {
