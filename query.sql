@@ -34,6 +34,11 @@ INSERT INTO AMMINISTRATORE (
   IdMembro
 ) VALUES ( $1 );
 
+-- name: InsertExit :exec
+INSERT INTO USCITA (
+IdMembro, DataUscita, Motivazione, IdMembroResponsabile
+) VALUES ($1, $2, $3, $4); 
+
 -- name: GetFollowers :many
 SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS NULL;
 
@@ -44,6 +49,18 @@ SELECT usernameseguito FROM SEGUIRE WHERE usernameseguace = $1 AND DataFine IS N
 SELECT IdMembro
 FROM MEMBRO
 WHERE DataEntrata = $1 AND Username = $2 AND IdChat = $3;
+
+-- name: GetCurrentMember :one
+SELECT IdMembro, DataEntrata
+FROM MEMBRO
+WHERE Username = $1 AND IdChat = $2
+ORDER BY DataEntrata ASC
+LIMIT 1;
+
+-- name: GetDataOfMember :one 
+SELECT username, idchat, DataEntrata
+FROM MEMBRO
+WHERE IdMembro = $1;
 
 -- name: IsValidAdmin :one
 SELECT COUNT(m.IdMembro)
@@ -72,6 +89,13 @@ FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
 WHERE M.USERNAME = $1
 	AND M.IDCHAT = $2
 	AND U.IDMEMBRO IS NULL;
+
+-- name: CheckIfMemberStillInChat :one 
+SELECT M.DataEntrata
+FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
+WHERE M.IDMEMBRO = $1
+	AND U.IDMEMBRO IS NULL;
+
 
 -- random accesses
 
@@ -115,6 +139,12 @@ ORDER BY random();
 SELECT u1.username AS U1, u2.username AS U2
 FROM UTENTE u1 FULL OUTER JOIN UTENTE u2 ON (True)
 ORDER BY random();
+
+-- name: GetRandomMemberInChat :one
+SELECT m.IdMembro, m.DataEntrata
+FROM MEMBRO m full outer join USCITA u ON (m.IdMembro = u.IdMembro)
+WHERE u.IdMembro IS NULL AND m.IdChat = $1;
+
 -- name: GetLocationRec :many
 WITH recursive getSuperregions(idregione, superregione)
 AS(

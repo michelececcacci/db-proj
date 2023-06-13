@@ -32,6 +32,20 @@ func (q *Queries) Authenticate(ctx context.Context, arg AuthenticateParams) (int
 	return count, err
 }
 
+const checkIfMemberStillInChat = `-- name: CheckIfMemberStillInChat :one
+SELECT M.DataEntrata
+FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
+WHERE M.IDMEMBRO = $1
+	AND U.IDMEMBRO IS NULL
+`
+
+func (q *Queries) CheckIfMemberStillInChat(ctx context.Context, idmembro int32) (sql.NullTime, error) {
+	row := q.db.QueryRowContext(ctx, checkIfMemberStillInChat, idmembro)
+	var dataentrata sql.NullTime
+	err := row.Scan(&dataentrata)
+	return dataentrata, err
+}
+
 const checkIfUserStillInChat = `-- name: CheckIfUserStillInChat :one
 SELECT COUNT(*)
 FROM MEMBRO M FULL OUTER JOIN USCITA U ON (M.IDMEMBRO = U.IDMEMBRO)
@@ -118,6 +132,50 @@ func (q *Queries) GetAllPossibleMembers(ctx context.Context) ([]GetAllPossibleMe
 		return nil, err
 	}
 	return items, nil
+}
+
+const getCurrentMember = `-- name: GetCurrentMember :one
+SELECT IdMembro, DataEntrata
+FROM MEMBRO
+WHERE Username = $1 AND IdChat = $2
+ORDER BY DataEntrata ASC
+LIMIT 1
+`
+
+type GetCurrentMemberParams struct {
+	Username string
+	Idchat   int32
+}
+
+type GetCurrentMemberRow struct {
+	Idmembro    int32
+	Dataentrata time.Time
+}
+
+func (q *Queries) GetCurrentMember(ctx context.Context, arg GetCurrentMemberParams) (GetCurrentMemberRow, error) {
+	row := q.db.QueryRowContext(ctx, getCurrentMember, arg.Username, arg.Idchat)
+	var i GetCurrentMemberRow
+	err := row.Scan(&i.Idmembro, &i.Dataentrata)
+	return i, err
+}
+
+const getDataOfMember = `-- name: GetDataOfMember :one
+SELECT username, idchat, DataEntrata
+FROM MEMBRO
+WHERE IdMembro = $1
+`
+
+type GetDataOfMemberRow struct {
+	Username    string
+	Idchat      int32
+	Dataentrata time.Time
+}
+
+func (q *Queries) GetDataOfMember(ctx context.Context, idmembro int32) (GetDataOfMemberRow, error) {
+	row := q.db.QueryRowContext(ctx, getDataOfMember, idmembro)
+	var i GetDataOfMemberRow
+	err := row.Scan(&i.Username, &i.Idchat, &i.Dataentrata)
+	return i, err
 }
 
 const getFollowers = `-- name: GetFollowers :many
@@ -386,6 +444,24 @@ func (q *Queries) GetRandomMember(ctx context.Context) (int32, error) {
 	return idmembro, err
 }
 
+const getRandomMemberInChat = `-- name: GetRandomMemberInChat :one
+SELECT m.IdMembro, m.DataEntrata
+FROM MEMBRO m full outer join USCITA u ON (m.IdMembro = u.IdMembro)
+WHERE u.IdMembro IS NULL AND m.IdChat = $1
+`
+
+type GetRandomMemberInChatRow struct {
+	Idmembro    sql.NullInt32
+	Dataentrata sql.NullTime
+}
+
+func (q *Queries) GetRandomMemberInChat(ctx context.Context, idchat int32) (GetRandomMemberInChatRow, error) {
+	row := q.db.QueryRowContext(ctx, getRandomMemberInChat, idchat)
+	var i GetRandomMemberInChatRow
+	err := row.Scan(&i.Idmembro, &i.Dataentrata)
+	return i, err
+}
+
 const getRandomUser = `-- name: GetRandomUser :one
 
 SELECT Username
@@ -470,6 +546,29 @@ func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) (int32, 
 	var idchat int32
 	err := row.Scan(&idchat)
 	return idchat, err
+}
+
+const insertExit = `-- name: InsertExit :exec
+INSERT INTO USCITA (
+IdMembro, DataUscita, Motivazione, IdMembroResponsabile
+) VALUES ($1, $2, $3, $4)
+`
+
+type InsertExitParams struct {
+	Idmembro             int32
+	Datauscita           time.Time
+	Motivazione          sql.NullString
+	Idmembroresponsabile sql.NullInt32
+}
+
+func (q *Queries) InsertExit(ctx context.Context, arg InsertExitParams) error {
+	_, err := q.db.ExecContext(ctx, insertExit,
+		arg.Idmembro,
+		arg.Datauscita,
+		arg.Motivazione,
+		arg.Idmembroresponsabile,
+	)
+	return err
 }
 
 const insertFollower = `-- name: InsertFollower :exec
