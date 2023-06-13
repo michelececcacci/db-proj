@@ -10,7 +10,6 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
-	"github.com/michelececcacci/db-proj/view/components"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
 	profile "github.com/michelececcacci/db-proj/view/profile"
@@ -53,7 +52,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.profileView = profile.New(&m.ctx, m.q, "user1") // TODO CHANGE
 	m.signUpView = signup.New(&m.ctx, m.q)
 	m.feedView = feed.New(&m.ctx, m.q, "user1") // TODO CHANGE
-	m.help = components.NewHelpComponent()
+	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
 	return m
 }
@@ -100,7 +99,7 @@ func (m mainView) View() string {
 	case feedState:
 		sb.WriteString(m.feedView.View())
 	}
-	// sb.WriteString(m.help.View())
+	sb.WriteString(m.help.View())
 	return sb.String()
 }
 

@@ -1,4 +1,4 @@
-package components
+package view
 
 import (
 	"strings"
@@ -12,12 +12,10 @@ import (
 // keyMap defines a set of keybindings. To work for help it must satisfy
 // key.Map. It could also very easily be a map[string]key.Binding.
 type keyMap struct {
-	Up    key.Binding
-	Down  key.Binding
-	Left  key.Binding
-	Right key.Binding
-	Help  key.Binding
-	Quit  key.Binding
+	Login  key.Binding
+	Signup key.Binding
+	Help   key.Binding
+	Quit   key.Binding
 }
 
 // ShortHelp returns keybindings to be shown in the mini help view. It's part
@@ -30,27 +28,19 @@ func (k keyMap) ShortHelp() []key.Binding {
 // key.Map interface.
 func (k keyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.Up, k.Down, k.Left, k.Right}, // first column
-		{k.Help, k.Quit},                // second column
+		{k.Login, k.Signup}, // first column
+		{k.Help, k.Quit},    // second column
 	}
 }
 
 var keys = keyMap{
-	Up: key.NewBinding(
-		key.WithKeys("up", "k"),
-		key.WithHelp("↑/k", "move up"),
+	Login: key.NewBinding(
+		key.WithKeys("ctrl+l"),
+		key.WithHelp("ctrl+l", "login"),
 	),
-	Down: key.NewBinding(
-		key.WithKeys("down", "j"),
-		key.WithHelp("↓/j", "move down"),
-	),
-	Left: key.NewBinding(
-		key.WithKeys("left", "h"),
-		key.WithHelp("←/h", "move left"),
-	),
-	Right: key.NewBinding(
-		key.WithKeys("right", "l"),
-		key.WithHelp("→/l", "move right"),
+	Signup: key.NewBinding(
+		key.WithKeys("ctrl+s"),
+		key.WithHelp("ctrl+s", "signup"),
 	),
 	Help: key.NewBinding(
 		key.WithKeys("?"),
@@ -70,7 +60,7 @@ type helpComponent struct {
 	quitting   bool
 }
 
-func NewHelpComponent() helpComponent {
+func newHelpComponent() helpComponent {
 	return helpComponent{
 		keys:       keys,
 		help:       help.New(),
@@ -91,14 +81,6 @@ func (m helpComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch {
-		case key.Matches(msg, m.keys.Up):
-			m.lastKey = "↑"
-		case key.Matches(msg, m.keys.Down):
-			m.lastKey = "↓"
-		case key.Matches(msg, m.keys.Left):
-			m.lastKey = "←"
-		case key.Matches(msg, m.keys.Right):
-			m.lastKey = "→"
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Quit):
