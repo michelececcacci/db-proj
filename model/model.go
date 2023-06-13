@@ -104,3 +104,36 @@ func (m *Model) InsertAdminMember(username string, idChat int32, inserterAdmin i
 	}
 	return memberId, m.q.InsertAdmin(m.ctx, memberId)
 }
+
+func (m Model) ExileMember(memberId int32, exitDate time.Time, removerAdminId int32, motivation sql.NullString) error {
+	// check if the user is member of the chat
+	nullableJoinDate, err := m.q.CheckIfMemberStillInChat(m.ctx, memberId)
+	if err != nil {
+		return err
+	}
+	if !nullableJoinDate.Valid {
+		return errors.New("The user is not member of the chat\n")
+	}
+	joinDate := nullableJoinDate.Time
+	if exitDate.Before(joinDate) {
+		return errors.New("The exit date of the member is before join date")
+	}
+	return m.q.InsertExit(m.ctx, queries.InsertExitParams{
+		Idmembro:             memberId,
+		Datauscita:           exitDate,
+		Motivazione:          motivation,
+		Idmembroresponsabile: sql.NullInt32{Valid: true, Int32: removerAdminId},
+	})
+}
+
+func (m Model) GetMemberData(memberId int32) (queries.GetDataOfMemberRow, error) {
+	return m.q.GetDataOfMember(m.ctx, memberId)
+}
+
+func (m Model) CheckIfUserStillInChat(username string, idchat int32) (bool, error) {
+	count, err := m.q.CheckIfUserStillInChat(m.ctx, queries.CheckIfUserStillInChatParams{
+		Username: username,
+		Idchat:   idchat,
+	})
+	return count == 1, err
+}

@@ -7,6 +7,8 @@ import (
 	"log"
 
 	"github.com/icrowley/fake"
+
+	"github.com/brianvoe/gofakeit/v6"
 	_ "github.com/lib/pq"
 	"github.com/michelececcacci/db-proj/model"
 	"github.com/michelececcacci/db-proj/queries"
@@ -35,6 +37,7 @@ func run() error {
 	populateChats(model, 50)
 	populateMembers(model, 20, true)
 	populateMembers(model, 7000, false)
+	exileMembers(model, 100)
 	return nil
 }
 
@@ -125,3 +128,33 @@ func populateMembers(m model.Model, n int, asAdmin bool) {
 		fmt.Println("We couldn't create all members")
 	}
 }
+
+func exileMembers(m model.Model, n int) {
+	for i := 0; i < n; i++ {
+		chat, err := m.GetRandomChat()
+		if err != nil {
+			fmt.Println(err)
+		}
+		sqlMember, sqlDate, err := m.GetRandomCurrentMemberInChat(chat)
+		if err != nil {
+			fmt.Println(err)
+		}
+		member := sqlMember.Int32
+		joinDate := sqlDate.Time
+		admin, err := m.GetRandomAdminInChat(chat)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = m.ExileMember(member,
+			gofakeit.DateRange(joinDate, time.Now()),
+			admin,
+			sql.NullString{
+				String: gofakeit.Quote(),
+				Valid:  true,
+			})
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
