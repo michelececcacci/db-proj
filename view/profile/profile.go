@@ -1,4 +1,4 @@
-package view
+package profile
 
 import (
 	"context"
@@ -74,7 +74,7 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				selected = p.following.SelectedItem()
 			}
 			if selected != nil {
-				return newProfileView(p.ctx, p.q, selected.FilterValue()), nil
+				return New(p.ctx, p.q, selected.FilterValue()), nil
 			}
 		}
 	case tea.WindowSizeMsg:
@@ -91,7 +91,7 @@ func (p profileView) Init() tea.Cmd {
 	return nil
 }
 
-func newProfileView(ctx *context.Context, q *queries.Queries, username string) profileView {
+func New(ctx *context.Context, q *queries.Queries, username string) profileView {
 	following, _ := q.GetFollowing(*ctx, username)
 	followers, _ := q.GetFollowers(*ctx, username)
 	p := profileView{

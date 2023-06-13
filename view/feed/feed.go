@@ -17,12 +17,12 @@ const (
 )
 
 type feedView struct {
-	posts    list.Model
-	q        *queries.Queries
-	ctx      *context.Context
-	state    state
-	postView tea.Model
-	lastWindowSize tea.Msg // needed to init the viewport
+	posts          list.Model
+	q              *queries.Queries
+	ctx            *context.Context
+	state          state
+	postView       tea.Model
+	lastWindowSize tea.WindowSizeMsg // needed to init the viewport
 }
 
 func (f feedView) Init() tea.Cmd { return nil }

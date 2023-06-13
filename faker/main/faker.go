@@ -157,4 +157,3 @@ func exileMembers(m model.Model, n int) {
 		}
 	}
 }
-

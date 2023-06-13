@@ -123,7 +123,7 @@ func (m pager) footerView() string {
 func NewPager(title, content string) pager {
 	p := pager{
 		content: content,
-		title: title,
+		title:   title,
 	}
 	return p
 }

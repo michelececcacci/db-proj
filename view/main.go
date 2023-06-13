@@ -13,10 +13,21 @@ import (
 	"github.com/michelececcacci/db-proj/view/components"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
+	profile "github.com/michelececcacci/db-proj/view/profile"
 	"github.com/michelececcacci/db-proj/view/signup"
 )
 
 type viewOption func(*mainView)
+
+type state int
+
+const (
+	loginState state = iota
+	profileState
+	signupState
+	feedState
+	passwordResetState
+)
 
 type mainView struct {
 	ctx               context.Context
@@ -29,6 +40,7 @@ type mainView struct {
 	passwordResetView tea.Model
 	authUsername      string
 	authError         error
+	state             state
 }
 
 func NewMainView(options ...viewOption) mainView {
@@ -36,8 +48,9 @@ func NewMainView(options ...viewOption) mainView {
 	for _, opt := range options {
 		opt(&m)
 	}
+	m.state = loginState // users need to login on startup
 	m.loginView = login.New(&m.ctx, m.q)
-	m.profileView = newProfileView(&m.ctx, m.q, "user1") // TODO CHANGE
+	m.profileView = profile.New(&m.ctx, m.q, "user1") // TODO CHANGE
 	m.signUpView = signup.New(&m.ctx, m.q)
 	m.feedView = feed.New(&m.ctx, m.q, "user1") // TODO CHANGE
 	m.help = components.NewHelpComponent()
@@ -50,26 +63,43 @@ func (m mainView) Init() tea.Cmd {
 }
 
 func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	// TODO we don't need to update everything, but this is pretty useful for testing
 	var cmd tea.Cmd
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.feedView, cmd = m.feedView.Update(msg) // always updated because of screen change messages
+	}
 	m.help, _ = m.help.Update(msg) // always updated
-	// m.loginView, cmd = m.loginView.Update(msg)
-	lv := m.loginView.(loginView)
-	m.authUsername, m.authError = lv.GetAuthenticatedUsername()
-	// m.profileView, _ = m.profileView.Update(msg)
-	// m.signUpView, cmd = m.signUpView.Update(msg)
-	m.feedView, cmd = m.feedView.Update(msg) // always updated because of screen change messages
-	// m.passwordResetView, cmd = m.passwordResetView.Update(msg)
+	switch m.state {
+	case loginState:
+		m.loginView, cmd = m.loginView.Update(msg)
+		lv := m.loginView.(loginView)
+		m.authUsername, m.authError = lv.GetAuthenticatedUsername()
+	case profileState:
+		m.profileView, _ = m.profileView.Update(msg)
+	case signupState:
+		m.signUpView, cmd = m.signUpView.Update(msg)
+	case feedState:
+		m.feedView, cmd = m.feedView.Update(msg)
+	case passwordResetState:
+		m.passwordResetView, cmd = m.passwordResetView.Update(msg)
+	}
 	return m, cmd
 }
 
 func (m mainView) View() string {
 	var sb = strings.Builder{}
-	// sb.WriteString(m.profileView.View())
-	// sb.WriteString(m.loginView.View())
-	// sb.WriteString(m.signUpView.View())
-	// sb.WriteString(m.passwordResetView.View())
-	sb.WriteString(m.feedView.View())
+	switch m.state {
+	case loginState:
+		sb.WriteString(m.loginView.View())
+	case profileState:
+		sb.WriteString(m.profileView.View())
+	case signupState:
+		sb.WriteString(m.signUpView.View())
+	case passwordResetState:
+		sb.WriteString(m.passwordResetView.View())
+	case feedState:
+		sb.WriteString(m.feedView.View())
+	}
 	// sb.WriteString(m.help.View())
 	return sb.String()
 }
