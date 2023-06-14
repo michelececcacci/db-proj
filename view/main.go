@@ -97,7 +97,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m mainView) View() string {
-	var sb = strings.Builder{}
+	sb := strings.Builder{}
 	switch m.state {
 	case loginState:
 		sb.WriteString(m.loginView.View())
@@ -110,7 +110,10 @@ func (m mainView) View() string {
 	case feedState:
 		sb.WriteString(m.feedView.View())
 	}
-	sb.WriteString(m.help.View())
+	if m.state != feedState {
+		sb.WriteString(m.help.View()) // we can't render both the viewport  and the help component
+		// this is a bit of an hack and can surely be achieved in a cleaner way
+	}
 	return sb.String()
 }
 

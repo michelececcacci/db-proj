@@ -6,11 +6,9 @@ import (
 	"github.com/michelececcacci/db-proj/util"
 )
 
-var (
-	errorStyle = lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#fa1111"))
-)
+var errorStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#fa1111"))
 
 type errorView struct {
 	message string
