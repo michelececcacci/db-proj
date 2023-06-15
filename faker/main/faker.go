@@ -161,4 +161,3 @@ func exitMembers(m model.Model, n int, exile bool) {
 		}
 	}
 }
-

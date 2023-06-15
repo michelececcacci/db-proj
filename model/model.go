@@ -149,3 +149,33 @@ func (m Model) CheckIfUserStillInChat(username string, idchat int32) (bool, erro
 func (m Model) GetFullFeed(username string) ([]queries.GetFullFeedRow, error) {
 	return m.q.GetFullFeed(m.ctx, username)
 }
+
+func (m Model) GetCurrentChats(username string) ([]int32, error) {
+	var currentIds []int32
+	res, err := m.q.GetChatIds(m.ctx, username)
+	if err != nil {
+		return nil, err
+	}
+	for _, r := range res {
+		ok, err := m.CheckIfUserStillInChat(username, r.Idchat)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			currentIds = append(currentIds, r.Idchat)
+		}
+	}
+	return currentIds, nil
+}
+
+func (m Model) GetChatInfos(id int32) (queries.GetChatInfosRow, error) {
+	return m.q.GetChatInfos(m.ctx, id)
+}
+
+func (m Model) InsertMessage(message queries.InsertMessageParams) error {
+	return m.q.InsertMessage(m.ctx, message)
+}
+
+func (m Model) GetChatMessages(idChat int32) ([]queries.GetChatMessagesRow, error) {
+	return m.q.GetChatMessages(m.ctx, idChat)
+}

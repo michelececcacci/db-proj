@@ -175,3 +175,15 @@ WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre I
 
 -- name: GetSpecificPost :many
 SELECT * FROM CONTENUTO WHERE Autore = $1 AND IdContenuto = $2;
+
+-- name: InsertMessage :exec
+INSERT INTO MESSAGGIO (Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3);
+
+-- name: GetChatIds :many
+SELECT IdMembro, IdChat FROM MEMBRO WHERE Username = $1;
+
+-- name: GetChatInfos :one
+SELECT Nome, Descrizione FROM CHAT WHERE idChat = $1;
+
+-- name: GetChatMessages :many
+SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1;

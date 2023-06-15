@@ -1,0 +1,77 @@
+package chat
+
+import (
+	"strings"
+	"time"
+
+	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/queries"
+)
+
+type state int
+
+const (
+	viewMessage state = iota
+	sendMessage
+)
+
+type singleChatView struct {
+	username   string
+	name       string
+	messages   list.Model
+	newMessage textinput.Model
+	state      state
+	model      chatModel
+}
+
+func (c singleChatView) Init() tea.Cmd { return nil }
+
+func (c singleChatView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	switch c.state {
+	case viewMessage:
+		c.newMessage, cmd = c.newMessage.Update(msg)
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.Type {
+			case tea.KeyEnter:
+				{
+					c.model.InsertMessage(queries.InsertMessageParams{
+						Testo:          c.newMessage.Value(),
+						Mittente:       0, // todo fix
+						Timestampinvio: time.Now().UTC(),
+					})
+				}
+			}
+		}
+	case sendMessage:
+		c.messages, cmd = c.messages.Update(msg)
+	}
+	return c, cmd
+}
+
+func (c singleChatView) View() string {
+	var sb strings.Builder
+	sb.WriteString(c.name + "\n")
+	switch c.state {
+	case viewMessage:
+		sb.WriteString(c.messages.View())
+	case sendMessage:
+		sb.WriteString(c.newMessage.View())
+	}
+	return sb.String()
+}
+
+func newSingleChatView(idChat int32, username string, m chatModel) singleChatView {
+	info, _ := m.GetChatMessages(idChat)
+	c := singleChatView{
+		model:      m,
+		newMessage: textinput.New(),
+		messages:   list.New(messagesToItems(info), list.NewDefaultDelegate(), 40, 25),
+		state:      viewMessage,
+		username:   username,
+	}
+	return c
+}

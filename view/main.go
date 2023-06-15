@@ -11,6 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/model"
 	"github.com/michelececcacci/db-proj/queries"
+	chat "github.com/michelececcacci/db-proj/view/chat"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
 	profile "github.com/michelececcacci/db-proj/view/profile"
@@ -27,6 +28,7 @@ const (
 	signupState
 	feedState
 	passwordResetState
+	chatState
 )
 
 type mainView struct {
@@ -38,6 +40,7 @@ type mainView struct {
 	feedView          tea.Model
 	help              tea.Model
 	passwordResetView tea.Model
+	chatView          tea.Model
 	authUsername      string
 	authError         error
 	state             state
@@ -56,6 +59,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.feedView = feed.New(m.model, "user1") // TODO CHANGE
 	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
+	m.chatView = chat.NewChatListView("sit", m.model)
 	return m
 }
 
@@ -78,6 +82,8 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.state = profileState
 		case tea.KeyCtrlF:
 			m.state = feedState
+		case tea.KeyCtrlA:
+			m.state = chatState
 		}
 	}
 	m.help, _ = m.help.Update(msg) // always updated
@@ -94,6 +100,8 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.feedView, cmd = m.feedView.Update(msg)
 	case passwordResetState:
 		m.passwordResetView, cmd = m.passwordResetView.Update(msg)
+	case chatState:
+		m.chatView, cmd = m.chatView.Update(msg)
 	}
 	return m, cmd
 }
@@ -111,6 +119,8 @@ func (m mainView) View() string {
 		sb.WriteString(m.passwordResetView.View())
 	case feedState:
 		sb.WriteString(m.feedView.View())
+	case chatState:
+		sb.WriteString(m.chatView.View())
 	}
 	if m.state != feedState {
 		sb.WriteString(m.help.View()) // we can't render both the viewport  and the help component

@@ -22,12 +22,12 @@ type Chat struct {
 type Contenuto struct {
 	Autore                 string
 	Testo                  string
-	Idcontenuto            string
+	Idcontenuto            int32
 	Timestamppubblicazione time.Time
 	Titolo                 sql.NullString
 	Idregione              sql.NullInt32
 	Usernamepadre          sql.NullString
-	Idcontenutopadre       sql.NullString
+	Idcontenutopadre       sql.NullInt32
 }
 
 type Membro struct {
@@ -45,13 +45,13 @@ type Messaggio struct {
 	Mittente                  int32
 	Citazione                 sql.NullInt32
 	Autorecontenuto           sql.NullString
-	Idcontenuto               sql.NullString
+	Idcontenuto               sql.NullInt32
 	Amministratoreeliminatore sql.NullInt32
 }
 
 type Reazione struct {
 	Autorecontenuto string
-	Idcontenuto     string
+	Idcontenuto     int32
 	Username        string
 	Likedislike     string
 	Timestamp       string

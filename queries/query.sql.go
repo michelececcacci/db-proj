@@ -134,6 +134,87 @@ func (q *Queries) GetAllPossibleMembers(ctx context.Context) ([]GetAllPossibleMe
 	return items, nil
 }
 
+const getChatIds = `-- name: GetChatIds :many
+SELECT IdMembro, IdChat FROM MEMBRO WHERE Username = $1
+`
+
+type GetChatIdsRow struct {
+	Idmembro int32
+	Idchat   int32
+}
+
+func (q *Queries) GetChatIds(ctx context.Context, username string) ([]GetChatIdsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getChatIds, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetChatIdsRow
+	for rows.Next() {
+		var i GetChatIdsRow
+		if err := rows.Scan(&i.Idmembro, &i.Idchat); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getChatInfos = `-- name: GetChatInfos :one
+SELECT Nome, Descrizione FROM CHAT WHERE idChat = $1
+`
+
+type GetChatInfosRow struct {
+	Nome        string
+	Descrizione string
+}
+
+func (q *Queries) GetChatInfos(ctx context.Context, idchat int32) (GetChatInfosRow, error) {
+	row := q.db.QueryRowContext(ctx, getChatInfos, idchat)
+	var i GetChatInfosRow
+	err := row.Scan(&i.Nome, &i.Descrizione)
+	return i, err
+}
+
+const getChatMessages = `-- name: GetChatMessages :many
+SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1
+`
+
+type GetChatMessagesRow struct {
+	Testo          string
+	Timestampinvio time.Time
+	Username       string
+}
+
+func (q *Queries) GetChatMessages(ctx context.Context, idchat int32) ([]GetChatMessagesRow, error) {
+	rows, err := q.db.QueryContext(ctx, getChatMessages, idchat)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetChatMessagesRow
+	for rows.Next() {
+		var i GetChatMessagesRow
+		if err := rows.Scan(&i.Testo, &i.Timestampinvio, &i.Username); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCurrentMember = `-- name: GetCurrentMember :one
 SELECT IdMembro, DataEntrata
 FROM MEMBRO
@@ -518,7 +599,7 @@ SELECT autore, testo, idcontenuto, timestamppubblicazione, titolo, idregione, us
 
 type GetSpecificPostParams struct {
 	Autore      string
-	Idcontenuto string
+	Idcontenuto int32
 }
 
 func (q *Queries) GetSpecificPost(ctx context.Context, arg GetSpecificPostParams) ([]Contenuto, error) {
@@ -651,6 +732,21 @@ func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) (int
 	var idmembro int32
 	err := row.Scan(&idmembro)
 	return idmembro, err
+}
+
+const insertMessage = `-- name: InsertMessage :exec
+INSERT INTO MESSAGGIO (Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3)
+`
+
+type InsertMessageParams struct {
+	Testo          string
+	Timestampinvio time.Time
+	Mittente       int32
+}
+
+func (q *Queries) InsertMessage(ctx context.Context, arg InsertMessageParams) error {
+	_, err := q.db.ExecContext(ctx, insertMessage, arg.Testo, arg.Timestampinvio, arg.Mittente)
+	return err
 }
 
 const insertPassword = `-- name: InsertPassword :exec
