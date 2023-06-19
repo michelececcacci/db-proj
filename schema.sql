@@ -30,12 +30,12 @@ create table CHAT (
 create table CONTENUTO (
      Autore varchar(20) not null,
      Testo varchar(1000) not null,
-     IdContenuto numeric(1) not null,
+     IdContenuto serial not null,
      TimestampPubblicazione date not null,
      Titolo varchar(30),
      IdRegione integer, 
      UsernamePadre varchar(20),
-     IdContenutoPadre numeric(1),
+     IdContenutoPadre integer,
      constraint ID_CONTENUTO primary key (Autore, IdContenuto));
 
 create table MEMBRO (
@@ -54,13 +54,13 @@ create table MESSAGGIO (
      Mittente integer not null,
      Citazione integer,
      AutoreContenuto varchar(20),
-     IdContenuto numeric(1),
+     IdContenuto integer,
      AmministratoreEliminatore integer,
      constraint ID_MESSAGGIO primary key (IdMessaggio));
 
 create table REAZIONE (
      AutoreContenuto varchar(20) not null,
-     IdContenuto numeric(1) not null,
+     IdContenuto integer not null,
      Username varchar(20) not null,
      LikeDislike numeric(1) not null,
      Timestamp char(1) not null,
@@ -307,8 +307,8 @@ insert into REGIONE (Nome, Superregione) values
 ('Buffalo', 17),
 ('Brooklyn', 18);
 
-insert into CONTENUTO (Autore, Testo, Titolo, IdContenuto, TimestampPubblicazione) values 
-('user1', 'hi everyone', 'hi', 1, '1999-01-08 04:05:06'),
-('user2', 'user2 post', 'something', 1, '1999-01-08 04:05:06'),
-('user2', 'user2 post 2', 'something 2', 2, '1999-01-08 04:05:07'),
-('user3', 'user3 first post', 'text', 1, '1999-01-08 04:05:06');
+insert into CONTENUTO (Autore, Testo, Titolo, TimestampPubblicazione) values 
+('user1', 'hi everyone', 'hi', '1999-01-08 04:05:06'),
+('user2', 'user2 post', 'something', '1999-01-08 04:05:06'),
+('user2', 'user2 post 2', 'something 2', '1999-01-08 04:05:07'),
+('user3', 'user3 first post', 'text', '1999-01-08 04:05:06');
