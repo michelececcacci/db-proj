@@ -145,3 +145,7 @@ func (m Model) CheckIfUserStillInChat(username string, idchat int32) (bool, erro
 	})
 	return count == 1, err
 }
+
+func (m Model) GetFullFeed(username string) ([]queries.GetFullFeedRow, error) {
+	return m.q.GetFullFeed(m.ctx, username)
+}

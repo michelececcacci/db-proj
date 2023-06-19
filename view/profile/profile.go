@@ -1,12 +1,10 @@
 package profile
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/util"
 )
 
@@ -41,8 +39,7 @@ type profileView struct {
 	followers list.Model
 	following list.Model
 	current   int
-	ctx       *context.Context
-	q         *queries.Queries
+	model     *loginModel
 	state
 }
 
@@ -74,7 +71,7 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				selected = p.following.SelectedItem()
 			}
 			if selected != nil {
-				return New(p.ctx, p.q, selected.FilterValue()), nil
+				return New(*p.model, selected.FilterValue()), nil
 			}
 		}
 	case tea.WindowSizeMsg:
@@ -91,16 +88,14 @@ func (p profileView) Init() tea.Cmd {
 	return nil
 }
 
-func New(ctx *context.Context, q *queries.Queries, username string) profileView {
-	following, _ := q.GetFollowing(*ctx, username)
-	followers, _ := q.GetFollowers(*ctx, username)
+func New(m loginModel, username string) profileView {
+	following, _ := m.GetFollowing(username)
+	followers, _ := m.GetFollowers(username)
 	p := profileView{
 		username:  username,
 		location:  "test_location", // TODO CHANGE
 		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
 		following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
-		ctx:       ctx,
-		q:         q,
 		state:     followersState,
 	}
 	p.followers.Title = fmt.Sprintf("Followed by %s", p.username)
@@ -114,4 +109,9 @@ func toUser(usernames []string) []list.Item {
 		u = append(u, user{username: s})
 	}
 	return u
+}
+
+type loginModel interface {
+	GetFollowers(string) ([]string, error)
+	GetFollowing(string) ([]string, error)
 }

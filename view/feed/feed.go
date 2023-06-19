@@ -1,8 +1,6 @@
 package feed
 
 import (
-	"context"
-
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
@@ -16,10 +14,13 @@ const (
 	singlePostState
 )
 
+type feedGetter interface {
+	GetFullFeed(username string) ([]queries.GetFullFeedRow, error)
+}
+
 type feedView struct {
 	posts          list.Model
-	q              *queries.Queries
-	ctx            *context.Context
+	feedGetter     feedGetter
 	state          state
 	postView       tea.Model
 	lastWindowSize tea.WindowSizeMsg // needed to init the viewport
@@ -68,14 +69,13 @@ func (f feedView) View() string {
 	return f.postView.View()
 }
 
-func New(ctx *context.Context, q *queries.Queries, username string) feedView {
-	rawPosts, _ := q.GetFullFeed(*ctx, username)
+func New(fg feedGetter, username string) feedView {
+	rawPosts, _ := fg.GetFullFeed(username)
 	f := feedView{
-		ctx:      ctx,
-		q:        q,
-		posts:    list.New(toPost(rawPosts), list.NewDefaultDelegate(), 40, 25),
-		state:    listState,
-		postView: newPostView(post{}, nil),
+		feedGetter: fg,
+		posts:      list.New(toPost(rawPosts), list.NewDefaultDelegate(), 40, 25),
+		state:      listState,
+		postView:   newPostView(post{}, nil),
 	}
 	return f
 }

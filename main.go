@@ -8,6 +8,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
+	"github.com/michelececcacci/db-proj/model"
 	"github.com/michelececcacci/db-proj/queries"
 	"github.com/michelececcacci/db-proj/view"
 )
@@ -27,10 +28,13 @@ func run() error {
 		return err
 	}
 	qq := queries.New(db)
+	m := model.New(db, context.Background())
 	p := tea.NewProgram(
 		view.NewMainView(
 			view.WithContext(context.Background()),
-			view.WithQueries(qq)),
+			view.WithQueries(qq),
+			view.WithModel(m),
+		),
 		tea.WithAltScreen(),
 		tea.WithMouseCellMotion(),
 	)

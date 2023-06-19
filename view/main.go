@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/michelececcacci/db-proj/model"
 	"github.com/michelececcacci/db-proj/queries"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
@@ -40,6 +41,7 @@ type mainView struct {
 	authUsername      string
 	authError         error
 	state             state
+	model             *model.Model
 }
 
 func NewMainView(options ...viewOption) mainView {
@@ -49,9 +51,9 @@ func NewMainView(options ...viewOption) mainView {
 	}
 	m.state = loginState // users need to login on startup
 	m.loginView = login.New(&m.ctx, m.q)
-	m.profileView = profile.New(&m.ctx, m.q, "user1") // TODO CHANGE
+	m.profileView = profile.New(m.model, "user1") // TODO CHANGE
 	m.signUpView = signup.New(&m.ctx, m.q)
-	m.feedView = feed.New(&m.ctx, m.q, "user1") // TODO CHANGE
+	m.feedView = feed.New(m.model, "user1") // TODO CHANGE
 	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
 	return m
@@ -128,6 +130,12 @@ func WithContext(ctx context.Context) viewOption {
 func WithQueries(q *queries.Queries) viewOption {
 	return func(m *mainView) {
 		m.q = q
+	}
+}
+
+func WithModel(model model.Model) viewOption {
+	return func(m *mainView) {
+		m.model = &model
 	}
 }
 
