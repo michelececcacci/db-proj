@@ -105,7 +105,7 @@ func (m *Model) InsertAdminMember(username string, idChat int32, inserterAdmin i
 	return memberId, m.q.InsertAdmin(m.ctx, memberId)
 }
 
-func (m Model) ExileMember(memberId int32, exitDate time.Time, removerAdminId int32, motivation sql.NullString) error {
+func (m Model) exitMember(memberId int32, exitDate time.Time, removerAdmin sql.NullInt32, motivation sql.NullString) error {
 	// check if the user is member of the chat
 	nullableJoinDate, err := m.q.CheckIfMemberStillInChat(m.ctx, memberId)
 	if err != nil {
@@ -122,8 +122,16 @@ func (m Model) ExileMember(memberId int32, exitDate time.Time, removerAdminId in
 		Idmembro:             memberId,
 		Datauscita:           exitDate,
 		Motivazione:          motivation,
-		Idmembroresponsabile: sql.NullInt32{Valid: true, Int32: removerAdminId},
+		Idmembroresponsabile: removerAdmin,
 	})
+}
+
+func (m Model) ExileMember(memberId int32, exitDate time.Time, removerAdminId int32, motivation sql.NullString) error {
+	return m.exitMember(memberId, exitDate, sql.NullInt32{Int32: removerAdminId, Valid: true}, motivation)
+}
+
+func (m Model) IntentionalExitMember(memberId int32, exitDate time.Time, motivation sql.NullString) error {
+	return m.exitMember(memberId, exitDate, sql.NullInt32{Int32: 0, Valid: false}, motivation)
 }
 
 func (m Model) GetMemberData(memberId int32) (queries.GetDataOfMemberRow, error) {
