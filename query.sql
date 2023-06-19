@@ -145,6 +145,11 @@ SELECT m.IdMembro, m.DataEntrata
 FROM MEMBRO m full outer join USCITA u ON (m.IdMembro = u.IdMembro)
 WHERE u.IdMembro IS NULL AND m.IdChat = $1;
 
+-- name: GetRandomMemberFromAnyChat :many 
+SELECT m.IdMembro, m.IdChat
+FROM MEMBRO m 
+ORDER BY random();
+
 -- name: GetLocationRec :many
 WITH recursive getSuperregions(idregione, superregione)
 AS(

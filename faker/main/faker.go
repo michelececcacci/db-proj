@@ -37,7 +37,8 @@ func run() error {
 	populateChats(model, 50)
 	populateMembers(model, 20, true)
 	populateMembers(model, 7000, false)
-	exileMembers(model, 100)
+	exitMembers(model, 100, true)
+	exitMembers(model, 50, false)
 	return nil
 }
 
@@ -129,7 +130,7 @@ func populateMembers(m model.Model, n int, asAdmin bool) {
 	}
 }
 
-func exileMembers(m model.Model, n int) {
+func exitMembers(m model.Model, n int, exile bool) {
 	for i := 0; i < n; i++ {
 		chat, err := m.GetRandomChat()
 		if err != nil {
@@ -145,9 +146,12 @@ func exileMembers(m model.Model, n int) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		err = m.ExileMember(member,
+		err = m.ExitMember(member,
 			gofakeit.DateRange(joinDate, time.Now()),
-			admin,
+			sql.NullInt32{
+				Int32: admin,
+				Valid: exile,
+			},
 			sql.NullString{
 				String: gofakeit.Quote(),
 				Valid:  true,
@@ -157,3 +161,4 @@ func exileMembers(m model.Model, n int) {
 		}
 	}
 }
+

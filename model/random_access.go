@@ -30,3 +30,8 @@ func (m Model) GetRandomCurrentMemberInChat(chat int32) (sql.NullInt32, sql.Null
 	s, err := m.q.GetRandomMemberInChat(m.ctx, chat)
 	return s.Idmembro, s.Dataentrata, err
 }
+
+func (m Model) GetAllMembersFromAnyChat() ([]queries.GetRandomMemberFromAnyChatRow, error) {
+	return m.q.GetRandomMemberFromAnyChat(m.ctx)
+}
+

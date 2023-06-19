@@ -444,6 +444,40 @@ func (q *Queries) GetRandomMember(ctx context.Context) (int32, error) {
 	return idmembro, err
 }
 
+const getRandomMemberFromAnyChat = `-- name: GetRandomMemberFromAnyChat :many
+SELECT m.IdMembro, m.IdChat
+FROM MEMBRO m 
+ORDER BY random()
+`
+
+type GetRandomMemberFromAnyChatRow struct {
+	Idmembro int32
+	Idchat   int32
+}
+
+func (q *Queries) GetRandomMemberFromAnyChat(ctx context.Context) ([]GetRandomMemberFromAnyChatRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRandomMemberFromAnyChat)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRandomMemberFromAnyChatRow
+	for rows.Next() {
+		var i GetRandomMemberFromAnyChatRow
+		if err := rows.Scan(&i.Idmembro, &i.Idchat); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRandomMemberInChat = `-- name: GetRandomMemberInChat :one
 SELECT m.IdMembro, m.DataEntrata
 FROM MEMBRO m full outer join USCITA u ON (m.IdMembro = u.IdMembro)
