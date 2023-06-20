@@ -79,7 +79,7 @@ func (l loginView) getCurrentAuthParams() queries.AuthenticateParams {
 
 func (l loginView) GetAuthenticatedUsername() (string, error) {
 	if l.username == nil {
-		return "", nil
+		return "", errors.New("not authenticated")
 	}
-	return *l.username, errors.New("not authenticated")
+	return *l.username, nil
 }

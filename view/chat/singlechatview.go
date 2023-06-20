@@ -18,12 +18,12 @@ const (
 )
 
 type singleChatView struct {
-	username   string
-	name       string
-	messages   list.Model
+	username    string
+	name        string
+	messages    list.Model
 	sendMessage textinput.Model
-	state      state
-	model      chatModel
+	state       state
+	model       chatModel
 }
 
 func (c singleChatView) Init() tea.Cmd { return nil }
@@ -67,11 +67,11 @@ func (c singleChatView) View() string {
 func newSingleChatView(ci chatInfo, username string, m chatModel) singleChatView {
 	info, _ := m.GetChatMessages(ci.id)
 	c := singleChatView{
-		model:      m,
+		model:       m,
 		sendMessage: textinput.New(),
-		messages:   list.New(messagesToItems(info), list.NewDefaultDelegate(), 40, 25),
-		state:      viewMessage,
-		username:   username,
+		messages:    list.New(messagesToItems(info), list.NewDefaultDelegate(), 40, 25),
+		state:       viewMessage,
+		username:    username,
 	}
 	c.messages.Title = ci.name
 	return c

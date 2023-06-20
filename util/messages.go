@@ -6,3 +6,7 @@ type OptionalError struct {
 	Message string
 	Err     error
 }
+
+type UpdateUsername struct {
+	Username *string
+}

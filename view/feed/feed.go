@@ -24,6 +24,7 @@ type feedView struct {
 	state          state
 	postView       tea.Model
 	lastWindowSize tea.WindowSizeMsg // needed to init the viewport
+	username       *string
 }
 
 func (f feedView) Init() tea.Cmd { return nil }
@@ -40,7 +41,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC:
 			return f, tea.Quit
 		case tea.KeyEnter:
-			if f.state == listState {
+			if f.state == listState && f.username != nil {
 				f.state = singlePostState
 				s := f.posts.SelectedItem()
 				if s != nil {
@@ -49,10 +50,15 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		case tea.KeyCtrlB:
-			if f.state == singlePostState {
+			if f.state == singlePostState && f.username != nil {
 				f.state = listState
 			}
 		}
+	case util.UpdateUsername:
+		f.username = msg.Username
+	}
+	if f.username == nil {
+		return f, cmd
 	}
 	if f.state == listState {
 		f.posts, cmd = f.posts.Update(msg)
@@ -63,19 +69,27 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (f feedView) View() string {
+	if f.username == nil {
+		return "Not logged in\n"
+	}
 	if f.state == listState {
 		return util.ListStyle.Render(f.posts.View()) + "\n"
 	}
 	return f.postView.View()
 }
 
-func New(fg feedGetter, username string) feedView {
-	rawPosts, _ := fg.GetFullFeed(username)
+func New(fg feedGetter, username *string) feedView {
 	f := feedView{
+		username:   username,
 		feedGetter: fg,
-		posts:      list.New(toPost(rawPosts), list.NewDefaultDelegate(), 40, 25),
 		state:      listState,
 		postView:   newPostView(post{}, nil),
 	}
+	var p []list.Item
+	if username != nil {
+		rawPosts, _ := fg.GetFullFeed(*username)
+		p = toPost(rawPosts)
+	}
+	f.posts = list.New(p, list.NewDefaultDelegate(), 40, 25)
 	return f
 }

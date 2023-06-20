@@ -6,7 +6,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${file}",
-            "console": "integratedTerminal",
+            "console": "externalTerminal"
         }
     ]
 }
