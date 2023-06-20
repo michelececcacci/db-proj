@@ -516,6 +516,21 @@ TOTALE             &            & 19         &            \\ \hline
 \end{tabular}
 \end{table}
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
+\subsection{Eliminazione di gerarchie}
+Nel nostro social network, un contenuto puo essere sia un 
+post che un messaggio. Dato che i messaggi non hanno un titolo, mentre un post ha necessariamente un titolo, 
+abbiamo optato definirli attraverso la presenza questo attributo, usando un collasso verso l' alto.
+Un utente puo essere un amministratore o no in una chat, e in questo caso abbiamo optato per un collasso verso 
+l' alto. Infatti, dato che ogni utente e definito come membro di una chat e i diritti di amministrazione sono esclusivi a 
+quella chat, abbiamo definito una flag che ci dice se l' utente ha diritti amministratore.
+\subsection{Eliminazione di chiavi composte}
+\subsubsection{Eliminazione di identificatori esterni}
+Rispetto allo schema e/r sono state eliminate  le seguenti relazioni:
+\begin{itemize}
+  \item  
+  \item 
+  \item
+\end{itemize}
 \section{Analisi delle ridondanze}
 \subsection{Numero di like netto dei contenuti}
 Consideriamo se è il caso di aggiungere un campo ridondante nell'entità CONTENUTO che calcola il numero netto di like riguardanti quel contenuto. Le operazioni interessate da questa ridondanza sono le operazioni \ref{like}, \ref{leggere_post}, \ref{feed}.
