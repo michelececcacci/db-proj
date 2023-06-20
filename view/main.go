@@ -59,7 +59,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.feedView = feed.New(m.model, "user1") // TODO CHANGE
 	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
-	m.chatView = chat.NewChatListView("sit", m.model)
+	m.chatView = chat.NewChatListView("ex", m.model)
 	return m
 }
 

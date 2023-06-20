@@ -21,7 +21,7 @@ type singleChatView struct {
 	username   string
 	name       string
 	messages   list.Model
-	newMessage textinput.Model
+	sendMessage textinput.Model
 	state      state
 	model      chatModel
 }
@@ -32,14 +32,14 @@ func (c singleChatView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch c.state {
 	case viewMessage:
-		c.newMessage, cmd = c.newMessage.Update(msg)
+		c.messages, cmd = c.messages.Update(msg)
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch msg.Type {
 			case tea.KeyEnter:
 				{
 					c.model.InsertMessage(queries.InsertMessageParams{
-						Testo:          c.newMessage.Value(),
+						Testo:          c.sendMessage.Value(),
 						Mittente:       0, // todo fix
 						Timestampinvio: time.Now().UTC(),
 					})
@@ -47,7 +47,7 @@ func (c singleChatView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	case sendMessage:
-		c.messages, cmd = c.messages.Update(msg)
+		c.sendMessage, cmd = c.sendMessage.Update(msg)
 	}
 	return c, cmd
 }
@@ -59,19 +59,20 @@ func (c singleChatView) View() string {
 	case viewMessage:
 		sb.WriteString(c.messages.View())
 	case sendMessage:
-		sb.WriteString(c.newMessage.View())
+		sb.WriteString(c.sendMessage.View())
 	}
 	return sb.String()
 }
 
-func newSingleChatView(idChat int32, username string, m chatModel) singleChatView {
-	info, _ := m.GetChatMessages(idChat)
+func newSingleChatView(ci chatInfo, username string, m chatModel) singleChatView {
+	info, _ := m.GetChatMessages(ci.id)
 	c := singleChatView{
 		model:      m,
-		newMessage: textinput.New(),
+		sendMessage: textinput.New(),
 		messages:   list.New(messagesToItems(info), list.NewDefaultDelegate(), 40, 25),
 		state:      viewMessage,
 		username:   username,
 	}
+	c.messages.Title = ci.name
 	return c
 }

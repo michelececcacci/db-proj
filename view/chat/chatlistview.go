@@ -50,7 +50,7 @@ func (c *chatlistView) switchToChat() {
 	item := c.list.SelectedItem()
 	if item != nil {
 		info := item.(chatInfo)
-		c.chatView = newSingleChatView(info.id, c.username, c.model)
+		c.chatView = newSingleChatView(info, c.username, c.model)
 		c.state = singleChatState
 	}
 }
