@@ -182,6 +182,33 @@ func (q *Queries) GetChatInfos(ctx context.Context, idchat int32) (GetChatInfosR
 	return i, err
 }
 
+const getChatMembers = `-- name: GetChatMembers :many
+SELECT IdMembro FROM MEMBRO WHERE MEMBRO.idchat = $1
+`
+
+func (q *Queries) GetChatMembers(ctx context.Context, idchat int32) ([]int32, error) {
+	rows, err := q.db.QueryContext(ctx, getChatMembers, idchat)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int32
+	for rows.Next() {
+		var idmembro int32
+		if err := rows.Scan(&idmembro); err != nil {
+			return nil, err
+		}
+		items = append(items, idmembro)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getChatMessages = `-- name: GetChatMessages :many
 SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1
 `

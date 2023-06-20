@@ -179,3 +179,7 @@ func (m Model) InsertMessage(message queries.InsertMessageParams) error {
 func (m Model) GetChatMessages(idChat int32) ([]queries.GetChatMessagesRow, error) {
 	return m.q.GetChatMessages(m.ctx, idChat)
 }
+
+func (m Model) GetChatMembers(id int32) ([]int32, error) {
+	return m.q.GetChatMembers(m.ctx, id)
+}

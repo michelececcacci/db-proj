@@ -24,6 +24,11 @@ const (
 	port     = "55432"
 )
 
+const (
+	chats = 50
+	messages = 2
+)
+
 func run() error {
 	s := fmt.Sprintf("dbname=%s user=%s password=%s host=%s port=%s sslmode=disable", dbname, user, password, host, port)
 	db, err := sql.Open("postgres", s)
@@ -34,11 +39,12 @@ func run() error {
 	model := model.New(db, context.Background())
 	populateUsers(model, 100)
 	populateFollowers(model, 500)
-	populateChats(model, 50)
+	populateChats(model, chats)
 	populateMembers(model, 20, true)
 	populateMembers(model, 7000, false)
 	exitMembers(model, 100, true)
 	exitMembers(model, 50, false)
+	populateMessages(model, chats, messages)
 	return nil
 }
 
@@ -160,4 +166,26 @@ func exitMembers(m model.Model, n int, exile bool) {
 			fmt.Println(err)
 		}
 	}
+}
+
+func populateMessages(m model.Model, chats, messages int) error {
+	for i := 0; i < chats; i++ {
+		chat, err := m.GetRandomChat()
+		if err != nil {
+			return err
+		}
+		members, _ := m.GetChatMembers(chat)
+		var membersInt []int
+		for _, member := range members {
+			membersInt = append(membersInt, int(member))
+		}
+		for j := 0; j < messages; j++ {
+			m.InsertMessage(queries.InsertMessageParams{
+				Testo:          gofakeit.Quote(),
+				Timestampinvio: fakeDate(),
+				Mittente:       int32(gofakeit.RandomInt(membersInt)),
+			})
+		}
+	}
+	return nil
 }

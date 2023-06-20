@@ -187,3 +187,6 @@ SELECT Nome, Descrizione FROM CHAT WHERE idChat = $1;
 
 -- name: GetChatMessages :many
 SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1;
+
+-- name: GetChatMembers :many
+SELECT IdMembro FROM MEMBRO WHERE MEMBRO.idchat = $1;
