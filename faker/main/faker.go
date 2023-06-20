@@ -110,7 +110,7 @@ func populateChats(m model.Model, n int) {
 	}
 }
 
-func populateMembers(m model.Model, n int, asAdmin bool) {
+func populateMembers(m model.Model, n int, asAdmin bool) error {
 	members, _ := m.GetAllPossibleMembers()
 	i := 0
 	k := 0
@@ -118,7 +118,7 @@ func populateMembers(m model.Model, n int, asAdmin bool) {
 		u, chat := members[k].Username.String, members[k].Idchat.Int32
 		admin, err := m.GetRandomAdminInChat(chat)
 		if err != nil {
-			fmt.Println("Members3", err, admin)
+			return fmt.Errorf("members3\n%s\n%v", err, admin)
 		}
 		if asAdmin {
 			_, err = m.InsertAdminMember(u, chat, admin)
@@ -127,30 +127,29 @@ func populateMembers(m model.Model, n int, asAdmin bool) {
 		}
 		if err == nil {
 			i++
-		} else {
-			// fmt.Println("Members4", err)
 		}
 	}
 	if k == len(members) && i < n {
-		fmt.Println("We couldn't create all members")
+		return fmt.Errorf("couldn't create all members")
 	}
+	return nil
 }
 
-func exitMembers(m model.Model, n int, exile bool) {
+func exitMembers(m model.Model, n int, exile bool) error {
 	for i := 0; i < n; i++ {
 		chat, err := m.GetRandomChat()
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 		sqlMember, sqlDate, err := m.GetRandomCurrentMemberInChat(chat)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 		member := sqlMember.Int32
 		joinDate := sqlDate.Time
 		admin, err := m.GetRandomAdminInChat(chat)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 		err = m.ExitMember(member,
 			gofakeit.DateRange(joinDate, time.Now()),
@@ -163,9 +162,10 @@ func exitMembers(m model.Model, n int, exile bool) {
 				Valid:  true,
 			})
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 	}
+	return nil
 }
 
 func populateMessages(m model.Model, chats, messages int) error {
