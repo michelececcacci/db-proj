@@ -25,7 +25,7 @@ const (
 )
 
 const (
-	chats = 50
+	chats    = 50
 	messages = 2
 )
 

@@ -18,7 +18,7 @@ type chatlistView struct {
 	list     list.Model
 	chatView tea.Model
 	state    state
-	username string
+	username *string
 	model    chatModel
 }
 
@@ -30,12 +30,15 @@ func (c chatlistView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			if c.state == multipleChatsState {
+			if c.state == multipleChatsState && c.username != nil {
 				c.switchToChat()
 			}
 		case tea.KeyCtrlC:
 			return c, tea.Quit
 		}
+	}
+	if c.username == nil {
+		return c, cmd
 	}
 	switch c.state {
 	case singleChatState:
@@ -50,12 +53,15 @@ func (c *chatlistView) switchToChat() {
 	item := c.list.SelectedItem()
 	if item != nil {
 		info := item.(chatInfo)
-		c.chatView = newSingleChatView(info, c.username, c.model)
+		c.chatView = newSingleChatView(info, *c.username, c.model)
 		c.state = singleChatState
 	}
 }
 
 func (c chatlistView) View() string {
+	if c.username == nil {
+		return "Not logged in \n"
+	}
 	var sb strings.Builder
 	switch c.state {
 	case singleChatState:
@@ -66,8 +72,11 @@ func (c chatlistView) View() string {
 	return sb.String()
 }
 
-func NewChatListView(username string, cm chatModel) chatlistView {
-	ids, _ := cm.GetCurrentChats(username)
+func NewChatListView(username *string, cm chatModel) chatlistView {
+	if username == nil {
+		return chatlistView{}
+	}
+	ids, _ := cm.GetCurrentChats(*username)
 	var items []list.Item
 	for _, id := range ids {
 		info, _ := cm.GetChatInfos(id)
@@ -84,7 +93,7 @@ func NewChatListView(username string, cm chatModel) chatlistView {
 		username: username,
 		model:    cm,
 	}
-	c.list.Title = fmt.Sprintf("%s's chats", username)
+	c.list.Title = fmt.Sprintf("%s's chats", *username)
 	return c
 }
 

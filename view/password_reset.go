@@ -15,7 +15,7 @@ import (
 
 type passwordResetView struct {
 	input     textinput.Model
-	username  string
+	username  *string
 	ctx       *context.Context
 	q         *queries.Queries
 	errorView tea.Model
@@ -43,8 +43,11 @@ func (p passwordResetView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p passwordResetView) View() string {
+	if p.username == nil {
+		return "Not logged in\n"
+	}
 	var sb strings.Builder
-	sb.WriteString(p.username + "\n")
+	sb.WriteString(*p.username + "\n")
 	sb.WriteString(p.input.View() + "\n")
 	sb.WriteString(p.errorView.View() + "\n")
 	return sb.String()
@@ -54,7 +57,7 @@ func (p passwordResetView) Init() tea.Cmd {
 	return nil
 }
 
-func newPasswordResetView(ctx *context.Context, q *queries.Queries, username string) passwordResetView {
+func newPasswordResetView(ctx *context.Context, q *queries.Queries, username *string) passwordResetView {
 	i := textinput.New()
 	i.Focus()
 	return passwordResetView{
@@ -67,7 +70,10 @@ func newPasswordResetView(ctx *context.Context, q *queries.Queries, username str
 }
 
 func (p passwordResetView) insertPassword() error {
-	pastpasswords, err := p.q.GetPastPasswords(*p.ctx, p.username)
+	if p.username == nil {
+		return errors.New("")
+	}
+	pastpasswords, err := p.q.GetPastPasswords(*p.ctx, *p.username)
 	if err != nil {
 		return err
 	}
@@ -77,7 +83,7 @@ func (p passwordResetView) insertPassword() error {
 		}
 	}
 	err = p.q.InsertPassword(*p.ctx, queries.InsertPasswordParams{
-		Username:        p.username,
+		Username:        *p.username,
 		Password:        p.input.Value(),
 		Datainserimento: time.Now().UTC(),
 	})

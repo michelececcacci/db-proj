@@ -11,6 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/model"
 	"github.com/michelececcacci/db-proj/queries"
+	"github.com/michelececcacci/db-proj/util"
 	chat "github.com/michelececcacci/db-proj/view/chat"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
@@ -41,8 +42,7 @@ type mainView struct {
 	help              tea.Model
 	passwordResetView tea.Model
 	chatView          tea.Model
-	authUsername      string
-	authError         error
+	authUsername      *string
 	state             state
 	model             *model.Model
 }
@@ -54,12 +54,12 @@ func NewMainView(options ...viewOption) mainView {
 	}
 	m.state = loginState // users need to login on startup
 	m.loginView = login.New(&m.ctx, m.q)
-	m.profileView = profile.New(m.model, "user1") // TODO CHANGE
+	m.profileView = profile.New(m.model, m.authUsername)
 	m.signUpView = signup.New(&m.ctx, m.q)
-	m.feedView = feed.New(m.model, "user1") // TODO CHANGE
+	m.feedView = feed.New(m.model, m.authUsername)
 	m.help = newHelpComponent()
-	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, "user1") // TODO CHANGE
-	m.chatView = chat.NewChatListView("ex", m.model)
+	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
+	m.chatView = chat.NewChatListView(m.authUsername, m.model)
 	return m
 }
 
@@ -80,7 +80,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.state = signupState
 		case tea.KeyCtrlP:
 			m.state = profileState
-		case tea.KeyCtrlF:
+		case tea.KeyCtrlK: // TODO CHANGE BACK
 			m.state = feedState
 		case tea.KeyCtrlA:
 			m.state = chatState
@@ -91,9 +91,16 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case loginState:
 		m.loginView, cmd = m.loginView.Update(msg)
 		lv := m.loginView.(loginView)
-		m.authUsername, m.authError = lv.GetAuthenticatedUsername()
+		username, err := lv.GetAuthenticatedUsername()
+		if err == nil {
+			m.authUsername = &username
+			m.profileView = profile.New(m.model, m.authUsername)
+			m.feedView, _ = m.feedView.Update(util.UpdateUsername{Username: &username})
+			m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
+
+		}
 	case profileState:
-		m.profileView, _ = m.profileView.Update(msg)
+		m.profileView, cmd = m.profileView.Update(msg)
 	case signupState:
 		m.signUpView, cmd = m.signUpView.Update(msg)
 	case feedState:

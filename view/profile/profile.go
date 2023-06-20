@@ -34,16 +34,18 @@ func (u user) FilterValue() string {
 
 // Read only view for users. Still WIP.
 type profileView struct {
-	username  string
+	username  *string
 	location  string
 	followers list.Model
 	following list.Model
-	current   int
 	model     *loginModel
 	state
 }
 
 func (p profileView) View() string {
+	if p.username == nil {
+		return "Not logged in\n"
+	}
 	if p.state == followersState {
 		return util.ListStyle.Render(p.followers.View())
 	}
@@ -58,23 +60,27 @@ func (p profileView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC:
 			return p, tea.Quit
 		case tea.KeyLeft, tea.KeyRight:
-			if p.state == followingState {
+			if p.state == followingState && p.username != nil {
 				p.state = followersState
-			} else if p.state == followersState {
+			} else if p.state == followersState && p.username != nil {
 				p.state = followingState
 			}
 		case tea.KeyEnter:
 			var selected list.Item
-			if p.state == followersState {
+			if p.state == followersState && p.username != nil {
 				selected = p.followers.SelectedItem()
 			} else if p.state == followingState {
 				selected = p.following.SelectedItem()
 			}
 			if selected != nil {
-				return New(*p.model, selected.FilterValue()), nil
+				s := selected.FilterValue()
+				return New(*p.model, &s), nil
 			}
 		}
 	case tea.WindowSizeMsg:
+	}
+	if p.username == nil {
+		return p, cmd
 	}
 	if p.state == followersState {
 		p.followers, cmd = p.followers.Update(msg)
@@ -88,19 +94,22 @@ func (p profileView) Init() tea.Cmd {
 	return nil
 }
 
-func New(m loginModel, username string) profileView {
-	following, _ := m.GetFollowing(username)
-	followers, _ := m.GetFollowers(username)
-	p := profileView{
-		username:  username,
-		location:  "test_location", // TODO CHANGE
-		followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
-		following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
-		state:     followersState,
+func New(m loginModel, username *string) profileView {
+	if username != nil {
+		following, _ := m.GetFollowing(*username)
+		followers, _ := m.GetFollowers(*username)
+		p := profileView{
+			username:  username,
+			location:  "test_location", // TODO CHANGE
+			followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
+			following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
+			state:     followersState,
+		}
+		p.followers.Title = fmt.Sprintf("Followed by %s", *p.username)
+		p.following.Title = fmt.Sprintf("Following %s", *p.username)
+		return p
 	}
-	p.followers.Title = fmt.Sprintf("Followed by %s", p.username)
-	p.following.Title = fmt.Sprintf("Following %s", p.username)
-	return p
+	return profileView{}
 }
 
 func toUser(usernames []string) []list.Item {
