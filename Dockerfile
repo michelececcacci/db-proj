@@ -6,5 +6,6 @@ COPY *.go ./
 COPY view ./view
 COPY util ./util
 COPY queries ./queries
+COPY model ./model
 RUN go build .
 CMD ["./db-proj"]
