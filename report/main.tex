@@ -177,7 +177,7 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
 \subsection{Creare un nuovo utente}
 \paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga e assegnargli una password 
 \paragraph{Frequenza} 10 / g 
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -191,7 +191,7 @@ STORICO\_PASSWORD & E         & 1       & W    \\ \hline
 \subsection{Cambiare password}
 \paragraph{Descrizione} Aggiungere alla tabella dello storico password una nuova riga. 
 \paragraph{Frequenza} 1 / 60 g 
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -205,7 +205,7 @@ STORICO\_PASSWORD & E         & 1       & W    \\ \hline
 \subsection{Autenticazione dell'utente all'interno del social network tramite username e password}
 \paragraph{Descrizione} Si controlla se esiste istanza di STORICO\_PASSWORD contentente l'username e la password inserite
 \paragraph{Frequenza} 10 / g
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -221,7 +221,7 @@ TOTALE            &           & 11      &      \\ \hline
 \subsection{Seguire un utente} 
 \paragraph{Descrizione} Si aggiunge una istanza alla tabella SEGUIRE avente come chiave la tupla (utente seguace, utente seguito)
 \paragraph{Frequenza} 2 / g
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -236,7 +236,7 @@ TOTALE   &           & 6       &      \\ \hline
 \subsection{Smettere di seguire un utente}
 \paragraph{Descrizione} Si accede all'istanza di SEGUIRE identificata dalla tupla (utente seguace, utente seguito) e si aggiunge assegna al campo DataFine la data attuale.
 \paragraph{Frequenza} 1 / 10 g
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -251,7 +251,7 @@ TOTALE   &           & 5       &      \\ \hline
 \subsection{Creare una nuova chat}
 \paragraph{Descrizione} Viene creato una nuova istanza di CHAT e un primo membro amminstratore della chat.
 \paragraph{Frequenza} 1 / 20 g
-\begin{table}[h]
+\begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -285,78 +285,233 @@ TOTALE               &           & 11      &      \\ \hline
 \subsection{Reagire con like/dislike a post e commenti}
 \paragraph{Descrizione} Si aggiunge una istanza alla tabella reazione con identificatore la tupla (utente, contenuto) e nel campo LikeDislike +1 se è un like, -1 se è un dislike.
 \paragraph{Frequenza} 80 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[h]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto        & Costrutto & Accessi & Tipo \\ \hline
+UTENTE          & E         & 1       & R    \\ \hline
+REAZIONE        & A         & 1       & W    \\ \hline
+CONTENUTO       & E         & 1       & R    \\ \hline
+\textit{TOTALE} &           & 4       &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Leggere un post}
 \paragraph{Descrizione} Si mostrano il contentuto, l'ora di pubblicazione, l'autore, i commenti, il numero di like netto (cioè la somma algebrica dei like e dislike), se presente il luogo di pubblicazione.
 \paragraph{Frequenza} 100 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto             & Costrutto & Accessi & Tipo \\ \hline
+CONTENUTO            & E         & 1       & R    \\ \hline
+REAZIONE             & A         & 200     & R    \\ \hline
+PUBBLICAZIONE        & A         & 1       & R    \\ \hline
+UTENTE               & E         & 1       & R    \\ \hline
+LUOGO\_PUBBLICAZIONE & A         & 1       & R    \\ \hline
+REGIONE              & E         & 7       & R    \\ \hline
+PARTE\_DI            & E         & 7       & R    \\ \hline
+RISPOSTA             & A         & 10      & R    \\ \hline
+COMMENTO             & E         & 10      & R    \\ \hline
+TOTALE               &           & 238     &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Scorrere il post pubblicati dagli utenti seguiti (feed)}
 \paragraph{Descrizione} Questa operazione mostra in ordine cronologico i titoli, il numero di like netto e l'autore dei post pubblicati dagli utenti seguiti.
 \paragraph{Frequenza} 40 / g
-\paragraph{Tavola degli accessi}
-
-\subsection{Vedere quali utenti hanno reagito ad un contenuto}
-\paragraph{Descrizione} Si scorre la tabella REAZIONE e si estraggono tutte quelle in cui appare il contentuto cercato. 
-\paragraph{Frequenza} 1 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto         & Costrutto & Accessi & Tipo \\ \hline
+UTENTE           & E         & 1       & R    \\ \hline
+SEGUE            & A         & 100     & R    \\ \hline
+SEGUIRE          & E         & 100     & R    \\ \hline
+\textit{SEGUITO} & A         & 100     & R    \\ \hline
+UTENTE           & E         & 100     & R    \\ \hline
+PUBBLICAZIONE    & A         & 2000    & R    \\ \hline
+CONTENUTO        & E         & 2000    & R    \\ \hline
+TOTALE           &           & 4401    &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Vedere il profilo di un utente}
-\paragraph{Descrizione} Si mostrano nome , cognome, data di nascita, location e la sua reputazione.
+\paragraph{Descrizione} Si mostrano nome, cognome, data di nascita, location e la sua reputazione.
 \paragraph{Frequenza} 5 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+REAZIONE & A         & 100     & R    \\ \hline
+TOTALE   &           & 101     &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Vedere i contenuti pubblicati da un utente}
 \paragraph{Descrizione} Si mostrano tutti i contenuti che hanno come autore l'utente considerato
 \paragraph{Frequanza} 1 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto      & Costrutto & Accessi & Tipo \\ \hline
+UTENTE        & E         & 1       & R    \\ \hline
+PUBBLICAZIONE & A         & 20      & R    \\ \hline
+CONTENUTO     & E         & 20      & R    \\ \hline
+TOTALE        &           & 41      &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Scrivere un messaggio nella chat}
 \paragraph{Descrizione} Si aggiunge una istanza nella tabella MESSAGGIO con una referenza esterna al membro autore.
 \paragraph{Frequenza} 50 / g 
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Concetto    & Costrutto & Accessi & Tipo \\ \hline
+MEMBRO      & E         & 1       & R    \\ \hline
+MITTENTE    & A         & 1       & W    \\ \hline
+MESSAGGIO   & E         & 1       & W    \\ \hline
+CITAZIONE   & A         & 1       & W    \\ \hline
+MESSAGGIO   & E         & 1       & R    \\ \hline
+RIFERIMENTO & A         & 1       & W    \\ \hline
+CONTENUTO   & E         & 1       & R    \\ \hline
+TOTALE      &           & 11      &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Uscire volontariamente dalla chat}
 \paragraph{Descrizione} Nell'istanza del membro che sta uscendo si aggiunge una referenza ad una nuova istanza USCITA di tipo VOLONTARIA.
 \paragraph{Frequenza} 1 / 100 g 
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto   & Costrutto & Accessi & Tipo \\ \hline
+MEMBRO     & E         & 1       & W    \\ \hline
+USCITA     & A         & 1       & W    \\ \hline
+VOLONTARIA & E         & 1       & W    \\ \hline
+TOTALE     &           & 6       &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Elencare i membri attuali della chat}
 \paragraph{Descrizione} Vengono elencati gli username, ruolo e data di entrata degli utenti membri della chat.
 \paragraph{Frequenza} 1 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto     & Costrutto & Accessi & Tipo \\ \hline
+CHAT         & E         & 1       & R    \\ \hline
+APPARTENENZA & A         & 20      & R    \\ \hline
+MEMBRO       & E         & 20      & R    \\ \hline
+TOTALE       &           & 41      &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Leggere i messaggi della chat}
 \paragraph{Descrizione} Ordinati dal più recente al più vecchio vengono mostrati il contenuto dei messaggi, il mittente, un eventuale messaggio citato e un eventuale contenuto in riferimento. Verranno ignorati i messaggi eliminati.
 \paragraph{Frequenza} 90 / g
-\paragraph{Tavola degli accessi}
-
-\subsection{Aggiungere utenti al gruppo}
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto     & Costrutto & Accessi & Tipo \\ \hline
+CHAT         & E         & 1       & R    \\ \hline
+APPARTENENZA & A         & 20      & R    \\ \hline
+MEMBRO       & E         & 20      & R    \\ \hline
+MITTENTE     & A         & 300     & R    \\ \hline
+MESSAGGIO    & E         & 300     & R    \\ \hline
+CITAZIONE    & A         & 300     & R    \\ \hline
+MESSAGGIO    & E         & 300     & R    \\ \hline
+RIFERIMENTO  & A         & 300     & R    \\ \hline
+CONTENUTO    & E         & 300     & R    \\ \hline
+TOTALE       &           & 1841    &      \\ \hline
+\end{tabular}
+\end{table}
+\subsection{Aggiungere nuovi membri alla chat}
 \paragraph{Descrizione} Viene creata una nuova istanza nella tabella MEMBRO che fa riferimento all'utente aggiunto, alla chat in cui è stato inserito, la data di entrata e il membro amministratore che lo ha aggiunto.
 \paragraph{Frequenza} 1 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto       & Costrutto & Accessi & Tipo \\ \hline
+AMMINISTRATORE & E         & 1       & R    \\ \hline
+AGGIUNTO       & A         & 1       & W    \\ \hline
+MEMBRO         & E         & 1       & W    \\ \hline
+IMPERSONAZIONE & A         & 1       & W    \\ \hline
+UTENTE         & E         & 1       & R    \\ \hline
+APPARTENENZA   & A         & 1       & W    \\ \hline
+CHAT           & E         & 1       & R    \\ \hline
+TOTALE         &           & 11      &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Dare diritti amministratore ad un utente in un gruppo}
 \paragraph{Descrizione} L'operazione viene svolta come una uscita volontaria da parte del membro candidato a diventare amministratore e il suo reinserimento come membro amministratore.
 \paragraph{Frequenza} 1 / 4 g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto                          & Costrutto & Accessi    & Tipo \\ \hline
+MEMBRO                            & E         & 1          & W    \\ \hline
+USCITA                            & A         & 1          & W    \\ \hline
+USCITA                            & E         & 1          & W    \\ \hline
+\textit{TOTALE USCITA VOLONTARIA} &           & \textit{6} &      \\ \hline
+AMMINISTRATORE                    & E         & 1          & R    \\ \hline
+AGGIUNTO                          & A         & 1          & W    \\ \hline
+AMMINISTRATORE                    & E         & 1          & W    \\ \hline
+IMPERSONAZIONE                    & A         & 1          & W    \\ \hline
+APPARTENENZA                      & A         & 1          & W    \\ \hline
+TOTALE                            &           & 15         &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Cacciare un utente da un gruppo}
 \paragraph{Descrizione} Similmente a come avviene l'uscita volontaria, l'istanza del membro cacciato referenzierà una istanza della tabella USCITA del tipo ESILIO.
 \paragraph{Frequenza} 1 / 10 g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto       & Costrutto & Accessi & Tipo \\ \hline
+MEMBRO         & E         & 1       & W    \\ \hline
+USCITA         & A         & 1       & W    \\ \hline
+ESILIO         & E         & 1       & W    \\ \hline
+RESPONSABILE   & A         & 1       & W    \\ \hline
+AMMINISTRATORE & E         & 1       & R    \\ \hline
+TOTALE         &           & 9       &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Eliminare un messaggio dalla chat}
 \paragraph{Descrizione} Verrà creata una istanza della relazione ELIMINAZIONE identificata dalla tupla (messaggio eliminato, amministratore responsabile della eliminazione).
 \paragraph{Frequenza} 5 / g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto       & Costrutto & Accessi & Tipo \\ \hline
+MESSAGGIO      & E         & 1       & R    \\ \hline
+ELIMINAZIONE   & A         & 1       & W    \\ \hline
+AMMINISTRATORE & E         & 1       & R    \\ \hline
+TOTALE         &           & 4       &      \\ \hline
+\end{tabular}
+\end{table}
 \subsection{Aggiungere regione a tabella REGIONE}
 \paragraph{Descrizione} Viene creata una nuova istanza di REGIONE la quale conterrà la denominazione della regione e eventualmente la regione superiore.
 \paragraph{Frequenza} 1 / 100 g
-\paragraph{Tavola degli accessi}
-
+\begin{table}[H]
+\paragraph{Tavola degli accessi\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto           & Costrutto  & Accessi    & Tipo       \\ \hline
+REGIONE            & E          & 1          & W          \\ \hline
+PARTE\_DI          & A          & 1          & W          \\ \hline
+REGIONE            & E          & 1          & R          \\ \hline
+\footnote{Le due righe in corsivo sono righe di lettura per la validazione della regione inserita. Servono per verificare il vincolo secondo cui non debbano esistere cicli.}
+\textit{REGIONE}   & \textit{E} & \textit{7} & \textit{R} \\ \hline
+\textit{PARTE\_DI} & \textit{A} & \textit{7} & \textit{R} \\ \hline
+TOTALE             &            & 19         &            \\ \hline
+\end{tabular}
+\end{table}
 \section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
 \section{Analisi delle ridondanze}
 \section{Traduzione di entità e associazioni in relazioni}
