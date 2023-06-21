@@ -110,7 +110,7 @@ create table UTENTE (
      Nome varchar(20),
      Cognome varchar(20),
      Domicilio integer,
-     NumeroSeguaci integer,
+     NumeroSeguaci integer not null,
      constraint ID_UTENTE_ID primary key (Username));
 
 
@@ -265,26 +265,6 @@ create index FKRESPONSABILE_IND
 create index FKDOMICILIO_IND
      on UTENTE (Domicilio);
 
-insert into UTENTE (Username, Nome, DataDiNascita, Cognome) values 
-('hkingaby0', 'H.', '1922-07-09', 'Kingaby'),
-('user1', 'John', '2002-07-09', 'Green'),
-('user2', 'John', '1999-07-09', 'Red'),
-('user3', 'Carl', '2000-07-09', 'Johnson'),
-('user4', 'John', '2000-07-09', 'Smith')
-;
-
-insert into SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine) values
-('user1', 'user2', '2002-07-09', NULL),
-('user2', 'user1', '2005-07-09', NULL),
-('user3', 'user1', '2005-07-09', NULL),
-('user4', 'user1', '2005-07-09', NULL);
-
-
-insert into STORICO_PASSWORD (Username, Password, DataInserimento) values 
-('user1', 'password1', '2002-07-09'),
-('user1', 'password2', '2002-07-10'),
-('user1', 'password3', '2002-07-11'),
-('user3', 'pw', '2002-07-14');
 
 insert into REGIONE (Nome, Superregione) values
 ('World', NULL),
@@ -309,8 +289,3 @@ insert into REGIONE (Nome, Superregione) values
 ('Buffalo', 17),
 ('Brooklyn', 18);
 
-insert into CONTENUTO (Autore, Testo, Titolo, TimestampPubblicazione) values 
-('user1', 'hi everyone', 'hi', '1999-01-08 04:05:06'),
-('user2', 'user2 post', 'something', '1999-01-08 04:05:06'),
-('user2', 'user2 post 2', 'something 2', '1999-01-08 04:05:07'),
-('user3', 'user3 first post', 'text', '1999-01-08 04:05:06');
