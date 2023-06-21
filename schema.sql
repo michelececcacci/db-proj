@@ -36,6 +36,7 @@ create table CONTENUTO (
      IdRegione integer, 
      UsernamePadre varchar(20),
      IdContenutoPadre integer,
+     LikeDelta integer, 
      constraint ID_CONTENUTO primary key (Autore, IdContenuto));
 
 create table MEMBRO (
@@ -109,6 +110,7 @@ create table UTENTE (
      Nome varchar(20),
      Cognome varchar(20),
      Domicilio integer,
+     NumeroSeguaci integer,
      constraint ID_UTENTE_ID primary key (Username));
 
 
