@@ -190,3 +190,8 @@ SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMe
 
 -- name: GetChatMembers :many
 SELECT IdMembro FROM MEMBRO WHERE MEMBRO.idchat = $1;
+
+-- name: UpdateNumberOfFollowers :exec
+UPDATE UTENTE
+SET NumeroSeguaci = NumeroSeguaci + $2 
+WHERE Username = $1;

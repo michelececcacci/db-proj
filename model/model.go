@@ -54,6 +54,14 @@ func (m *Model) InsertChat(arg queries.InsertChatParams, creator string) error {
 }
 
 func (m *Model) InsertFollower(arg queries.InsertFollowerParams) error {
+	followed := arg.Usernameseguito
+	err := m.q.UpdateNumberOfFollowers(m.ctx, queries.UpdateNumberOfFollowersParams{
+		Username:     followed, 
+		Numeroseguaci: +1,
+	})
+	if err != nil {
+		return err
+	}
 	return m.q.InsertFollower(m.ctx, arg)
 }
 
