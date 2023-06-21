@@ -632,6 +632,89 @@ Il costo giornaliero di queste 3 operazioni in totale:
   \frac{80} g \times 5 R + \frac{100} g \times 38 R + \frac{40} g \times 4.401 R = 180.440 \frac{R} g 
 \end{equation}
 Concludiamo che dobbiamo preservare la ridondanza.
+
+\subsection{Numero di follower di un utente}
+Consideriamo la possibilità di avere un campo ridondante nel profilo utente con il numero di utenti che seguono questo utente. Le operazioni interessate sono \ref{follow}, \ref{unfollow} e \ref{vedere_profilo}.
+\subsubsection{Caso senza ridondanza}
+\begin{table}[H]
+  \paragraph{Operazione \ref{follow}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+SEGUE    & A         & 1       & W    \\ \hline
+SEGUIRE  & E         & 1       & W    \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+TOTALE   &           & 6       &      \\ \hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+  \paragraph{Operazione \ref{unfollow}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+SEGUE    & A         & 1       & R    \\ \hline
+SEGUIRE  & E         & 1       & W    \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+TOTALE   &           & 5       &      \\ \hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+  \paragraph{Operazione \ref{vedere_profilo}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+REAZIONE & A         & 100     & R    \\ \hline
+TOTALE   &           & 101     &      \\ \hline
+\end{tabular}
+\end{table}
+
+Il costo giornaliero di queste 3 operazioni in totale:
+\begin{equation}
+  \frac{2} g \times 6 R + \frac{1} {10g} \times 5 R + \frac{5} g \times 101 R = 517,5 \frac{R} g 
+\end{equation}
+
+\subsubsection{Caso con ridondanza}
+\begin{table}[H]
+  \paragraph{Operazione \ref{follow}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+SEGUE    & A         & 1       & W    \\ \hline
+SEGUIRE  & E         & 1       & W    \\ \hline
+UTENTE   & E         & 1       & W    \\ \hline
+TOTALE   &           & 7       &      \\ \hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+  \paragraph{Operazione \ref{unfollow}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+SEGUE    & A         & 1       & R    \\ \hline
+SEGUIRE  & E         & 1       & W    \\ \hline
+UTENTE   & E         & 1       & W    \\ \hline
+TOTALE   &           & 6       &      \\ \hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+  \paragraph{Operazione \ref{vedere_profilo}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+TOTALE   &           & 1       &      \\ \hline
+\end{tabular}
+\end{table}
+Il costo giornaliero di queste 3 operazioni in totale:
+\begin{equation}
+  \frac{2} g \times 7 R + \frac{1} {10g} \times 6 R + \frac{5} g \times 1 R = 19,6 \frac{R} g 
+\end{equation}
+Alla luce di ciò abbiamo scelto di preservare la ridondanza.
 \section{Traduzione di entità e associazioni in relazioni}
 \section{Schema relazionale finale}
 \section{Traduzione delle operazioni in query SQL}
