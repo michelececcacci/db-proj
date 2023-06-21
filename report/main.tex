@@ -346,8 +346,9 @@ TOTALE        &           & 404401  &      \\ \hline
 \hline
 Concetto & Costrutto & Accessi & Tipo \\ \hline
 UTENTE   & E         & 1       & R    \\ \hline
-REAZIONE & A         & 100     & R    \\ \hline
-TOTALE   &           & 101     &      \\ \hline
+SEGUE    & A         & 100     & R    \\ \hline
+REAZIONE & A         & 2000    & R    \\ \hline
+TOTALE   &           & 2101    &      \\ \hline
 \end{tabular}
 \end{table}
 \subsection{Vedere i contenuti pubblicati da un utente} \label{vedere_post_utente}
@@ -660,13 +661,14 @@ UTENTE   & E         & 1       & R    \\ \hline
 TOTALE   &           & 5       &      \\ \hline
 \end{tabular}
 \end{table}
+
 \begin{table}[H]
-  \paragraph{Operazione \ref{vedere_profilo}\newline}
+\paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Concetto & Costrutto & Accessi & Tipo \\ \hline
 UTENTE   & E         & 1       & R    \\ \hline
-REAZIONE & A         & 100     & R    \\ \hline
+SEGUE    & A         & 100     & R    \\ \hline
 TOTALE   &           & 101     &      \\ \hline
 \end{tabular}
 \end{table}
@@ -715,6 +717,66 @@ Il costo giornaliero di queste 3 operazioni in totale:
   \frac{2} g \times 7 R + \frac{1} {10g} \times 6 R + \frac{5} g \times 1 R = 19,6 \frac{R} g 
 \end{equation}
 Alla luce di ciò abbiamo scelto di preservare la ridondanza.
+\subsection{Reputazione di un utente}
+Consideriamo la possibilità di aggiunge un campo ridondante che tenga conto della reputazione attuale di un utente. Ricordiamo che la reputazione di un utente è la somma algebrica dei like dati ai contenuti pubblicati da quel utente.
+Le operazioni interessate dalla ridondanza sono \ref{like} e \ref{vedere_profilo}.
+\subsubsection{Caso senza ridondanza}
+\begin{table}[h]
+  \paragraph{Operazione \ref{like}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto        & Costrutto & Accessi & Tipo \\ \hline
+UTENTE          & E         & 1       & R    \\ \hline
+REAZIONE        & A         & 1       & W    \\ \hline
+CONTENUTO       & E         & 1       & W    \\ \hline
+\textit{TOTALE} &           & 5       &      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \paragraph{Operazione \ref{vedere_profilo}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+REAZIONE & A         & 2000    & R    \\ \hline
+TOTALE   &           & 2001    &      \\ \hline
+\end{tabular}
+\end{table}
+Quindi il costo totale giornaliero è:
+\begin{equation}
+  \frac{80} g \times 5 R + \frac{5} {g} \times 2001 R = 10405 \frac{R} g 
+\end{equation}
+
+\subsubsection{Caso con ridondanza}
+\begin{table}[h]
+  \paragraph{Operazione \ref{like}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto        & Costrutto & Accessi & Tipo \\ \hline
+UTENTE          & E         & 1       & R    \\ \hline
+REAZIONE        & A         & 1       & W    \\ \hline
+CONTENUTO       & E         & 1       & W    \\ \hline
+PUBBLICAZIONE   & A         & 1       & W    \\ \hline 
+UTENTE          & E         & 1       & W    \\ \hline
+\textit{TOTALE} &           & 9       &      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \paragraph{Operazione \ref{vedere_profilo}\newline}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Concetto & Costrutto & Accessi & Tipo \\ \hline
+UTENTE   & E         & 1       & R    \\ \hline
+TOTALE   &           & 1       &      \\ \hline
+\end{tabular}
+\end{table}
+Quindi il costo totale giornaliero è:
+\begin{equation}
+  \frac{80} g \times 9 R + \frac{5} {g} \times 1 R = 725 \frac{R} g 
+In luce di ciò abbiamo deciso di mantenere la ridondanza.
+
 \section{Traduzione di entità e associazioni in relazioni}
 \section{Schema relazionale finale}
 \section{Traduzione delle operazioni in query SQL}
