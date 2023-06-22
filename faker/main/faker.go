@@ -25,6 +25,12 @@ const (
 )
 
 const (
+	users = 100
+	followers = 500
+	admins = 20 
+	basicMembers = 7000 
+	exiles = 100 
+	volontaryExits = 70
 	chats    = 50
 	messages = 2
 )
@@ -37,13 +43,13 @@ func run() error {
 		return err
 	}
 	model := model.New(db, context.Background())
-	populateUsers(model, 100)
-	populateFollowers(model, 500)
+	populateUsers(model, users)
+	populateFollowers(model, followers)
 	populateChats(model, chats)
-	populateMembers(model, 20, true)
-	populateMembers(model, 7000, false)
-	exitMembers(model, 100, true)
-	exitMembers(model, 50, false)
+	populateMembers(model, admins, true)
+	populateMembers(model, basicMembers, false)
+	exitMembers(model, exiles, true)
+	exitMembers(model, volontaryExits, false)
 	populateMessages(model, chats, messages)
 	return nil
 }
