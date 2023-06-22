@@ -75,7 +75,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlL:
-			if m.state != signupState { // currently ctrl + l is used as the location selection shortcut in 
+			if m.state != signupState { // currently ctrl + l is used as the location selection shortcut in
 				// the signup view, so we can't just update this state in that case.
 				m.state = loginState
 			}
@@ -83,7 +83,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.state = signupState
 		case tea.KeyCtrlP:
 			m.state = profileState
-		case tea.KeyCtrlK: // TODO CHANGE BACK
+		case tea.KeyCtrlF:
 			m.state = feedState
 		case tea.KeyCtrlA:
 			m.state = chatState
@@ -97,10 +97,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		username, err := lv.GetAuthenticatedUsername()
 		if err == nil {
 			m.authUsername = &username
-			m.profileView = profile.New(m.model, m.authUsername)
-			m.feedView, _ = m.feedView.Update(util.UpdateUsername{Username: &username})
-			m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
-
+			m.updateUserSpecificViews()
 		}
 	case profileState:
 		m.profileView, cmd = m.profileView.Update(msg)
@@ -114,6 +111,13 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.chatView, cmd = m.chatView.Update(msg)
 	}
 	return m, cmd
+}
+
+func (m *mainView) updateUserSpecificViews() {
+	m.profileView = profile.New(m.model, m.authUsername)
+	m.feedView, _ = m.feedView.Update(util.UpdateUsername{Username: m.authUsername})
+	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
+	m.chatView = chat.NewChatListView(m.authUsername, m.model)
 }
 
 func (m mainView) View() string {
