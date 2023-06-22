@@ -209,7 +209,7 @@ func PopulatePosts(m model.Model, n int) {
 		if err != nil {
 			fmt.Println(err)
 			return
-		} 
+		}
 		err = m.InsertPost(queries.InsertPostParams{
 			Autore:                 author,
 			Testo:                  gofakeit.Paragraph(1, 10, 10, " "),

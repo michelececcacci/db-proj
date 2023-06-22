@@ -13,4 +13,3 @@ func (m Model) InsertPost(arg queries.InsertPostParams) error {
 func (m Model) InsertComment(arg queries.InsertCommentParams) error {
 	return m.q.InsertComment(m.ctx, arg)
 }
-

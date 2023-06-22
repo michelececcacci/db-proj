@@ -41,7 +41,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC:
 			return f, tea.Quit
 		case tea.KeyEnter:
-			if f.state == listState && f.username != nil {
+			if f.state == listState && f.username != nil && f.posts.SelectedItem() != nil {
 				f.state = singlePostState
 				s := f.posts.SelectedItem()
 				if s != nil {
@@ -56,6 +56,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case util.UpdateUsername:
 		f.username = msg.Username
+		f.fetchPosts()
 	}
 	if f.username == nil {
 		return f, cmd
@@ -85,11 +86,15 @@ func New(fg feedGetter, username *string) feedView {
 		state:      listState,
 		postView:   newPostView(post{}, nil),
 	}
-	var p []list.Item
 	if username != nil {
-		rawPosts, _ := fg.GetFullFeed(*username)
-		p = toPost(rawPosts)
+		f.fetchPosts()
 	}
-	f.posts = list.New(p, list.NewDefaultDelegate(), 40, 25)
 	return f
+}
+
+func (f *feedView) fetchPosts() {
+	var p []list.Item
+	rawPosts, _ := f.feedGetter.GetFullFeed(*f.username)
+	p = toPost(rawPosts)
+	f.posts = list.New(p, list.NewDefaultDelegate(), 40, 25)
 }

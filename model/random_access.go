@@ -38,4 +38,3 @@ func (m Model) GetAllMembersFromAnyChat() ([]queries.GetRandomMemberFromAnyChatR
 func (m Model) GetRandomRegion() (int32, error) {
 	return m.q.GetRandomRegion(m.ctx)
 }
-
