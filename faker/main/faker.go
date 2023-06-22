@@ -51,6 +51,7 @@ func run() error {
 	exitMembers(model, exiles, true)
 	exitMembers(model, volontaryExits, false)
 	populateMessages(model, chats, messages)
+	PopulatePosts(model, 100)
 	return nil
 }
 
@@ -194,4 +195,36 @@ func populateMessages(m model.Model, chats, messages int) error {
 		}
 	}
 	return nil
+}
+
+func PopulatePosts(m model.Model, n int) {
+	for i := 0; i < n; i++ {
+		author, err := m.GetRandomUser()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		region, err := m.GetRandomRegion()
+		if err != nil {
+			fmt.Println(err)
+			return
+		} 
+		err = m.InsertPost(queries.InsertPostParams{
+			Autore:                 author,
+			Testo:                  gofakeit.Paragraph(1, 10, 10, " "),
+			Timestamppubblicazione: fakeDate(),
+			Titolo: sql.NullString{
+				String: gofakeit.Sentence(2),
+				Valid:  true,
+			},
+			Idregione: sql.NullInt32{
+				Int32: region,
+				Valid: true,
+			},
+		})
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
