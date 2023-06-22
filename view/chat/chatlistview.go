@@ -32,6 +32,7 @@ func (c chatlistView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			if c.state == multipleChatsState && c.username != nil {
 				c.switchToChat()
+				return c, cmd
 			}
 		case tea.KeyCtrlC:
 			return c, tea.Quit
@@ -102,4 +103,5 @@ type chatModel interface {
 	GetChatInfos(int32) (queries.GetChatInfosRow, error)
 	InsertMessage(queries.InsertMessageParams) error
 	GetChatMessages(int32) ([]queries.GetChatMessagesRow, error)
+	GetChatUserId(int32, string) (int32, error)
 }

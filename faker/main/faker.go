@@ -25,14 +25,14 @@ const (
 )
 
 const (
-	users = 100
-	followers = 500
-	admins = 20 
-	basicMembers = 7000 
-	exiles = 100 
+	users          = 100
+	followers      = 500
+	admins         = 20
+	basicMembers   = 7000
+	exiles         = 100
 	volontaryExits = 70
-	chats    = 50
-	messages = 2
+	chats          = 50
+	messages       = 2
 )
 
 func run() error {

@@ -14,7 +14,7 @@ type message struct {
 }
 
 func (m message) Title() string {
-	return m.content // should be limited in some way
+	return m.author + ":" + m.content
 }
 
 func (m message) FilterValue() string {

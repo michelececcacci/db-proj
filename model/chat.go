@@ -149,3 +149,10 @@ func (m Model) GetChatMessages(idChat int32) ([]queries.GetChatMessagesRow, erro
 func (m Model) GetChatMembers(id int32) ([]int32, error) {
 	return m.q.GetChatMembers(m.ctx, id)
 }
+
+func (m Model) GetChatUserId(id int32, username string) (int32, error) {
+	return m.q.GetChatUserId(m.ctx, queries.GetChatUserIdParams{
+		Idchat:   id,
+		Username: username,
+	})
+}

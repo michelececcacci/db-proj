@@ -16,11 +16,11 @@ type loginView struct {
 	inputsView components.MultipleInputsView
 	errorView  tea.Model
 	username   *string
-	model loginModel
+	model      loginModel
 }
 
 type loginModel interface {
- Authenticate(arg queries.AuthenticateParams, loginDate time.Time) (bool, error)
+	Authenticate(arg queries.AuthenticateParams, loginDate time.Time) (bool, error)
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -57,7 +57,7 @@ func New(model loginModel) loginView {
 	return loginView{
 		inputsView: components.NewMultipleInputsView(inputs),
 		errorView:  components.NewErrorView(),
-		model: model,
+		model:      model,
 	}
 }
 
