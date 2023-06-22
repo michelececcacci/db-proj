@@ -43,6 +43,29 @@ INSERT INTO USCITA (
 IdMembro, DataUscita, Motivazione, IdMembroResponsabile
 ) VALUES ($1, $2, $3, $4); 
 
+/*
+create table CONTENUTO (
+     Autore varchar(20) not null,
+     Testo varchar(1000) not null,
+     IdContenuto serial not null,
+     TimestampPubblicazione date not null,
+     Titolo varchar(30),
+     IdRegione integer, 
+     UsernamePadre varchar(20),
+     IdContenutoPadre integer,
+     LikeDelta integer not null,
+     constraint ID_CONTENUTO primary key (Autore, IdContenuto));
+*/
+-- name: InsertPost :exec
+INSERT INTO CONTENUTO (
+  Autore, Testo, TimestampPubblicazione, Titolo, IdRegione, LikeDelta
+) VALUES ($1, $2, $3, $4, $5, 0);
+
+-- name: InsertComment :exec
+INSERT INTO CONTENUTO (
+  Autore, Testo, TimestampPubblicazione, IdRegione, UsernamePadre, IdContenutoPadre, LikeDelta
+) VALUES ($1, $2, $3, $4, $5, $6, 0);
+
 -- name: GetFollowers :many
 SELECT usernameseguace FROM SEGUIRE WHERE usernameseguito = $1 AND DataFine IS NULL;
 
