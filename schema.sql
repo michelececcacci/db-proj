@@ -86,8 +86,7 @@ create table SEGUIRE (
       
 create table STORICO_ACCESSO (
      Username varchar(20) not null,
-     TimestampLogin date not null,
-     TimestampLogout date not null,
+     TimestampLogin timestamp not null,
      constraint ID_STORICO_ACCESSO primary key (Username, TimestampLogin));
 
 create table STORICO_PASSWORD (
