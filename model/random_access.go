@@ -34,3 +34,8 @@ func (m Model) GetRandomCurrentMemberInChat(chat int32) (sql.NullInt32, sql.Null
 func (m Model) GetAllMembersFromAnyChat() ([]queries.GetRandomMemberFromAnyChatRow, error) {
 	return m.q.GetRandomMemberFromAnyChat(m.ctx)
 }
+
+func (m Model) GetRandomRegion() (int32, error) {
+	return m.q.GetRandomRegion(m.ctx)
+}
+

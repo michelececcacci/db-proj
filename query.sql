@@ -177,6 +177,12 @@ SELECT m.IdMembro, m.IdChat
 FROM MEMBRO m 
 ORDER BY random();
 
+-- name: GetRandomRegion :one 
+SELECT idregione
+FROM regione
+ORDER BY random()
+LIMIT 1;
+
 -- name: GetLocationRec :many
 WITH recursive getSuperregions(idregione, superregione)
 AS(
