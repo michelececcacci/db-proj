@@ -28,6 +28,7 @@ type Contenuto struct {
 	Idregione              sql.NullInt32
 	Usernamepadre          sql.NullString
 	Idcontenutopadre       sql.NullInt32
+	Likedelta              int32
 }
 
 type Membro struct {
@@ -95,4 +96,5 @@ type Utente struct {
 	Nome          sql.NullString
 	Cognome       sql.NullString
 	Domicilio     sql.NullInt32
+	Numeroseguaci int32
 }

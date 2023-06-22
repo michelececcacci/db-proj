@@ -621,7 +621,7 @@ func (q *Queries) GetRandomUser(ctx context.Context) (string, error) {
 }
 
 const getSpecificPost = `-- name: GetSpecificPost :many
-SELECT autore, testo, idcontenuto, timestamppubblicazione, titolo, idregione, usernamepadre, idcontenutopadre FROM CONTENUTO WHERE Autore = $1 AND IdContenuto = $2
+SELECT autore, testo, idcontenuto, timestamppubblicazione, titolo, idregione, usernamepadre, idcontenutopadre, likedelta FROM CONTENUTO WHERE Autore = $1 AND IdContenuto = $2
 `
 
 type GetSpecificPostParams struct {
@@ -647,6 +647,7 @@ func (q *Queries) GetSpecificPost(ctx context.Context, arg GetSpecificPostParams
 			&i.Idregione,
 			&i.Usernamepadre,
 			&i.Idcontenutopadre,
+			&i.Likedelta,
 		); err != nil {
 			return nil, err
 		}
@@ -808,8 +809,8 @@ func (q *Queries) InsertRegion(ctx context.Context, arg InsertRegionParams) erro
 }
 
 const insertUser = `-- name: InsertUser :exec
-INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio) 
-    VALUES             ($1,    $2,        $3,   $4,      $5)
+INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio, NumeroSeguaci) 
+    VALUES             ($1,    $2,        $3,   $4,      $5, 0)
 `
 
 type InsertUserParams struct {
@@ -858,4 +859,20 @@ func (q *Queries) TestQuery(ctx context.Context) (Chat, error) {
 	var i Chat
 	err := row.Scan(&i.Nome, &i.Descrizione, &i.Idchat)
 	return i, err
+}
+
+const updateNumberOfFollowers = `-- name: UpdateNumberOfFollowers :exec
+UPDATE UTENTE
+SET NumeroSeguaci = NumeroSeguaci + $2 
+WHERE Username = $1
+`
+
+type UpdateNumberOfFollowersParams struct {
+	Username      string
+	Numeroseguaci int32
+}
+
+func (q *Queries) UpdateNumberOfFollowers(ctx context.Context, arg UpdateNumberOfFollowersParams) error {
+	_, err := q.db.ExecContext(ctx, updateNumberOfFollowers, arg.Username, arg.Numeroseguaci)
+	return err
 }

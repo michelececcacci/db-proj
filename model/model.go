@@ -17,6 +17,3 @@ func New(db queries.DBTX, ctx context.Context) Model {
 		ctx: ctx,
 	}
 }
-
-
-

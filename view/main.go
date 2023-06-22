@@ -75,7 +75,10 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlL:
-			m.state = loginState
+			if m.state != signupState { // currently ctrl + l is used as the location selection shortcut in 
+				// the signup view, so we can't just update this state in that case.
+				m.state = loginState
+			}
 		case tea.KeyCtrlS:
 			m.state = signupState
 		case tea.KeyCtrlP:
