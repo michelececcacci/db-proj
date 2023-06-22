@@ -9,6 +9,10 @@ INSERT INTO UTENTE (Username, DataDiNascita, Nome, Cognome, Domicilio, NumeroSeg
 INSERT INTO STORICO_PASSWORD (Username, Password, DataInserimento)
     VALUES ($1, $2, $3);
 
+-- name: InsertUserAccess :exec
+INSERT INTO STORICO_ACCESSO (Username, TimestampLogin)
+  VALUES ($1, $2);
+
 -- name: InsertFollower :exec
 INSERT INTO SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine)
   VALUES ($1, $2, $3, $4);
