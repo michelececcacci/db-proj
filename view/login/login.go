@@ -1,9 +1,9 @@
 package view
 
 import (
-	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,10 +14,13 @@ import (
 
 type loginView struct {
 	inputsView components.MultipleInputsView
-	ctx        *context.Context
-	q          *queries.Queries
 	errorView  tea.Model
 	username   *string
+	model loginModel
+}
+
+type loginModel interface {
+ Authenticate(arg queries.AuthenticateParams, loginDate time.Time) (bool, error)
 }
 
 func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -25,12 +28,12 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			isPresent, err := l.q.Authenticate(*l.ctx, l.getCurrentAuthParams())
+			isPresent, err := l.model.Authenticate(l.getCurrentAuthParams(), time.Now())
 			if err != nil {
 				l.errorView, _ = l.errorView.Update(util.OptionalError{Err: err})
 				break
 			} else {
-				if isPresent == 1 {
+				if isPresent {
 					l.errorView, _ = l.errorView.Update(util.OptionalError{Message: "You are authenticated"})
 					s := l.getCurrentAuthParams().Username
 					l.username = &s
@@ -46,16 +49,15 @@ func (l loginView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return l, cmd
 }
 
-func New(ctx *context.Context, q *queries.Queries) loginView {
+func New(model loginModel) loginView {
 	inputs := []textinput.Model{
 		components.NewInput("username", 20),
 		components.NewInput("password", 20),
 	}
 	return loginView{
 		inputsView: components.NewMultipleInputsView(inputs),
-		ctx:        ctx,
-		q:          q,
 		errorView:  components.NewErrorView(),
+		model: model,
 	}
 }
 

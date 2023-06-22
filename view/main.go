@@ -53,7 +53,7 @@ func NewMainView(options ...viewOption) mainView {
 		opt(&m)
 	}
 	m.state = loginState // users need to login on startup
-	m.loginView = login.New(&m.ctx, m.q)
+	m.loginView = login.New(m.model)
 	m.profileView = profile.New(m.model, m.authUsername)
 	m.signUpView = signup.New(&m.ctx, m.q)
 	m.feedView = feed.New(m.model, m.authUsername)
