@@ -12,21 +12,6 @@
 \chapter{Analisi dei requisiti}
 \section{Intervista}
 Vogliamo sviluppare un social network puramente testuale.
-Gli utenti possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce le sue generalità, opzionalmente la propria locazione, una email e decide un nome utente univoco e una password.
-L'utente può cambiare la sua password ma non può riutilizzare una password precedente.
-Ogni utente può pubblicare dei post. Un post consiste in un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore. 
-Per ogni post Viene anche registrata la timestamp.
-Ogni utente può commentare i post e rispondere ad altri commenti.
-L'utente può correggere post e commenti.
-L'utente ha una reputazione, definita come il numero di like totali ricevuti meno il numero totale di dislike ricevuti.
-Ogni utente può mettere like e dislike a post e commenti.
-Gli utenti inoltre possono seguire altri utenti.
-Gli utenti possono chattare con altri utenti. Le chat si compongono di messaggi inviati da utenti. Ogni messaggio ha un suo autore, un timestamp di invio e, dopo essere stato letto, un timestamp di lettura.
-Ogni utente può creare un gruppo. Un gruppo è una aggregazione di uno o più utenti. Ogni gruppo ha uno o più utenti amministratori.
-Ogni gruppo ha una e una sola chat interna a cui possono partecipare solo gli utenti membri.
-
-\section{Definizione delle specifiche in linguaggio naturale ed estrazione dei concetti principali}
-Vogliamo sviluppare un social network puramente testuale.
 Gli \textbf{utenti} possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce un username identificativo e opzionalmente le sue generalità(nome, cognome, data di nascita, proprio domicilio). Inoltre decide una password che utilzzerà per autenticarsi al social network.
 L'utente può cambiare la sua password ma non può riutilizzare una password precedente.
 Ogni utente può pubblicare dei \textbf{post}. Un post consiste in un titlo, un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore (cioè l'utente che ha scritto il post). I post possono essere commentati dagli utenti.
@@ -470,7 +455,7 @@ REGIONE            & E          & 1          & R          \\ \hline
 TOTALE             &            & 19         &            \\ \hline
 \end{tabular}
 \end{table}
-\section{Raffinamento dello schema (eliminazione di identificatori esterni, attributi composti e gerarchie, scelta delle chiavi)}
+\section{Raffinamento dello schema}
 \subsection{Eliminazione di gerarchie}
 Nel nostro social network, un contenuto puo essere sia un 
 post che un messaggio. Dato che i messaggi non hanno un titolo, mentre un post ha necessariamente un titolo, 
@@ -478,8 +463,7 @@ abbiamo optato definirli attraverso la presenza questo attributo, usando un coll
 Un utente puo essere un amministratore o no in una chat, e in questo caso abbiamo optato per un collasso verso 
 l' alto. Infatti, dato che ogni utente e definito come membro di una chat e i diritti di amministrazione sono esclusivi a 
 quella chat, abbiamo definito una flag che ci dice se l' utente ha diritti amministratore.
-\subsection{Eliminazione di chiavi composte}
-\subsubsection{Eliminazione di identificatori esterni}
+\subsection{Eliminazione di identificatori esterni}
 Rispetto allo schema e/r sono state eliminate  le seguenti relazioni:
 \begin{itemize}
   \item  
