@@ -67,7 +67,7 @@ func populateUsers(m model.Model, n int) {
 			Datadinascita: sql.NullTime{Time: fakeDate(), Valid: true},
 		}
 		fmt.Println(u)
-		m.InsertUser(u)
+		m.InsertUser(u, gofakeit.Password(true, false, false, false, false, 5), fakeDate())
 		i++
 	}
 }

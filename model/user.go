@@ -1,9 +1,21 @@
 package model
 
-import "github.com/michelececcacci/db-proj/queries"
+import (
+	"time"
 
-func (m Model) InsertUser(arg queries.InsertUserParams) error {
-	return m.q.InsertUser(m.ctx, arg)
+	"github.com/michelececcacci/db-proj/queries"
+)
+
+func (m Model) InsertUser(arg queries.InsertUserParams, password string, signupDate time.Time) error {
+	err := m.q.InsertUser(m.ctx, arg)
+	if err != nil {
+		return err
+	}
+	return m.q.InsertPassword(m.ctx, queries.InsertPasswordParams{
+		Username:        arg.Username,
+		Password:        password,
+		Datainserimento: signupDate,
+	})
 }
 
 func (m Model) GetFollowers(usernameseguito string) ([]string, error) {
