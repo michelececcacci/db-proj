@@ -44,7 +44,8 @@ func run() error {
 	}
 	model := model.New(db, context.Background())
 	populateUsers(model, users)
-	populateFollowers(model, followers)
+	populateFollowers(model, followers, true)
+	populateFollowers(model, followers, false)
 	populateChats(model, chats)
 	populateMembers(model, admins, true)
 	populateMembers(model, basicMembers, false)
@@ -79,7 +80,7 @@ func populateUsers(m model.Model, n int) {
 	}
 }
 
-func populateFollowers(m model.Model, n int) {
+func populateFollowers(m model.Model, n int, valid bool) {
 	followings, _ := m.GetAllPossibleFollowings()
 	k := 0
 	i := 0
@@ -90,7 +91,7 @@ func populateFollowers(m model.Model, n int) {
 			Usernameseguace: seguace,
 			Usernameseguito: seguito,
 			Datainizio:      dataInizio,
-			Datafine:        sql.NullTime{Time: dataInizio.AddDate(0, 1, 0), Valid: true},
+			Datafine:        sql.NullTime{Time: dataInizio.AddDate(0, 1, 0), Valid: valid},
 		}
 		fmt.Println(f)
 		err := m.InsertFollower(f)
