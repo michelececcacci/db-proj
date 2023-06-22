@@ -24,6 +24,7 @@ type singleChatView struct {
 	sendMessage textinput.Model
 	state       state
 	model       chatModel
+	id int32
 }
 
 func (c singleChatView) Init() tea.Cmd { return nil }
@@ -40,7 +41,7 @@ func (c singleChatView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				{
 					c.model.InsertMessage(queries.InsertMessageParams{
 						Testo:          c.sendMessage.Value(),
-						Mittente:       0, // todo fix
+						Mittente:       c.id,
 						Timestampinvio: time.Now().UTC(),
 					})
 				}
@@ -72,6 +73,7 @@ func newSingleChatView(ci chatInfo, username string, m chatModel) singleChatView
 		messages:    list.New(messagesToItems(info), list.NewDefaultDelegate(), 40, 25),
 		state:       viewMessage,
 		username:    username,
+		id: ci.id,
 	}
 	c.messages.Title = ci.name
 	return c

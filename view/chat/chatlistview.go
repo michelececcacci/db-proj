@@ -101,5 +101,5 @@ type chatModel interface {
 	GetCurrentChats(string) ([]int32, error)
 	GetChatInfos(int32) (queries.GetChatInfosRow, error)
 	InsertMessage(queries.InsertMessageParams) error
-	GetChatMessages(idChat int32) ([]queries.GetChatMessagesRow, error)
+	GetChatMessages(int32) ([]queries.GetChatMessagesRow, error)
 }
