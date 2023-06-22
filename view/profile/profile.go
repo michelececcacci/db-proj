@@ -2,6 +2,7 @@ package profile
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -46,6 +47,8 @@ func (p profileView) View() string {
 	if p.username == nil {
 		return "Not logged in\n"
 	}
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("User: %s\nLocation: %s\n", *p.username, p.location))
 	if p.state == followersState {
 		return util.ListStyle.Render(p.followers.View())
 	}
@@ -98,9 +101,13 @@ func New(m loginModel, username *string) profileView {
 	if username != nil {
 		following, _ := m.GetFollowing(*username)
 		followers, _ := m.GetFollowers(*username)
+		locations, err := m.GetUserLocation(*username)
+		if err != nil {
+			locations = []string{}
+		}
 		p := profileView{
 			username:  username,
-			location:  "test_location", // TODO CHANGE
+			location:  strings.Join(locations, ","),
 			followers: list.New(toUser(followers), list.NewDefaultDelegate(), 25, 25),
 			following: list.New(toUser(following), list.NewDefaultDelegate(), 25, 25),
 			state:     followersState,
@@ -123,4 +130,5 @@ func toUser(usernames []string) []list.Item {
 type loginModel interface {
 	GetFollowers(string) ([]string, error)
 	GetFollowing(string) ([]string, error)
+	GetUserLocation(string) ([]string, error)
 }

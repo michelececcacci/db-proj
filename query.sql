@@ -195,3 +195,6 @@ SELECT IdMembro FROM MEMBRO WHERE MEMBRO.idchat = $1;
 UPDATE UTENTE
 SET NumeroSeguaci = NumeroSeguaci + $2 
 WHERE Username = $1;
+
+-- name: GetUserInfo :one
+SELECT * FROM UTENTE WHERE username = $1;

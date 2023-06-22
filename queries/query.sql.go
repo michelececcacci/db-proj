@@ -662,6 +662,24 @@ func (q *Queries) GetSpecificPost(ctx context.Context, arg GetSpecificPostParams
 	return items, nil
 }
 
+const getUserInfo = `-- name: GetUserInfo :one
+SELECT username, datadinascita, nome, cognome, domicilio, numeroseguaci FROM UTENTE WHERE username = $1
+`
+
+func (q *Queries) GetUserInfo(ctx context.Context, username string) (Utente, error) {
+	row := q.db.QueryRowContext(ctx, getUserInfo, username)
+	var i Utente
+	err := row.Scan(
+		&i.Username,
+		&i.Datadinascita,
+		&i.Nome,
+		&i.Cognome,
+		&i.Domicilio,
+		&i.Numeroseguaci,
+	)
+	return i, err
+}
+
 const insertAdmin = `-- name: InsertAdmin :exec
 INSERT INTO AMMINISTRATORE (
   IdMembro

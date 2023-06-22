@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/michelececcacci/db-proj/queries"
@@ -36,4 +37,16 @@ func (m Model) InsertFollower(arg queries.InsertFollowerParams) error {
 		return err
 	}
 	return m.q.InsertFollower(m.ctx, arg)
+}
+
+
+func (m Model) GetUserLocation(username string) ([]string, error) {
+	u , err := 	m.q.GetUserInfo(m.ctx, username) 
+	if err != nil {
+		return nil, err
+	}
+	if u.Domicilio.Valid {
+		return m.q.GetLocationRec(m.ctx, u.Domicilio.Int32)
+	}
+	return nil, fmt.Errorf("missing location")
 }
