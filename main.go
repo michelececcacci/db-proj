@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
@@ -17,8 +18,11 @@ const (
 	dbname   = "postgres"
 	user     = "postgres"
 	password = "postgres"
-	host     = "localhost"
-	port     = "55432"
+)
+
+var (
+	host = os.Getenv("HOSTNAME")
+	port = os.Getenv("PORTNAME")
 )
 
 func run() error {

@@ -13,6 +13,9 @@ services:
       - 55432:5432
 
   go_application:
+    environment:
+      HOSTNAME: db
+      PORTNAME: 5432
     build:
       context: .
       dockerfile: Dockerfile
