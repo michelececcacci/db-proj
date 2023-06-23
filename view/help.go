@@ -12,13 +12,14 @@ import (
 // keyMap defines a set of keybindings. To work for help it must satisfy
 // key.Map. It could also very easily be a map[string]key.Binding.
 type keyMap struct {
-	Login   key.Binding
-	Signup  key.Binding
-	Profile key.Binding
-	Feed    key.Binding
-	Help    key.Binding
-	Quit    key.Binding
-	Chat    key.Binding
+	Login       key.Binding
+	Signup      key.Binding
+	Profile     key.Binding
+	Feed        key.Binding
+	Help        key.Binding
+	Quit        key.Binding
+	Chat        key.Binding
+	PublishPost key.Binding
 }
 
 // ShortHelp returns keybindings to be shown in the mini help view. It's part
@@ -34,7 +35,7 @@ func (k keyMap) FullHelp() [][]key.Binding {
 		{k.Login, k.Signup},
 		{k.Profile, k.Feed},
 		{k.Help, k.Quit},
-		{k.Chat},
+		{k.Chat, k.PublishPost},
 	}
 }
 
@@ -66,6 +67,10 @@ var keys = keyMap{
 	Chat: key.NewBinding(
 		key.WithKeys("ctrl+a"),
 		key.WithHelp("ctrl+a", "chat"),
+	),
+	PublishPost: key.NewBinding(
+		key.WithKeys("ctrl+w"),
+		key.WithHelp("ctrl+w", "publish post"),
 	),
 }
 

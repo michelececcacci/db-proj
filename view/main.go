@@ -15,6 +15,7 @@ import (
 	chat "github.com/michelececcacci/db-proj/view/chat"
 	feed "github.com/michelececcacci/db-proj/view/feed"
 	login "github.com/michelececcacci/db-proj/view/login"
+	"github.com/michelececcacci/db-proj/view/post"
 	profile "github.com/michelececcacci/db-proj/view/profile"
 	"github.com/michelececcacci/db-proj/view/signup"
 )
@@ -30,6 +31,7 @@ const (
 	feedState
 	passwordResetState
 	chatState
+	publishPostState
 )
 
 type mainView struct {
@@ -42,6 +44,7 @@ type mainView struct {
 	help              tea.Model
 	passwordResetView tea.Model
 	chatView          tea.Model
+	publishPostView   tea.Model
 	authUsername      *string
 	state             state
 	model             *model.Model
@@ -60,6 +63,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
 	m.chatView = chat.NewChatListView(m.authUsername, m.model)
+	m.publishPostView = post.New(m.authUsername, m.model)
 	return m
 }
 
@@ -80,13 +84,13 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.state = loginState
 			}
 		case tea.KeyCtrlS:
-			m.state = signupState
-		case tea.KeyCtrlP:
 			m.state = profileState
 		case tea.KeyCtrlF:
 			m.state = feedState
 		case tea.KeyCtrlA:
 			m.state = chatState
+		case tea.KeyCtrlW:
+			m.state = publishPostState
 		}
 	}
 	m.help, _ = m.help.Update(msg) // always updated
@@ -109,6 +113,8 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.passwordResetView, cmd = m.passwordResetView.Update(msg)
 	case chatState:
 		m.chatView, cmd = m.chatView.Update(msg)
+	case publishPostState:
+		m.publishPostView, cmd = m.publishPostView.Update(msg)
 	}
 	return m, cmd
 }
@@ -118,6 +124,7 @@ func (m *mainView) updateUserSpecificViews() {
 	m.feedView, _ = m.feedView.Update(util.UpdateUsername{Username: m.authUsername})
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
 	m.chatView = chat.NewChatListView(m.authUsername, m.model)
+	m.publishPostView = post.New(m.authUsername, m.model)
 }
 
 func (m mainView) View() string {
@@ -135,6 +142,8 @@ func (m mainView) View() string {
 		sb.WriteString(m.feedView.View())
 	case chatState:
 		sb.WriteString(m.chatView.View())
+	case publishPostState:
+		sb.WriteString(m.publishPostView.View())
 	}
 	if m.state != feedState {
 		sb.WriteString(m.help.View()) // we can't render both the viewport  and the help component
