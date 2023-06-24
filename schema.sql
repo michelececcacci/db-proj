@@ -63,8 +63,8 @@ create table REAZIONE (
      AutoreContenuto varchar(20) not null,
      IdContenuto integer not null,
      Username varchar(20) not null,
-     LikeDislike numeric(1) not null,
-     Timestamp char(1) not null,
+     LikeDislike integer not null,
+     Timestamp timestamp not null,
      constraint ID_REAZIONE primary key (Username, AutoreContenuto, IdContenuto));
 
 create table REGIONE (
