@@ -4,11 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strconv"
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
@@ -17,20 +15,20 @@ import (
 )
 
 type signUp struct {
-	inputsView        components.MultipleInputsView
-	ctx               *context.Context
-	q                 *queries.Queries
-	errorView         tea.Model
-	locations         list.Model
-	selectingLocation bool
-	selectedLocation  sql.NullInt32
-	help              tea.Model
+	inputsView         components.MultipleInputsView
+	ctx                *context.Context
+	q                  *queries.Queries
+	errorView          tea.Model
+	selectingLocation  bool
+	help               tea.Model
+	selectedLocation   sql.NullInt32
+	selectLocationView tea.Model
 }
 
 func (s signUp) View() string {
 	sb := strings.Builder{}
 	if s.selectingLocation {
-		sb.WriteString(s.locations.View())
+		sb.WriteString(s.selectLocationView.View())
 	} else {
 		sb.WriteString(s.inputsView.View())
 		sb.WriteString(s.errorView.View())
@@ -82,14 +80,14 @@ func (r signUp) UpdateLocation(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+l":
 			r.selectingLocation = false
 		case "enter":
-			r.selectedLocation.Valid = true
-			s := r.locations.SelectedItem().FilterValue()
-			id, _ := strconv.ParseInt(s, 10, 32)
-			r.selectedLocation.Int32 = int32(id)
+			r.selectLocationView, cmd = r.selectLocationView.Update(msg)
+			sv := r.selectLocationView.(components.SelectLocation)
+			r.selectedLocation =  sv.SelectedLocation
 			r.selectingLocation = false
+		default:
+			r.selectLocationView, cmd = r.selectLocationView.Update(msg)
 		}
 	}
-	r.locations, cmd = r.locations.Update(msg)
 	return r, cmd
 }
 
@@ -113,11 +111,6 @@ func (s signUp) getCurrentUserParams() queries.InsertUserParams {
 }
 
 func New(ctx *context.Context, q *queries.Queries) signUp {
-	result, err := q.GetLocations(*ctx)
-	if err != nil {
-		panic(err)
-	}
-	locations := toLocations(result, q, ctx)
 	inputs := []textinput.Model{
 		components.NewInput("Username", 20),
 		components.NewInput("Password", 20),
@@ -130,10 +123,9 @@ func New(ctx *context.Context, q *queries.Queries) signUp {
 		ctx:        ctx,
 		q:          q,
 		errorView:  components.NewErrorView(),
-		locations:  list.New(locations, list.NewDefaultDelegate(), 25, 25),
 		help:       help{},
+		selectLocationView: components.NewSelectLocation(q, ctx),
 	}
-	s.locations.Title = "Select location"
 	return s
 }
 

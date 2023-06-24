@@ -13,5 +13,5 @@ func (h help) Update(tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (h help) View() string {
-	return "Press ctrl+l to select locations"
+	return "Press ctrl+l to toggle location selection"
 }

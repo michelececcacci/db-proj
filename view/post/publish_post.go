@@ -31,12 +31,12 @@ var (
 )
 
 type postView struct {
-	focusIndex int
-	inputs     []textinput.Model
-	cursorMode cursor.Mode
-	model      publishPostModel
+	focusIndex     int
+	inputs         []textinput.Model
+	cursorMode     cursor.Mode
+	model          publishPostModel
 	errorComponent tea.Model
-	username   *string
+	username       *string
 }
 
 type publishPostModel interface {
@@ -45,9 +45,9 @@ type publishPostModel interface {
 
 func New(username *string, model publishPostModel) postView {
 	m := postView{
-		inputs: make([]textinput.Model, 2),
-		username: username,
-		model: model,
+		inputs:         make([]textinput.Model, 2),
+		username:       username,
+		model:          model,
 		errorComponent: components.NewErrorView(),
 	}
 

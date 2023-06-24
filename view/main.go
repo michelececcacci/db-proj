@@ -84,7 +84,7 @@ func (m mainView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.state = loginState
 			}
 		case tea.KeyCtrlS:
-			m.state = profileState
+			m.state = signupState
 		case tea.KeyCtrlF:
 			m.state = feedState
 		case tea.KeyCtrlA:

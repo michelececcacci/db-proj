@@ -1,4 +1,4 @@
-package signup
+package components
 
 import (
 	"context"

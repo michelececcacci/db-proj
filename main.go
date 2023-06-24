@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
+	// "os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	host = os.Getenv("HOSTNAME")
-	port = os.Getenv("PORTNAME")
+	host = "localhost"//os.Getenv("HOSTNAME")
+	port = "55432"//os.Getenv("PORTNAME")
 )
 
 func run() error {
