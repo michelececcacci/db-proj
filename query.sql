@@ -201,7 +201,7 @@ from getSuperregions g join regione r on (g.superregione = r.idregione)
 where g.idregione = $1;
 
 -- name: GetFullFeed :many
-SELECT titolo, autore, TimestampPubblicazione, Testo FROM SEGUIRE 
+SELECT titolo, autore, IdContenuto, TimestampPubblicazione, Testo FROM SEGUIRE 
 JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  
 WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre IS NULL;
 
@@ -231,3 +231,16 @@ WHERE Username = $1;
 
 -- name: GetChatUserId :one
 SELECT IdMembro FROM MEMBRO WHERE username = $1 AND idChat = $2;
+
+-- name: PutLike :exec
+INSERT INTO REAZIONE ( 
+  autorecontenuto, IdContenuto, username, likedislike, timestamp)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (autorecontenuto, IdContenuto, username) DO UPDATE SET 
+      likedislike = excluded.likedislike,
+      timestamp = excluded.timestamp;
+
+-- name: UpdateNumberOfLikes :exec 
+UPDATE CONTENUTO
+  SET LikeDelta = LikeDelta + $3
+  WHERE Autore = $1 AND IdContenuto = $2;
