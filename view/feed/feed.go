@@ -1,6 +1,8 @@
 package feed
 
 import (
+	"time"
+
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/michelececcacci/db-proj/queries"
@@ -18,9 +20,14 @@ type feedGetter interface {
 	GetFullFeed(username string) ([]queries.GetFullFeedRow, error)
 }
 
+type likePutter interface {
+	PutLike(arg queries.PutLikeParams) error
+}
+
 type feedView struct {
 	posts          list.Model
 	feedGetter     feedGetter
+	likePutter likePutter
 	state          state
 	postView       tea.Model
 	lastWindowSize tea.WindowSizeMsg // needed to init the viewport
@@ -53,6 +60,17 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if f.state == singlePostState && f.username != nil {
 				f.state = listState
 			}
+		case tea.KeyCtrlJ:
+			if f.username != nil && f.posts.SelectedItem() != nil {
+				post := f.posts.SelectedItem().(post)
+				f.likePutter.PutLike(queries.PutLikeParams{
+					Autorecontenuto: post.Author,
+					Idcontenuto:     post.id,
+					Username:        *f.username,
+					Likedislike:     1,
+					Timestamp:       time.Now().UTC(),
+				})	
+			}
 		}
 	case util.UpdateUsername:
 		f.username = msg.Username
@@ -79,10 +97,11 @@ func (f feedView) View() string {
 	return f.postView.View()
 }
 
-func New(fg feedGetter, username *string) feedView {
+func New(fg feedGetter, lp likePutter, username *string) feedView {
 	f := feedView{
 		username:   username,
 		feedGetter: fg,
+		likePutter: lp,
 		state:      listState,
 		postView:   newPostView(post{}, nil),
 	}

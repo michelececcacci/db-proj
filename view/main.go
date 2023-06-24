@@ -59,7 +59,7 @@ func NewMainView(options ...viewOption) mainView {
 	m.loginView = login.New(m.model)
 	m.profileView = profile.New(m.model, m.authUsername)
 	m.signUpView = signup.New(&m.ctx, m.q)
-	m.feedView = feed.New(m.model, m.authUsername)
+	m.feedView = feed.New(m.model, m.model, m.authUsername)
 	m.help = newHelpComponent()
 	m.passwordResetView = newPasswordResetView(&m.ctx, m.q, m.authUsername)
 	m.chatView = chat.NewChatListView(m.authUsername, m.model)

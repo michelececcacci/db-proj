@@ -14,6 +14,7 @@ type post struct {
 	PostTitle string
 	upvotes   int
 	timestamp time.Time
+	id int32
 }
 
 func (p post) Title() string {
@@ -40,6 +41,7 @@ func toPost(result []queries.GetFullFeedRow) []list.Item {
 			PostTitle: title,
 			Content:   p.Testo,
 			upvotes:   0,
+			id: p.Idcontenuto,
 		})
 	}
 	return posts
