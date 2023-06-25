@@ -14,3 +14,7 @@ PORTNAME=55432
 go run .
 ``` 
 on a bash terminal
+
+to populate the db, run 
+```go run  faker/main/main.go
+```

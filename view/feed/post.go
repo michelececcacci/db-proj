@@ -40,8 +40,9 @@ func toPost(result []queries.GetFullFeedRow) []list.Item {
 			Author:    p.Autore,
 			PostTitle: title,
 			Content:   p.Testo,
-			upvotes:   0,
+			upvotes:   int(p.Likedelta),
 			id:        p.Idcontenuto,
+			timestamp: p.Timestamppubblicazione,
 		})
 	}
 	return posts

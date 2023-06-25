@@ -92,7 +92,7 @@ func (f feedView) View() string {
 		return "Not logged in\n"
 	}
 	if f.state == listState {
-		return util.ListStyle.Render(f.posts.View()) + "\n"
+		return util.ListStyle.Render(f.posts.View()) + "\nPress ctrl +j to like a post\n"
 	}
 	return f.postView.View()
 }
