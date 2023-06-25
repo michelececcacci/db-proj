@@ -462,7 +462,7 @@ Nel nostro social network, un contenuto puo essere sia un
 post che un messaggio. Dato che i messaggi non hanno un titolo, mentre un post ha necessariamente un titolo, 
 abbiamo optato definirli attraverso la presenza questo attributo, usando un collasso verso l' alto.
 Un utente puo essere un amministratore o no in una chat, e anche in questo caso abbiamo optato per un collasso verso 
-l' alto. Infatti, abbiamo inserito creato una table amminitratori, e se l' utente e presente in questa 
+l' alto. Infatti, abbiamo inserito creato una table amminitratori, e se il membro presente in questa tabella allora quel membro è anche un amminsitratore. Questo ci permette di usare il vincolo referenziale per garantire che le operazioni che sono di esclusica competenza degli amministratori siano svolte solo da loro. 
 \subsection{Numero di like netto dei contenuti}
 Consideriamo se è il caso di aggiungere un campo ridondante nell'entità CONTENUTO che calcola il numero netto di like riguardanti quel contenuto. Le operazioni interessate da questa ridondanza sono le operazioni \ref{like}, \ref{leggere_post}, \ref{feed}.
 \subsubsection{Caso senza ridondanza}
@@ -709,6 +709,7 @@ Quindi il costo totale giornaliero è:
 In luce di ciò abbiamo deciso di mantenere la ridondanza.
 
 \section{Traduzione di entità e associazioni in relazioni}
+Abbiamo ovviamente trasformato tutte le entità del modello concettuale in relazione, mentre per quanto riguadarda le associazioni nessuna di loro è stata trasformata tranne REAZIONE, cioè l'unica che aveva come cardinalità (0,N), (0, N), Tuttel le altre sono del tipo uno a molti, perciò abbiamo deciso di tradurle in attributi delle entità dal lato dell'uno. L'assenza di molte associazioni molti a molti non ci stupisce perchè molte di queste relazioni sono state reificate per supportare il sviluppo temporale di queste associazioni. Un esempio di queste è l'entità SEGUIRE, la quale era in prima analisi una associazione, ma successivamente ci siamo posti il problema di avere tutta la storia di come gli utenti inizino a seguirsi, smettono e ricominciano.
 \section{Schema relazionale finale}
 \section{Traduzione delle operazioni in query SQL}
 \subsection{Creazione  tabelle}
@@ -1039,5 +1040,6 @@ INSERT INTO AMMINISTRATORE (
 \end{lstlisting}
 
 \chapter{Progettazione dell'applicazione}
-\section{Descrizione dell'architettura dell'applicazione realizzata con obbligo di inserire alcuni screenshot dell'interfaccia utente}
+\section{Descrizione dell'architettura dell'applicazione e alcuni screenshot dell'interfaccia utente}
+Abbiamo progettato l'applicazione cercando ti tenere divisi le responsabilità di view da quelle del model. Perciò abbiamo sviluppato una struct \texttt{Model} che ha dei metodi che permettono di eseguire tutte le operazioni sul database. La view invece usa le funzionalità del model e grazie alla funzionalità di Go di implementare implicitamente le interfacce permetettiamo ai vari componenti della view di dichiarare delle loro piccole interfacce private che esplicassero solo le funzionalità del model di cui hanno bisogno.  
 \end{document}
