@@ -32,13 +32,9 @@ func (p post) Description() string {
 func toPost(result []queries.GetFullFeedRow) []list.Item {
 	var posts []list.Item
 	for _, p := range result {
-		var title string
-		if p.Titolo.Valid {
-			title = p.Titolo.String
-		}
 		posts = append(posts, post{
 			Author:    p.Autore,
-			PostTitle: title,
+			PostTitle: p.Titolo.String, // post has always a title
 			Content:   p.Testo,
 			upvotes:   int(p.Likedelta),
 			id:        p.Idcontenuto,

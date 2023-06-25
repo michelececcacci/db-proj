@@ -25,7 +25,7 @@ func (p postView) View() string {
 
 func newPostView(p post, size tea.Msg) postView {
 	pv := postView{
-		viewport: components.NewPager(p.PostTitle+fmt.Sprintf("Likes: %d", p.upvotes), p.Content),
+		viewport: components.NewPager(p.PostTitle+fmt.Sprintf(" Likes: %d", p.upvotes), p.Content),
 	}
 	updated, _ := pv.Update(size)
 	postView := updated.(postView)

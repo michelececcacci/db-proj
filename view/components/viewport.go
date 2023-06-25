@@ -109,7 +109,7 @@ func (m pager) View() string {
 }
 
 func (m pager) headerView() string {
-	title := titleStyle.Render(m.content)
+	title := titleStyle.Render(m.title)
 	line := strings.Repeat("─", util.Max(0, m.viewport.Width-lipgloss.Width(title)))
 	return lipgloss.JoinHorizontal(lipgloss.Center, title, line)
 }
