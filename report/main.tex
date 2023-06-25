@@ -113,7 +113,7 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
 
 \end{itemize}
 
-\section{Schemi di navigazione e tabelle degli accessi}
+\section{Tabelle degli accessi}
 
 \subsection{Creare un nuovo utente} \label{nuovo_utente}
 \paragraph{Descrizione} Aggiungere alla tabella degli utenti una nuova riga e assegnargli una password 
@@ -162,20 +162,13 @@ TOTALE            &           & 11      &      \\ \hline
 \subsection{Seguire un utente} \label{follow}
 \paragraph{Descrizione} Si aggiunge una istanza alla tabella SEGUIRE avente come chiave la tupla (utente seguace, utente seguito)
 \paragraph{Frequenza} 2 / g
-\begin{table}[H]
-\paragraph{Tavola degli accessi\newline}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Concetto & Costrutto & Accessi & Tipo \\ \hline
-UTENTE   & E         & 1       & R    \\ \hline
-SEGUE    & A         & 1       & W    \\ \hline
-SEGUIRE  & E         & 1       & W    \\ \hline
-UTENTE   & E         & 1       & R    \\ \hline
-TOTALE   &           & 6       &      \\ \hline
-\end{tabular}
-\end{table}
+\paragraph{Tavola degli accessi}
+Trattata nell'analisi delle ridondanze.
 \subsection{Smettere di seguire un utente} \label{unfollow}
 \paragraph{Descrizione} Si accede all'istanza di SEGUIRE identificata dalla tupla (utente seguace, utente seguito) e si aggiunge assegna al campo DataFine la data attuale.
+\paragraph{Tavola degli accessi}
+Trattata nell'analisi delle ridondanze.
+
 \paragraph{Frequenza} 1 / 10 g
 \begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
@@ -226,71 +219,23 @@ TOTALE               &           & 11      &      \\ \hline
 \subsection{Reagire con like/dislike a post e commenti} \label{like}
 \paragraph{Descrizione} Si aggiunge una istanza alla tabella reazione con identificatore la tupla (utente, contenuto) e nel campo LikeDislike +1 se è un like, -1 se è un dislike.
 \paragraph{Frequenza} 80 / g
-\begin{table}[h]
-\paragraph{Tavola degli accessi\newline}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Concetto        & Costrutto & Accessi & Tipo \\ \hline
-UTENTE          & E         & 1       & R    \\ \hline
-REAZIONE        & A         & 1       & W    \\ \hline
-CONTENUTO       & E         & 1       & R    \\ \hline
-\textit{TOTALE} &           & 4       &      \\ \hline
-\end{tabular}
-\end{table}
+\paragraph{Tavola degli accessi}  
+Trattata nell'analisi delle ridondanze.
 \subsection{Leggere un post} \label{leggere_post}
 \paragraph{Descrizione} Si mostrano il contentuto, l'ora di pubblicazione, l'autore, i commenti, il numero di like netto (cioè la somma algebrica dei like e dislike), se presente il luogo di pubblicazione.
 \paragraph{Frequenza} 100 / g
-\begin{table}[H]
-\paragraph{Tavola degli accessi\newline}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Concetto             & Costrutto & Accessi & Tipo \\ \hline
-CONTENUTO            & E         & 1       & R    \\ \hline
-REAZIONE             & A         & 200     & R    \\ \hline
-PUBBLICAZIONE        & A         & 1       & R    \\ \hline
-UTENTE               & E         & 1       & R    \\ \hline
-LUOGO\_PUBBLICAZIONE & A         & 1       & R    \\ \hline
-REGIONE              & E         & 7       & R    \\ \hline
-PARTE\_DI            & E         & 7       & R    \\ \hline
-RISPOSTA             & A         & 10      & R    \\ \hline
-COMMENTO             & E         & 10      & R    \\ \hline
-REAZIONE             & A         & 2000    & R    \\ \hline
-TOTALE               &           & 2238    &      \\ \hline
-\end{tabular}
-\end{table}
+\paragraph{Tavola degli accessi}  
+Trattata nell'analisi delle ridondanze.
 \subsection{Scorrere il post pubblicati dagli utenti seguiti (feed)} \label{feed}
 \paragraph{Descrizione} Questa operazione mostra in ordine cronologico i titoli, il numero di like netto e l'autore dei post pubblicati dagli utenti seguiti.
 \paragraph{Frequenza} 40 / g
-\begin{table}[H]
-\paragraph{Tavola degli accessi\newline}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Concetto      & Costrutto & Accessi & Tipo \\ \hline
-UTENTE        & E         & 1       & R    \\ \hline
-SEGUE         & A         & 100     & R    \\ \hline
-SEGUIRE       & E         & 100     & R    \\ \hline
-SEGUITO       & A         & 100     & R    \\ \hline
-UTENTE        & E         & 100     & R    \\ \hline
-PUBBLICAZIONE & A         & 2000    & R    \\ \hline
-CONTENUTO     & E         & 2000    & R    \\ \hline
-REAZIONE      & A         & 400000  & R    \\ \hline
-TOTALE        &           & 404401  &      \\ \hline
-\end{tabular}
-\end{table}
+\paragraph{Tavola degli accessi}  
+Trattata nell'analisi delle ridondanze.
 \subsection{Vedere il profilo di un utente} \label{vedere_profilo}
 \paragraph{Descrizione} Si mostrano nome, cognome, data di nascita, location e la sua reputazione.
 \paragraph{Frequenza} 5 / g
-\begin{table}[H]
-\paragraph{Tavola degli accessi\newline}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Concetto & Costrutto & Accessi & Tipo \\ \hline
-UTENTE   & E         & 1       & R    \\ \hline
-SEGUE    & A         & 100     & R    \\ \hline
-REAZIONE & A         & 2000    & R    \\ \hline
-TOTALE   &           & 2101    &      \\ \hline
-\end{tabular}
-\end{table}
+\paragraph{Tavola degli accessi}  
+Trattata nell'analisi delle ridondanze.
 \subsection{Vedere i contenuti pubblicati da un utente} \label{vedere_post_utente}
 \paragraph{Descrizione} Si mostrano tutti i contenuti che hanno come autore l'utente considerato
 \paragraph{Frequanza} 1 / g
