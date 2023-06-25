@@ -3,6 +3,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{listings}
 
 \begin{document}
 \tableofcontents
@@ -461,7 +462,7 @@ Nel nostro social network, un contenuto puo essere sia un
 post che un messaggio. Dato che i messaggi non hanno un titolo, mentre un post ha necessariamente un titolo, 
 abbiamo optato definirli attraverso la presenza questo attributo, usando un collasso verso l' alto.
 Un utente puo essere un amministratore o no in una chat, e anche in questo caso abbiamo optato per un collasso verso 
-l' alto. Infatti, abbiamo inserito creato una table amminitratori, e se l'idMembro e presente in questa table, allora l' utente e admin di quella chat.
+l' alto. Infatti, abbiamo inserito creato una table amminitratori, e se l' utente e presente in questa 
 \subsection{Numero di like netto dei contenuti}
 Consideriamo se è il caso di aggiungere un campo ridondante nell'entità CONTENUTO che calcola il numero netto di like riguardanti quel contenuto. Le operazioni interessate da questa ridondanza sono le operazioni \ref{like}, \ref{leggere_post}, \ref{feed}.
 \subsubsection{Caso senza ridondanza}
@@ -710,6 +711,273 @@ In luce di ciò abbiamo deciso di mantenere la ridondanza.
 \section{Traduzione di entità e associazioni in relazioni}
 \section{Schema relazionale finale}
 \section{Traduzione delle operazioni in query SQL}
+\subsection{Creazione  tabelle}
+\begin{lstlisting}
+  -- Database Section
+  -- ________________ 
+  
+  
+  
+  -- Tables Section
+  -- _____________ 
+  
+  create table AMMINISTRATORE (
+       IdMembro integer not null,
+       constraint FKAMMINISTRATORE_ID primary
+        key (IdMembro));
+  
+  create table CHAT (
+       Nome varchar(100) not null,
+       Descrizione varchar(5000) not null,
+       IdChat serial not null,
+       constraint ID_CHAT_ID primary key (IdChat));
+  
+  create table CONTENUTO (
+       Autore varchar(20) not null,
+       Testo varchar(1000) not null,
+       IdContenuto serial not null,
+       TimestampPubblicazione date not null,
+       Titolo varchar(30),
+       IdRegione integer, 
+       UsernamePadre varchar(20),
+       IdContenutoPadre integer,
+       LikeDelta integer not null,
+       constraint ID_CONTENUTO primary key
+        (Autore, IdContenuto));
+  
+  create table MEMBRO (
+       DataEntrata date not null,
+       IdMembro serial not null,
+       Username varchar(20) not null,
+       IdChat integer not null,
+       Amministratore integer,
+       constraint ID_MEMBRO primary key (IdMembro),
+       constraint SID_MEMBRO unique 
+       (IdChat, Username, DataEntrata));
+  
+  create table MESSAGGIO (
+       IdMessaggio serial not null,
+       Testo varchar(1000) not null,
+       TimestampInvio date not null,
+       Mittente integer not null,
+       Citazione integer,
+       AutoreContenuto varchar(20),
+       IdContenuto integer,
+       AmministratoreEliminatore integer,
+       constraint ID_MESSAGGIO primary key
+        (IdMessaggio));
+  
+  create table REAZIONE (
+       AutoreContenuto varchar(20) not null,
+       IdContenuto integer not null,
+       Username varchar(20) not null,
+       LikeDislike integer not null,
+       Timestamp timestamp not null,
+       constraint ID_REAZIONE primary key
+        (Username, AutoreContenuto, IdContenuto));
+  
+  create table REGIONE (
+       IdRegione serial not null,
+       Nome varchar(50) not null,
+       Superregione integer,
+       constraint ID_REGIONE primary key (IdRegione));
+  
+  ALTER sequence REGIONE_IdRegione_seq 
+    MINVALUE 0 RESTART WITH 0;
+  
+  create table SEGUIRE (
+       UsernameSeguace varchar(20) not null,
+       UsernameSeguito varchar(20) not null,
+       DataInizio date not null,
+       DataFine date,
+       constraint ID_SEGUIRE primary key 
+        (UsernameSeguace, UsernameSeguito, DataInizio),
+       constraint DataInizioMinDataFine CHECK 
+       (DataInizio < DataFine),
+       constraint SeguireNonSeStessi CHECK 
+        (UsernameSeguace <> UsernameSeguito));
+        
+  create table STORICO_ACCESSO (
+       Username varchar(20) not null,
+       TimestampLogin timestamp not null,
+       constraint ID_STORICO_ACCESSO 
+        primary key (Username, TimestampLogin));
+  
+  create table STORICO_PASSWORD (
+       Username varchar(20) not null,
+       DataInserimento timestamp not null,
+       Password varchar(20) not null,
+       constraint SID_STORICO_PASSWORD unique 
+        (Username, DataInserimento),
+       constraint ID_STORICO_PASSWORD 
+        primary key (Username, Password));
+  
+  create table USCITA (
+       IdMembro integer not null,
+       DataUscita date not null,
+       Motivazione varchar(500),
+       IdMembroResponsabile integer,
+       constraint FKUSCITA_ID primary key (IdMembro));
+  
+  create table UTENTE (
+       Username varchar(20) not null,
+       DataDiNascita date,
+       Nome varchar(20),
+       Cognome varchar(20),
+       Domicilio integer,
+       NumeroSeguaci integer not null,
+       constraint ID_UTENTE_ID primary key (Username));
+  
+  
+  -- Constraints Section
+  -- ___________________ 
+  
+  alter table AMMINISTRATORE add constraint 
+  FKAMMINISTRATORE_FK
+       foreign key (IdMembro)
+       references MEMBRO;
+  
+  alter table CONTENUTO add constraint FKPUBBLICAZIONE
+       foreign key (Autore)
+       references UTENTE;
+  
+  alter table CONTENUTO add constraint
+   FKLUOGO_PUBBLICAZIONE_FK
+       foreign key (IdRegione)
+       references REGIONE;
+  
+  alter table CONTENUTO add constraint FKRISPOSTA_FK
+       foreign key (UsernamePadre, IdContenutoPadre)
+       references CONTENUTO;
+  
+  alter table CONTENUTO add constraint FKRISPOSTA_CHK
+       check((UsernamePadre is not null and 
+              IdContenutoPadre is not null)
+             or (UsernamePadre is null and
+                IdContenutoPadre is null)); 
+  
+  alter table MEMBRO add constraint FKIMPERSONAZIONE_FK
+       foreign key (Username)
+       references UTENTE;
+  
+  alter table MEMBRO add constraint FKAPPARTENENZA
+       foreign key (IdChat)
+       references CHAT;
+  
+  alter table MEMBRO add constraint FKAGGIUNTO_FK
+       foreign key (Amministratore)
+       references AMMINISTRATORE;
+  
+  alter table MESSAGGIO add constraint FKMITTENTE_FK
+       foreign key (Mittente)
+       references MEMBRO;
+  
+  alter table MESSAGGIO add constraint FKCITAZIONE_FK
+       foreign key (Citazione)
+       references MESSAGGIO;
+  
+  alter table MESSAGGIO add constraint FKRIFERIMENTO_FK
+       foreign key (AutoreContenuto, IdContenuto)
+       references CONTENUTO;
+  
+  alter table MESSAGGIO add constraint 
+  FKRIFERIMENTO_CHK
+       check((AutoreContenuto is not null and
+        IdContenuto is not null)
+             or (AutoreContenuto is null
+              and IdContenuto is null)); 
+  
+  alter table MESSAGGIO 
+  add constraint FKELIMINAZIONE_FK
+       foreign key (AmministratoreEliminatore)
+       references AMMINISTRATORE;
+  
+  alter table REAZIONE add constraint FKREA_UTE
+       foreign key (Username)
+       references UTENTE;
+  
+  alter table REAZIONE add constraint FKREA_CON_FK
+       foreign key (AutoreContenuto, IdContenuto)
+       references CONTENUTO;
+  
+  alter table REGIONE add constraint FKPARTE_DI_FK
+       foreign key (Superregione)
+       references REGIONE;
+  
+  alter table SEGUIRE add constraint FKSEGUITO_FK
+       foreign key (UsernameSeguito)
+       references UTENTE;
+  
+  alter table SEGUIRE add constraint FKSEGUE_FK
+       foreign key (UsernameSeguace)
+       references UTENTE;
+  
+  alter table STORICO_ACCESSO add constraint FKACCESSO
+       foreign key (Username)
+       references UTENTE;
+  
+  alter table STORICO_PASSWORD add constraint FKSCELTA
+       foreign key (Username)
+       references UTENTE;
+  
+  alter table USCITA add constraint FKUSCITA_FK
+       foreign key (IdMembro)
+       references MEMBRO;
+  
+  alter table USCITA add constraint FKRESPONSABILE_FK
+       foreign key (IdMembroResponsabile)
+       references AMMINISTRATORE;
+  
+  alter table UTENTE add constraint FKDOMICILIO_FK
+       foreign key (Domicilio)
+       references REGIONE;
+  
+  
+  -- Index Section
+  -- _____________ 
+  
+  create index FKLUOGO_PUBBLICAZIONE_IND
+       on CONTENUTO (IdRegione);
+  
+  create index FKRISPOSTA_IND
+       on CONTENUTO (UsernamePadre, IdContenutoPadre);
+  
+  create index FKIMPERSONAZIONE_IND
+       on MEMBRO (Username);
+  
+  create index FKAGGIUNTO_IND
+       on MEMBRO (Amministratore);
+  
+  create index FKMITTENTE_IND
+       on MESSAGGIO (Mittente);
+  
+  create index FKCITAZIONE_IND
+       on MESSAGGIO (Citazione);
+  
+  create index FKRIFERIMENTO_IND
+       on MESSAGGIO (AutoreContenuto, IdContenuto);
+  
+  create index FKELIMINAZIONE_IND
+       on MESSAGGIO (AmministratoreEliminatore);
+  
+  create index FKREA_CON_IND
+       on REAZIONE (AutoreContenuto, IdContenuto);
+  
+  create index FKPARTE_DI_IND
+       on REGIONE (Superregione);
+  
+  create index FKSEGUITO_IND
+       on SEGUIRE (UsernameSeguito);
+  
+  create index FKSEGUE_IND
+       on SEGUIRE (UsernameSeguace);
+  
+  create index FKRESPONSABILE_IND
+       on USCITA (IdMembroResponsabile);
+  
+  create index FKDOMICILIO_IND
+       on UTENTE (Domicilio)
+\end{lstlisting}
 \chapter{Progettazione dell'applicazione}
 \section{Descrizione dell'architettura dell'applicazione realizzata con obbligo di inserire alcuni screenshot dell'interfaccia utente}
 
