@@ -21,7 +21,6 @@ Gli utenti inoltre possono \textbf{seguire} altri utenti e smettere di seguirli.
 Il social fornirà ad ogni utente un feed, cioè una sequeza di post pubblicati dagli utenti da lui seguiti.
 Gli utenti possono chattare con altri utenti. Le \textbf{chat} si compongono di messaggi inviati dai membri di quella chat. Ogni \textbf{messaggio} ha un suo autore, un timestamp di invio, un testo ed può citare un post o commento. Ogni messaggio inoltre può essere in risposta ad un altro messaggio di quella chat. 
 Ogni utente può creare una \textbf{chat}. Ogni chat ha uno o più membri amministratori. Gli \textbf{amministratori} possono far entrare nuovi membri nelle chat di cui sono amministratori. Gli amministratori hanno diritto di cacciare degli utenti dalla chat, eventualmente comunicando una motivazione. Gli utenti possono uscire volontariamente dalle chat a cui appartengono. Gli utenti che escono volontariamente dalla chat possono lasciare una motivazione del loro gesto. 
-Infine gli amministratori possono eliminare dei messaggi della chat, mentre gli utenti non amministratori non hanno questa facoltà.
 \section{Definizioni}
 \begin{itemize}
     \item Utente: un iscritto al nostro social network.  
@@ -106,7 +105,6 @@ Per modellizzare la possibilità da parte degli utenti di mettere like e dislike
   \item MESSAGGIO, E, 300000
   \item MITTENTE, R, 300000
   \item CITAZIONE, R, 10000
-  \item ELIMINAZIONE, R, 5000
   \item DOMICILIO, R, 100
   \item REGIONE, E, 150.000.000
   \item PARTE\_DI, R, 150.000.000
@@ -371,18 +369,14 @@ AMMINISTRATORE & E         & 1       & R    \\ \hline
 TOTALE         &           & 9       &      \\ \hline
 \end{tabular}
 \end{table}
-\subsection{Eliminare un messaggio dalla chat} \label{eliminare_messaggio}
-\paragraph{Descrizione} Verrà creata una istanza della relazione ELIMINAZIONE identificata dalla tupla (messaggio eliminato, amministratore responsabile della eliminazione).
-\paragraph{Frequenza} 5 / g
 \begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Concetto       & Costrutto & Accessi & Tipo \\ \hline
 MESSAGGIO      & E         & 1       & R    \\ \hline
-ELIMINAZIONE   & A         & 1       & W    \\ \hline
 AMMINISTRATORE & E         & 1       & R    \\ \hline
-TOTALE         &           & 4       &      \\ \hline
+TOTALE         &           & 3       &      \\ \hline
 \end{tabular}
 \end{table}
 \subsection{Aggiungere regione a tabella REGIONE} \label{aggiungere_regione}
