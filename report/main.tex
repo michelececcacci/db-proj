@@ -964,7 +964,69 @@ Mandare un messaggio
 INSERT INTO MESSAGGIO (Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3);
 \end{lstlisting}
 
+Postare e commentare
+\begin{lstlisting}
+  -- name: InsertComment :exec
+INSERT INTO CONTENUTO (
+  Autore, Testo, TimestampPubblicazione, IdRegione, UsernamePadre, IdContenutoPadre, LikeDelta
+) VALUES ($1, $2, $3, $4, $5, $6, 0);
+\end{lstlisting}
+
+Like 
+\begin{lstlisting}
+  - name: PutLike :exec
+INSERT INTO REAZIONE ( 
+  autorecontenuto, IdContenuto, username, likedislike, timestamp)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (autorecontenuto, IdContenuto, username) DO UPDATE SET 
+      likedislike = excluded.likedislike,
+      timestamp = excluded.timestamp;'
+\end{lstlisting}
+
+Aggiungere utente al gruppo  (non operazione utente?)
+\begin{lstlisting}
+  -- name: InsertMember :one
+  INSERT INTO MEMBRO (
+    DataEntrata, Username, IdChat, Amministratore
+  ) VALUES ( $1, $2, $3, $4 )
+  RETURNING IdMembro;
+\end{lstlisting}
+Vedere tutti i post in ordine cronologico (feed)
+
+\begin{lstlisting}
+-- name: GetFullFeed :many
+SELECT titolo, autore, IdContenuto, TimestampPubblicazione, Testo FROM SEGUIRE 
+JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  
+WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre IS NULL;
+\end{lstlisting}
+
+Leggere messaggi di una chat
+\begin{lstlisting}
+-- name: GetChatMessages :many
+SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1;
+ 
+\end{lstlisting}
+
+Login utente
+\begin{lstlisting}
+  -- name: Authenticate :one
+  SELECT COUNT(SUBQUERY.DataInserimento)
+  FROM (
+     SELECT MIN(SP.DataInserimento) AS DataInserimento
+     FROM STORICO_PASSWORD SP 
+     WHERE SP.Username = $1 AND SP.Password = $2
+  ) AS SUBQUERY;
+\end{lstlisting}
+
+Vedere profilo utente
+Dare diritti amministratore ad utente
+\begin{lstlisting}
+  -- name: InsertAdmin :exec
+INSERT INTO AMMINISTRATORE (
+  IdMembro
+) VALUES ( $1 );
+\end{lstlisting}
+
 \chapter{Progettazione dell'applicazione}
 \section{Descrizione dell'architettura dell'applicazione realizzata con obbligo di inserire alcuni screenshot dell'interfaccia utente}
-
 \end{document}
