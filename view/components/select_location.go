@@ -30,7 +30,7 @@ func (s SelectLocation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			id, _ := strconv.ParseInt(selected, 10, 32)
 			s.SelectedLocation.Int32 = int32(id)
 		default:
-			s.locations , cmd = s.locations.Update(msg)
+			s.locations, cmd = s.locations.Update(msg)
 		}
 	}
 	return s, cmd
@@ -52,4 +52,3 @@ func NewSelectLocation(q *queries.Queries, ctx *context.Context) SelectLocation 
 	s.locations.Title = "Select location"
 	return s
 }
-

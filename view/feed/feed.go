@@ -27,7 +27,7 @@ type likePutter interface {
 type feedView struct {
 	posts          list.Model
 	feedGetter     feedGetter
-	likePutter likePutter
+	likePutter     likePutter
 	state          state
 	postView       tea.Model
 	lastWindowSize tea.WindowSizeMsg // needed to init the viewport
@@ -69,7 +69,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					Username:        *f.username,
 					Likedislike:     1,
 					Timestamp:       time.Now().UTC(),
-				})	
+				})
 			}
 		}
 	case util.UpdateUsername:

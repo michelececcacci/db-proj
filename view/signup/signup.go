@@ -82,7 +82,7 @@ func (r signUp) UpdateLocation(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			r.selectLocationView, cmd = r.selectLocationView.Update(msg)
 			sv := r.selectLocationView.(components.SelectLocation)
-			r.selectedLocation =  sv.SelectedLocation
+			r.selectedLocation = sv.SelectedLocation
 			r.selectingLocation = false
 		default:
 			r.selectLocationView, cmd = r.selectLocationView.Update(msg)
@@ -119,11 +119,11 @@ func New(ctx *context.Context, q *queries.Queries) signUp {
 		components.NewInput("Birthdate", 20),
 	}
 	s := signUp{
-		inputsView: components.NewMultipleInputsView(inputs),
-		ctx:        ctx,
-		q:          q,
-		errorView:  components.NewErrorView(),
-		help:       help{},
+		inputsView:         components.NewMultipleInputsView(inputs),
+		ctx:                ctx,
+		q:                  q,
+		errorView:          components.NewErrorView(),
+		help:               help{},
 		selectLocationView: components.NewSelectLocation(q, ctx),
 	}
 	return s
