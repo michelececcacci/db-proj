@@ -56,7 +56,6 @@ create table MESSAGGIO (
      Citazione integer,
      AutoreContenuto varchar(20),
      IdContenuto integer,
-     AmministratoreEliminatore integer,
      constraint ID_MESSAGGIO primary key (IdMessaggio));
 
 create table REAZIONE (
@@ -169,10 +168,6 @@ alter table MESSAGGIO add constraint FKRIFERIMENTO_CHK
      check((AutoreContenuto is not null and IdContenuto is not null)
            or (AutoreContenuto is null and IdContenuto is null)); 
 
-alter table MESSAGGIO add constraint FKELIMINAZIONE_FK
-     foreign key (AmministratoreEliminatore)
-     references AMMINISTRATORE;
-
 alter table REAZIONE add constraint FKREA_UTE
      foreign key (Username)
      references UTENTE;
@@ -242,9 +237,6 @@ create index FKCITAZIONE_IND
 
 create index FKRIFERIMENTO_IND
      on MESSAGGIO (AutoreContenuto, IdContenuto);
-
-create index FKELIMINAZIONE_IND
-     on MESSAGGIO (AmministratoreEliminatore);
 
 create index FKREA_CON_IND
      on REAZIONE (AutoreContenuto, IdContenuto);
