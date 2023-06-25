@@ -933,50 +933,6 @@ In luce di ciò abbiamo deciso di mantenere la ridondanza.
        references REGIONE;
   
   
-  -- Index Section
-  -- _____________ 
-  
-  create index FKLUOGO_PUBBLICAZIONE_IND
-       on CONTENUTO (IdRegione);
-  
-  create index FKRISPOSTA_IND
-       on CONTENUTO (UsernamePadre, IdContenutoPadre);
-  
-  create index FKIMPERSONAZIONE_IND
-       on MEMBRO (Username);
-  
-  create index FKAGGIUNTO_IND
-       on MEMBRO (Amministratore);
-  
-  create index FKMITTENTE_IND
-       on MESSAGGIO (Mittente);
-  
-  create index FKCITAZIONE_IND
-       on MESSAGGIO (Citazione);
-  
-  create index FKRIFERIMENTO_IND
-       on MESSAGGIO (AutoreContenuto, IdContenuto);
-  
-  create index FKELIMINAZIONE_IND
-       on MESSAGGIO (AmministratoreEliminatore);
-  
-  create index FKREA_CON_IND
-       on REAZIONE (AutoreContenuto, IdContenuto);
-  
-  create index FKPARTE_DI_IND
-       on REGIONE (Superregione);
-  
-  create index FKSEGUITO_IND
-       on SEGUIRE (UsernameSeguito);
-  
-  create index FKSEGUE_IND
-       on SEGUIRE (UsernameSeguace);
-  
-  create index FKRESPONSABILE_IND
-       on USCITA (IdMembroResponsabile);
-  
-  create index FKDOMICILIO_IND
-       on UTENTE (Domicilio)
 \end{lstlisting}
 \chapter{Progettazione dell'applicazione}
 \section{Descrizione dell'architettura dell'applicazione realizzata con obbligo di inserire alcuni screenshot dell'interfaccia utente}
