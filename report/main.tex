@@ -934,6 +934,36 @@ In luce di ciò abbiamo deciso di mantenere la ridondanza.
   
   
 \end{lstlisting}
+\subsection{Operazioni utente}
+Creare nuovo utente
+\begin{lstlisting}
+  -- name: InsertUser :exec
+INSERT INTO UTENTE (Username, 
+DataDiNascita, Nome, Cognome, Domicilio, NumeroSeguaci) 
+  VALUES ($1,$2,$3, $4, $5, 0);
+
+\end{lstlisting}
+
+Cambiare password utente
+\begin{lstlisting}
+-- name: InsertPassword :exec
+INSERT INTO STORICO_PASSWORD (Username, Password,
+ DataInserimento) VALUES ($1, $2, $3);
+\end{lstlisting}
+
+Seguire utente
+\begin{lstlisting}
+-- name: InsertFollower :exec
+INSERT INTO SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine)
+  VALUES ($1, $2, $3, $4);
+\end{lstlisting}
+
+Mandare un messaggio
+\begin{lstlisting}
+-- name: InsertMessage :exec
+INSERT INTO MESSAGGIO (Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3);
+\end{lstlisting}
+
 \chapter{Progettazione dell'applicazione}
 \section{Descrizione dell'architettura dell'applicazione realizzata con obbligo di inserire alcuni screenshot dell'interfaccia utente}
 
