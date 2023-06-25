@@ -954,7 +954,8 @@ INSERT INTO STORICO_PASSWORD (Username, Password,
 Seguire utente
 \begin{lstlisting}
 -- name: InsertFollower :exec
-INSERT INTO SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine)
+INSERT INTO SEGUIRE 
+(UsernameSeguace, UsernameSeguito, DataInizio, DataFine)
   VALUES ($1, $2, $3, $4);
 \end{lstlisting}
 
