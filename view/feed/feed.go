@@ -70,6 +70,7 @@ func (f feedView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					Likedislike:     1,
 					Timestamp:       time.Now().UTC(),
 				})
+				f.fetchPosts() // refetching the whole list is really inefficient
 			}
 		}
 	case util.UpdateUsername:
