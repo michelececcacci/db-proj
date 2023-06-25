@@ -961,14 +961,16 @@ INSERT INTO SEGUIRE (UsernameSeguace, UsernameSeguito, DataInizio, DataFine)
 Mandare un messaggio
 \begin{lstlisting}
 -- name: InsertMessage :exec
-INSERT INTO MESSAGGIO (Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3);
+INSERT INTO MESSAGGIO 
+(Testo, TimestampInvio, Mittente) VALUES ($1, $2, $3);
 \end{lstlisting}
 
 Postare e commentare
 \begin{lstlisting}
   -- name: InsertComment :exec
 INSERT INTO CONTENUTO (
-  Autore, Testo, TimestampPubblicazione, IdRegione, UsernamePadre, IdContenutoPadre, LikeDelta
+  Autore, Testo, TimestampPubblicazione, 
+  IdRegione, UsernamePadre, IdContenutoPadre, LikeDelta
 ) VALUES ($1, $2, $3, $4, $5, $6, 0);
 \end{lstlisting}
 
@@ -976,9 +978,11 @@ Like
 \begin{lstlisting}
   - name: PutLike :exec
 INSERT INTO REAZIONE ( 
-  autorecontenuto, IdContenuto, username, likedislike, timestamp)
+  autorecontenuto, IdContenuto, username,
+   likedislike, timestamp)
 VALUES ($1, $2, $3, $4, $5)
-ON CONFLICT (autorecontenuto, IdContenuto, username) DO UPDATE SET 
+ON CONFLICT (autorecontenuto, IdContenuto,
+ username) DO UPDATE SET 
       likedislike = excluded.likedislike,
       timestamp = excluded.timestamp;'
 \end{lstlisting}
@@ -995,15 +999,21 @@ Vedere tutti i post in ordine cronologico (feed)
 
 \begin{lstlisting}
 -- name: GetFullFeed :many
-SELECT titolo, autore, IdContenuto, TimestampPubblicazione, Testo FROM SEGUIRE 
-JOIN CONTENUTO ON CONTENUTO.Autore = SEGUIRE.usernameSeguito  
-WHERE SEGUIRE.usernameseguace = ($1) AND datafine IS NULL AND IdContenutoPadre IS NULL;
+SELECT titolo, autore, IdContenuto, 
+TimestampPubblicazione, Testo FROM SEGUIRE 
+JOIN CONTENUTO ON 
+CONTENUTO.Autore = SEGUIRE.usernameSeguito  
+WHERE SEGUIRE.usernameseguace = ($1) AND
+ datafine IS NULL AND IdContenutoPadre IS NULL;
 \end{lstlisting}
 
 Leggere messaggi di una chat
 \begin{lstlisting}
 -- name: GetChatMessages :many
-SELECT testo, TimestampInvio, username FROM MESSAGGIO JOIN MEMBRO ON MEMBRO.IdMembro = MESSAGGIO.Mittente WHERE MEMBRO.idChat = $1;
+SELECT testo, TimestampInvio, username 
+FROM MESSAGGIO JOIN MEMBRO ON 
+MEMBRO.IdMembro = MESSAGGIO.Mittente
+ WHERE MEMBRO.idChat = $1;
  
 \end{lstlisting}
 
