@@ -988,5 +988,26 @@ INSERT INTO AMMINISTRATORE (
 
 \chapter{Progettazione dell'applicazione}
 \section{Descrizione dell'architettura dell'applicazione e alcuni screenshot dell'interfaccia utente}
-Abbiamo progettato l'applicazione cercando ti tenere divisi le responsabilità di view da quelle del model. Perciò abbiamo sviluppato una struct \texttt{Model} che ha dei metodi che permettono di eseguire tutte le operazioni sul database. La view invece usa le funzionalità del model e grazie alla funzionalità di Go di implementare implicitamente le interfacce permetettiamo ai vari componenti della view di dichiarare delle loro piccole interfacce private che esplicassero solo le funzionalità del model di cui hanno bisogno.  
+Abbiamo progettato l'applicazione cercando di tenere divisi le responsabilità di view da quelle del model. 
+Perciò abbiamo sviluppato una struct \texttt{Model} che ha dei metodi che permettono di eseguire tutte le operazioni sul database. 
+La view invece usa le funzionalità del model e grazie alla funzionalità di Go di implementare implicitamente le interfacce permetettiamo ai vari componenti della view di dichiarare delle loro piccole interfacce private che esplicassero solo le funzionalità del model di cui hanno bisogno, usando il concetto di interfacce implicite di go.
+Abbiamo introdotto dei check di base nella view (ad esempio non e possibile inserire password vuote nella view di registrazione), ma abbiamo preferito il piu possibile
+di inserire direttamente questi constraint a livello di schema.
+\newline
+
+Registrazione:
+\newline
+\includegraphics[width=10cm]{img/signup.png}
+\newline
+Visualizzazione di un post:
+\newline
+\includegraphics[height=6cm]{img/post_view.png}
+\newline
+Selezione chat:
+\newline
+\includegraphics[height=5cm]{img/chats_view.png}
+Chat singola:
+\newline
+\includegraphics[height=5cm]{img/single_chat_view.png}
+\newline
 \end{document}
