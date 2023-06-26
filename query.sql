@@ -232,13 +232,14 @@ WHERE Username = $1;
 -- name: GetChatUserId :one
 SELECT IdMembro FROM MEMBRO WHERE username = $1 AND idChat = $2;
 
--- name: PutLike :exec
+-- name: PutLike :one
 INSERT INTO REAZIONE ( 
   autorecontenuto, IdContenuto, username, likedislike, timestamp)
 VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (autorecontenuto, IdContenuto, username) DO UPDATE SET 
       likedislike = excluded.likedislike,
-      timestamp = excluded.timestamp;
+      timestamp = excluded.timestamp
+RETURNING (xmax = 0) AS inserted;
 
 -- name: UpdateNumberOfLikes :exec 
 UPDATE CONTENUTO

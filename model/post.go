@@ -15,13 +15,16 @@ func (m Model) InsertComment(arg queries.InsertCommentParams) error {
 }
 
 func (m Model) PutLike(arg queries.PutLikeParams) error {
-	err := m.q.PutLike(m.ctx, arg)
+	inserted, err := m.q.PutLike(m.ctx, arg)
 	if err != nil {
 		return err
 	}
-	return m.q.UpdateNumberOfLikes(m.ctx, queries.UpdateNumberOfLikesParams{
-		Autore:      arg.Autorecontenuto,
-		Idcontenuto: arg.Idcontenuto,
-		Likedelta:   arg.Likedislike,
-	})
+	if inserted {
+		return m.q.UpdateNumberOfLikes(m.ctx, queries.UpdateNumberOfLikesParams{
+			Autore:      arg.Autorecontenuto,
+			Idcontenuto: arg.Idcontenuto,
+			Likedelta:   arg.Likedislike,
+		})
+	}
+	return nil
 }
