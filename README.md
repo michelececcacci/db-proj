@@ -9,12 +9,19 @@ After this step, just attach to the docker container named `go_application`
 
 Alternatively, just run 
 ```bash
-HOSTNAME=localhost 
-PORTNAME=55432
+export HOSTNAME=localhost 
+export PORTNAME=55432
+docker compose up -d
 go run .
 ``` 
 on a bash terminal
 
 to populate the db, run 
-```go run  faker/main/main.go
+```bash
+go run faker/main/main.go
+```
+
+To reflect schema changes in the `db` image, first edit `schema.sql`, then run 
+```bash
+docker compose down --volumes
 ```
