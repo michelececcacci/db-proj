@@ -83,6 +83,7 @@ Abbiamo modellizzato post e commenti in una gerarchia totale ed esclusiva dove i
 Per modellizzare la possibilità da parte degli utenti di mettere like e dislike ai contenuti abbiamo creato la relazione \texttt{REAZIONE} il cui attributo \texttt{LikeDislike} indica se la reazione è un like o un dislike. L'attributo \texttt{Timestamp} indica il momento temporale in cui l'utente ha espresso la sua reazione riguardo al contenuto. 
 
 \section{Schema concettuale finale}
+\includegraphics[scale=0.6, angle=90]{./img/concettuale.png}
 \chapter{Progettazione logica}
 \section{Stima del volume dei dati}
 
@@ -658,6 +659,7 @@ In luce di ciò abbiamo deciso di mantenere la ridondanza.
 \section{Traduzione di entità e associazioni in relazioni}
 Abbiamo ovviamente trasformato tutte le entità del modello concettuale in relazione, mentre per quanto riguadarda le associazioni nessuna di loro è stata trasformata tranne REAZIONE, cioè l'unica che aveva come cardinalità (0,N), (0, N), Tuttel le altre sono del tipo uno a molti, perciò abbiamo deciso di tradurle in attributi delle entità dal lato dell'uno. L'assenza di molte associazioni molti a molti non ci stupisce perchè molte di queste relazioni sono state reificate per supportare il sviluppo temporale di queste associazioni. Un esempio di queste è l'entità SEGUIRE, la quale era in prima analisi una associazione, ma successivamente ci siamo posti il problema di avere tutta la storia di come gli utenti inizino a seguirsi, smettono e ricominciano.
 \section{Schema relazionale finale}
+\includegraphics[scale=0.6, angle=90]{./img/logico.png}
 \section{Traduzione delle operazioni in query SQL}
 \subsection{Creazione  tabelle}
 \begin{lstlisting}
