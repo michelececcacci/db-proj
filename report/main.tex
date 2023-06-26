@@ -125,7 +125,8 @@ Concetto          & Costrutto & Accessi & Tipo \\ \hline
 UTENTE            & E         & 1       & W    \\ \hline
 SCELTA           & A         & 1       & W    \\ \hline
 STORICO\_PASSWORD & E         & 1       & W    \\ \hline
-\textit{TOTALE}   &           & 6       &      \\ \hline
+\textit{Gerarchia regioni \ref{aggiungere_regione}} &  & 14      &      \\ \hline 
+\textit{TOTALE}   &           & 20       &      \\ \hline
 \end{tabular}
 \end{table}
 \subsection{Cambiare password} \label{cambio_password}
@@ -388,21 +389,18 @@ TOTALE         &           & 3       &      \\ \hline
 \end{table}
 \paragraph{Schema di navigazione\newline}
 \includegraphics[scale=0.5]{./img/esilio.png}
-\subsection{Aggiungere regione a tabella REGIONE} \label{aggiungere_regione}
-\paragraph{Descrizione} Viene creata una nuova istanza di REGIONE la quale conterrà la denominazione della regione e eventualmente la regione superiore.
+\subsection{Ricostruire ricorsivamente le regioni superiori di una data regione} \label{aggiungere_regione}
+\paragraph{Descrizione} Si percorre riscorsivamente il cammino che parte dalla regione data fino alla radice dell'albero attraversando tutte le regioni padre della regione data. 
 \paragraph{Frequenza} 1 / 100 g
+\paragraph{\texttt{NOTA}} Nel calcolo degli accessi abbiamo posto come ipotesi che l'altezza massima di questo albero sia 7. 
 \begin{table}[H]
 \paragraph{Tavola degli accessi\newline}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Concetto           & Costrutto  & Accessi    & Tipo       \\ \hline
-REGIONE            & E          & 1          & W          \\ \hline
-PARTE\_DI          & A          & 1          & W          \\ \hline
-REGIONE            & E          & 1          & R          \\ \hline
-\footnote{Le due righe in corsivo sono righe di lettura per la validazione della regione inserita. Servono per verificare il vincolo secondo cui non debbano esistere cicli.}
-\textit{REGIONE}   & \textit{E} & \textit{7} & \textit{R} \\ \hline
-\textit{PARTE\_DI} & \textit{A} & \textit{7} & \textit{R} \\ \hline
-TOTALE             &            & 19         &            \\ \hline
+REGIONE   & E & 7 & R \\ \hline
+PARTE\_DI & A & 7 & R \\ \hline
+TOTALE             &            & 14         &            \\ \hline
 \end{tabular}
 \end{table}
 \section{Raffinamento dello schema}
