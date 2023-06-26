@@ -7,17 +7,20 @@
 \usepackage{graphicx}
 
 \begin{document}
-\tableofcontents
 
-\title{relazione}
+\title{Relazione progetto basi di dati}
+\author{Michele Ceccacci, Luca Patrignani}
+\maketitle
+\tableofcontents
 
 \chapter{Analisi dei requisiti}
 \section{Intervista}
 Vogliamo sviluppare un social network puramente testuale.
-Gli \textbf{utenti} possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce un username identificativo e opzionalmente le sue generalità(nome, cognome, data di nascita, proprio domicilio). Inoltre decide una password che utilzzerà per autenticarsi al social network.
+Gli \textbf{utenti} possono iscriversi e disicriversi. Al momento dell'iscrizione l'utente inserisce un username identificativo e opzionalmente le sue generalità (nome, cognome, data di nascita, proprio domicilio). Inoltre decide una password che utilzzerà per autenticarsi al social network.
 L'utente può cambiare la sua password ma non può riutilizzare una password precedente.
-Ogni utente può pubblicare dei \textbf{post}. Un post consiste in un titlo, un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore (cioè l'utente che ha scritto il post). I post possono essere commentati dagli utenti.
-Ogni utente può mettere \textbf{like} e dislike a post e commenti. Ricevendo reazioni ai propri post e commenti gli utenti si costruiscono una reputazione, ciè un indice frutto della somma algebrica tra like e dislike.
+Ogni utente può pubblicare dei \textbf{post}. Un post consiste in un titolo, un testo scritto, opzionalmente accompagnato da una locazione decisa dall'autore (cioè l'utente che ha scritto il post). 
+I post possono essere commentati dagli utenti.
+Ogni utente può mettere \textbf{like} e dislike a post e commenti. Ricevendo reazioni ai propri post e commenti gli utenti si costruiscono una reputazione, cioè un indice frutto della somma algebrica tra like e dislike.
 Gli utenti inoltre possono \textbf{seguire} altri utenti e smettere di seguirli. Sarà possibile avere uno storico di queste operazioni. 
 Il social fornirà ad ogni utente un feed, cioè una sequeza di post pubblicati dagli utenti da lui seguiti.
 Gli utenti possono chattare con altri utenti. Le \textbf{chat} si compongono di messaggi inviati dai membri di quella chat. Ogni \textbf{messaggio} ha un suo autore, un timestamp di invio, un testo ed può citare un post o commento. Ogni messaggio inoltre può essere in risposta ad un altro messaggio di quella chat. 
@@ -62,9 +65,7 @@ Ogni utente può creare una \textbf{chat}. Ogni chat ha uno o più membri ammini
 \chapter{Progettazione Concettuale}
 \section{Utenti}
 L'entità utente ha come unico identificatore lo username. Per permettere agli utenti di seguire altri utenti abbiamo creato una associazione ad anello SEGUIRE. Però per permettere la creazione di uno storico dei seguiti abbiamo reificato questa associazione.
-\subsection{Login e logout}
-Ogni qual volta l'utente entra nel social network viene creata una istanza di STORICO\_ACCESSO. Non riusciamo ad esprimere il vincolo secondo cui il timestamp di logout deve essere successivo a quello quello di login. 
-Vogliamo invece permettere accessi in intervalli sovrapposti da parte di uno stesso utente. 
+Ogni qual volta l'utente entra nel social network viene creata una istanza di STORICO\_ACCESSO. 
 
 \section{Chat e membri della chat}
 Quando un utente entra a fare parte di una chat viene creata una istanza di MEMBRO, identificata dalla tripla (utente, chat, data di entrata). Rimane inespresso il vincolo secondo cui un utente non far parte contemporaneamente della stessa chat. Quando un membro esce dalla chat la sua istanza non viene eliminata ma semplicemente viene creata una istanza di USCITA, la quale verrà referenziata dal membro uscito.
@@ -657,7 +658,7 @@ Quindi il costo totale giornaliero è:
 In luce di ciò abbiamo deciso di mantenere la ridondanza.
 
 \section{Traduzione di entità e associazioni in relazioni}
-Abbiamo ovviamente trasformato tutte le entità del modello concettuale in relazione, mentre per quanto riguadarda le associazioni nessuna di loro è stata trasformata tranne REAZIONE, cioè l'unica che aveva come cardinalità (0,N), (0, N), Tuttel le altre sono del tipo uno a molti, perciò abbiamo deciso di tradurle in attributi delle entità dal lato dell'uno. L'assenza di molte associazioni molti a molti non ci stupisce perchè molte di queste relazioni sono state reificate per supportare il sviluppo temporale di queste associazioni. Un esempio di queste è l'entità SEGUIRE, la quale era in prima analisi una associazione, ma successivamente ci siamo posti il problema di avere tutta la storia di come gli utenti inizino a seguirsi, smettono e ricominciano.
+Abbiamo ovviamente trasformato tutte le entità del modello concettuale in relazioni, mentre per quanto riguadarda le associazioni nessuna di loro è stata trasformata tranne REAZIONE, cioè l'unica che aveva come cardinalità (0,N), (0, N), Tuttel le altre sono del tipo uno a molti, perciò abbiamo deciso di tradurle in attributi delle entità dal lato dell'uno. L'assenza di molte associazioni molti a molti non ci stupisce perchè molte di queste relazioni sono state reificate per supportare il sviluppo temporale di queste associazioni. Un esempio di queste è l'entità SEGUIRE, la quale era in prima analisi una associazione, ma successivamente ci siamo posti il problema di avere tutta la storia di come gli utenti inizino a seguirsi, smettono e ricominciano.
 \section{Schema relazionale finale}
 \includegraphics[scale=0.6, angle=90]{./img/logico.png}
 \section{Traduzione delle operazioni in query SQL}
@@ -1003,7 +1004,7 @@ Registrazione:
 \newline
 Visualizzazione di un post:
 \newline
-\includegraphics[height=6cm]{img/post_view.png}
+\includegraphics[width=12cm]{img/post_view.png}
 \newline
 Selezione chat:
 \newline
