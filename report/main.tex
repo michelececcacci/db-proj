@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{graphicx}
 
 \begin{document}
 \tableofcontents
@@ -162,6 +163,8 @@ TOTALE            &           & 11      &      \\ \hline
 \paragraph{Frequenza} 2 / g
 \paragraph{Tavola degli accessi}
 Trattata nell'analisi delle ridondanze.
+\paragraph{Schema di navigazione\newline}
+\includegraphics[scale=0.5]{./img/seguire.png}
 \subsection{Smettere di seguire un utente} \label{unfollow}
 \paragraph{Descrizione} Si accede all'istanza di SEGUIRE identificata dalla tupla (utente seguace, utente seguito) e si aggiunge assegna al campo DataFine la data attuale.
 \paragraph{Tavola degli accessi}
@@ -196,6 +199,8 @@ CHAT           & E         & 1       & W    \\ \hline
 TOTALE         &           & 9       &      \\ \hline
 \end{tabular}
 \end{table}
+\paragraph{Schema di navigazione\newline}
+\includegraphics[scale=0.5]{./img/creare_chat.png}
 \subsection{Postare e commentare} \label{postare}
 \paragraph{Descrizione}
 Aggiunge una nuova riga alla tabella CONTENUTO.
@@ -230,6 +235,8 @@ Trattata nell'analisi delle ridondanze.
 \paragraph{Frequenza} 40 / g
 \paragraph{Tavola degli accessi}  
 Trattata nell'analisi delle ridondanze.
+\paragraph{Schema di navigazione\newline}
+\includegraphics[scale=0.5]{./img/feed.png}
 \subsection{Vedere il profilo di un utente} \label{vedere_profilo}
 \paragraph{Descrizione} Si mostrano nome, cognome, data di nascita, location e la sua reputazione.
 \paragraph{Frequenza} 5 / g
@@ -379,6 +386,8 @@ AMMINISTRATORE & E         & 1       & R    \\ \hline
 TOTALE         &           & 3       &      \\ \hline
 \end{tabular}
 \end{table}
+\paragraph{Schema di navigazione\newline}
+\includegraphics[scale=0.5]{./img/esilio.png}
 \subsection{Aggiungere regione a tabella REGIONE} \label{aggiungere_regione}
 \paragraph{Descrizione} Viene creata una nuova istanza di REGIONE la quale conterrà la denominazione della regione e eventualmente la regione superiore.
 \paragraph{Frequenza} 1 / 100 g
